@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 108" role="img" aria-label="Electronics 101">
+  <title>Electronics 101</title>
+  <!--
+    Redrawn as vector from the generated reference in docs/source-assets.
+    Three radiating arcs over a feed point, dropping into a circuit trace with
+    two pads: RF above, hardware below. Flat, two colours, no gradients — it
+    has to survive being 32px in a browser tab.
+  -->
+  <g fill="none" stroke-linecap="round">
+    <!-- radiation: outer and inner arcs cyan, middle blue -->
+    <path d="M 16.8 34.3 A 46 46 0 0 1 103.2 34.3" stroke="#22D3EE" stroke-width="9" />
+    <path d="M 28.0 38.4 A 34 34 0 0 1 92.0 38.4" stroke="#3B82F6" stroke-width="9" />
+    <path d="M 39.3 42.5 A 22 22 0 0 1 80.7 42.5" stroke="#22D3EE" stroke-width="9" />
+
+    <!-- the feed point and its stem -->
+    <line x1="60" y1="50" x2="60" y2="86" stroke="#22D3EE" stroke-width="8" />
+
+    <!-- the trace it feeds, and its two pads -->
+    <path d="M 32 72 L 60 96 L 88 72" stroke="#3B82F6" stroke-width="8" stroke-linejoin="round" />
+  </g>
+  <circle cx="60" cy="50" r="11" fill="#22D3EE" />
+  <circle cx="32" cy="72" r="7.5" fill="none" stroke="#3B82F6" stroke-width="7" />
+  <circle cx="88" cy="72" r="7.5" fill="none" stroke="#3B82F6" stroke-width="7" />
+</svg>

@@ -1,0 +1,79 @@
+import type { Metadata } from "next";
+import { Container, Section, SectionHead, Card } from "@/components/ui/primitives";
+import { ContactForm } from "@/components/forms/ContactForm";
+import { socials } from "@/config/site";
+
+export const metadata: Metadata = {
+  title: "Contact",
+  description:
+    "Enquire about courses, workshops, corporate training, engineering services, mentorship or collaboration.",
+  alternates: { canonical: "/contact" },
+};
+
+type Search = { searchParams: Promise<{ topic?: string }> };
+
+export default async function ContactPage({ searchParams }: Search) {
+  const { topic } = await searchParams;
+
+  return (
+    <Section>
+      <Container>
+        <SectionHead
+          eyebrow="Contact"
+          title="Tell us what you are trying to do"
+          lead="Describe the problem rather than the service. If something is not worth taking on, you will be told that."
+        />
+
+        <div className="mt-12 grid gap-12 lg:grid-cols-[1.6fr_1fr]">
+          <ContactForm defaultTopic={topic} />
+
+          <aside className="space-y-6">
+            <Card className="p-6">
+              <h2 className="font-bold">What happens next</h2>
+              <ol className="mt-4 space-y-3 text-sm text-muted">
+                {[
+                  "Your enquiry is read by a person, not a queue.",
+                  "You get a reply within two working days.",
+                  "If it needs a call, one is offered at that point.",
+                ].map((step, i) => (
+                  <li key={step} className="flex gap-3">
+                    <span className="font-mono text-xs font-semibold text-accent tabular">
+                      {i + 1}
+                    </span>
+                    <span className="min-w-0">{step}</span>
+                  </li>
+                ))}
+              </ol>
+            </Card>
+
+            <Card className="p-6">
+              <h2 className="font-bold">Community channels</h2>
+              <p className="mt-2 text-sm text-muted">
+                For quick questions, the community is usually faster than email.
+              </p>
+              <ul className="mt-4 space-y-2 text-sm">
+                {socials.map((s) => (
+                  <li key={s.id} className="flex items-center justify-between gap-3">
+                    <span className="text-muted">{s.label}</span>
+                    {s.href ? (
+                      <a
+                        href={s.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-accent hover:underline"
+                      >
+                        {s.cta}
+                      </a>
+                    ) : (
+                      <span className="text-xs text-faint">Coming soon</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </Card>
+          </aside>
+        </div>
+      </Container>
+    </Section>
+  );
+}
