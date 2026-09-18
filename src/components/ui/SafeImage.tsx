@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { asset } from "@/lib/paths";
 
 /**
  * next/image with a graceful fallback.
@@ -43,7 +44,7 @@ export function SafeImage({
 
   return (
     <Image
-      src={src}
+      src={asset(src)!}
       alt={alt}
       fill
       sizes={sizes}

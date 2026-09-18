@@ -16,8 +16,15 @@ export const site = {
   tagline: "Learn. Build. Simulate. Innovate.",
   description:
     "An independent technical education platform for practical electronics, RF and microwave engineering, antenna design, PCB and EMI/EMC, semiconductor technology and simulation.",
-  /** Replace when the domain is live — used for canonical URLs and OG tags. */
-  url: "https://electronics101.in",
+  /**
+   * Where the site actually lives. Feeds canonical URLs, Open Graph tags and
+   * the sitemap, so it must match reality or search engines are told the
+   * wrong address.
+   *
+   * This is the GitHub Pages project URL. When a custom domain is connected,
+   * change this AND drop BASE_PATH from .github/workflows/deploy.yml.
+   */
+  url: "https://sanu0910.github.io/Electronics101-web",
   locale: "en_IN",
   /** Placeholder. Route enquiries through the contact form, not an inbox. */
   email: "",

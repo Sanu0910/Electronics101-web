@@ -1,0 +1,67 @@
+name: Deploy to GitHub Pages
+
+# Builds the static site and publishes it whenever main changes.
+# Also runnable by hand from the Actions tab.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# GITHUB_TOKEN needs these to publish a Pages artifact. No other secret is
+# used, and none is needed: payments are Razorpay hosted links, so there are
+# no API keys in this project at all.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deploy finish rather than cancelling it half-published.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint and typecheck
+        # a broken build should fail here, not silently publish
+        run: npm run lint
+
+      - name: Build static site
+        env:
+          # the repository name, so asset and link paths resolve on the
+          # project-site subpath
+          BASE_PATH: /Electronics101-web
+        run: npm run build
+
+      - name: Disable Jekyll
+        # without this, Pages ignores files and folders beginning with "_",
+        # which is where Next puts every JS and CSS asset
+        run: touch out/.nojekyll
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

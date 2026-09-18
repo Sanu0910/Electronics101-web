@@ -8,6 +8,7 @@ import { mainNav, site } from "@/config/site";
 import { buttonClass } from "@/components/ui/primitives";
 import { ThemeToggle } from "./ThemeToggle";
 import { cn } from "@/lib/utils";
+import { asset } from "@/lib/paths";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -61,7 +62,7 @@ export function Navbar() {
           aria-label={`${site.name} — home`}
         >
           <Image
-            src="/brand/logomark.svg"
+            src={asset("/brand/logomark.svg")!}
             alt=""
             width={30}
             height={27}

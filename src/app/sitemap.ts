@@ -5,6 +5,9 @@ import { courses } from "@/content/courses";
 import { workshops } from "@/content/workshops";
 import { blogPosts } from "@/content/misc";
 
+/** Static export has no server, so this is generated once at build time. */
+export const dynamic = "force-static";
+
 /**
  * Generated from the content layer, so a new course or series appears in the
  * sitemap automatically rather than having to be remembered by hand.

@@ -5,6 +5,7 @@ import { upcomingWorkshops } from "@/content/workshops";
 import { courses } from "@/content/courses";
 import { differentiators, publishedTestimonials } from "@/content/misc";
 import { socials } from "@/config/site";
+import { asset } from "@/lib/paths";
 import {
   ButtonLink,
   Container,
@@ -17,6 +18,7 @@ import {
 import { SeriesCard, WorkshopCard, CourseCard } from "@/components/cards";
 import { TestimonialCarousel } from "@/components/home/TestimonialCarousel";
 import { Countdown } from "@/components/home/Countdown";
+import { SafeImage } from "@/components/ui/SafeImage";
 
 export default function HomePage() {
   const next = upcomingWorkshops();
@@ -28,7 +30,7 @@ export default function HomePage() {
       <section className="relative isolate overflow-hidden">
         {/* the generated field pattern sits right; the copy sits in its empty left */}
         <Image
-          src="/images/hero-field.jpg"
+          src={asset("/images/hero-field.jpg")!}
           alt=""
           fill
           priority
@@ -137,12 +139,9 @@ export default function HomePage() {
                 <div className="grid gap-0 sm:grid-cols-2">
                   {featuredWorkshop.image ? (
                     <div className="relative min-h-52 bg-subtle">
-                      <Image
+                      <SafeImage
                         src={featuredWorkshop.image}
-                        alt=""
-                        fill
                         sizes="(max-width: 640px) 100vw, 30vw"
-                        className="object-cover"
                       />
                     </div>
                   ) : null}

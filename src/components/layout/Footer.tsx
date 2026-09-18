@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { affiliationNotice, footerNav, site, socials } from "@/config/site";
 import { Container } from "@/components/ui/primitives";
+import { asset } from "@/lib/paths";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -12,7 +13,7 @@ export function Footer() {
         <div className="grid gap-12 lg:grid-cols-[1.4fr_2.6fr]">
           <div>
             <Link href="/" className="flex items-center gap-2.5">
-              <Image src="/brand/logomark.svg" alt="" width={34} height={31} aria-hidden="true" />
+              <Image src={asset("/brand/logomark.svg")!} alt="" width={34} height={31} aria-hidden="true" />
               <span className="text-lg font-bold tracking-tight" translate="no">
                 Electronics&nbsp;101
               </span>

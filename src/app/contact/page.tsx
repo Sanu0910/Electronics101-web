@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Container, Section, SectionHead, Card } from "@/components/ui/primitives";
-import { ContactForm } from "@/components/forms/ContactForm";
+import { ContactPageBody } from "./ContactPageBody";
 import { socials } from "@/config/site";
 
 export const metadata: Metadata = {
@@ -10,11 +11,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/contact" },
 };
 
-type Search = { searchParams: Promise<{ topic?: string }> };
-
-export default async function ContactPage({ searchParams }: Search) {
-  const { topic } = await searchParams;
-
+export default function ContactPage() {
   return (
     <Section>
       <Container>
@@ -25,7 +22,10 @@ export default async function ContactPage({ searchParams }: Search) {
         />
 
         <div className="mt-12 grid gap-12 lg:grid-cols-[1.6fr_1fr]">
-          <ContactForm defaultTopic={topic} />
+          {/* the ?topic= query is read in the browser, so the page stays static */}
+          <Suspense fallback={<div className="h-96 animate-pulse rounded-2xl bg-elevated" />}>
+            <ContactPageBody />
+          </Suspense>
 
           <aside className="space-y-6">
             <Card className="p-6">

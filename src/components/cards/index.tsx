@@ -3,6 +3,7 @@ import type { Course, Resource, Series, Service, Workshop, BlogPost, Testimonial
 import { Badge, Card, PlaceholderTag, buttonClass } from "@/components/ui/primitives";
 import { cn, formatDate, formatDateTime, priceLabel, readingTime } from "@/lib/utils";
 import { SafeImage } from "@/components/ui/SafeImage";
+import { asset } from "@/lib/paths";
 
 /**
  * Card components, one per content type. Each takes its typed entry and
@@ -173,7 +174,7 @@ export function ResourceCard({ item }: { item: Resource }) {
       <div className="mt-4 flex items-center justify-between gap-3 border-t border-line pt-4">
         <span className="text-xs text-faint">{item.level}</span>
         {available ? (
-          <a href={item.file!} className={buttonClass("secondary", "sm")} download>
+          <a href={asset(item.file)!} className={buttonClass("secondary", "sm")} download>
             Download
           </a>
         ) : (
