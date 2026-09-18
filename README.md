@@ -1,22 +1,56 @@
-# Electronics 101 — website
+# Electronics 101
 
 **Learn. Build. Simulate. Innovate.**
 
-An independent technical education platform for practical electronics, RF and
-microwave engineering, antenna design, PCB and EMI/EMC, semiconductor
-technology and simulation.
+The website for **Electronics 101** — an independent technical education
+platform for practical electronics, RF and microwave engineering, antenna
+design, PCB and EMI/EMC, semiconductor technology and simulation.
+
+- **Live site:** https://sanu0910.github.io/Electronics101-web
+- **Stack:** Next.js 16 (App Router), React 19, TypeScript, Tailwind v4 —
+  exported as a fully static site and served from GitHub Pages.
+- **Status:** Launched with the first live workshop open for registration.
+  Most other content is scaffolded and clearly labelled *Placeholder* until
+  the real material is added (see [Before launch](#before-launch--what-still-needs-filling-in)).
+
+## What's on the site
+
+| Section | Route | What it is |
+| --- | --- | --- |
+| **Home** | `/` | Overview, the "why", and a countdown to the next live workshop |
+| **Courses** | `/courses` | Structured, tool-based programmes with full curricula |
+| **Workshops** | `/workshops` | Live, hands-on sessions with paid registration |
+| **Series** | `/series` | Eleven free learning tracks, episode by episode |
+| **Study Material** | `/study-material` | Notes, formula sheets, guides and code |
+| **Services** | `/services` | Design, simulation and training offered to clients |
+| **Mentorship** | `/mentorship` | One-to-one, project, research and industry-skill plans |
+| **Projects** | `/projects` | Worked engineering projects with problem, approach and results |
+| **Blog** | `/blog` | Technical articles |
+| **About / Contact / Feedback / Links** | `/about`, `/contact`, `/feedback`, `/links` | The platform, its forms and a curated resource hub |
+| **Legal** | `/legal/{terms,privacy,refunds}` | Policy pages |
+
+**What is real today:** the **RF & Microwave Antenna Design** workshop (dates,
+eight-module outline, seat tiers and live Razorpay payment links) and the
+external tool/learning links under **Useful Links**. Everything else carries a
+visible **Placeholder** tag and honest "Coming soon" / "Pricing on
+registration" states until the real content lands — see below.
 
 ## Running it
 
 ```bash
 npm install
 npm run dev     # http://localhost:3000
-npm run build   # production build
+npm run build   # static export → ./out
 npm start       # serve the production build
+npm run lint    # ESLint + type check (this is what CI runs)
 ```
 
-Node 20+ required. The stack is Next.js 16 (App Router), React 19, TypeScript
-and Tailwind v4.
+Node 20+ (CI builds on Node 22).
+
+> **Note:** this repo pins a version of Next.js whose APIs and file
+> conventions may differ from older releases. Before changing any app code,
+> read the relevant guide under `node_modules/next/dist/docs/` — see
+> `AGENTS.md`.
 
 ## How it is put together
 
@@ -32,7 +66,7 @@ src/
   config/
     site.ts     brand strings, navigation, SOCIAL LINKS — edit here, not in components
   content/      the data layer: typed content, no JSX
-  lib/          utils — Intl formatting, search matching
+  lib/          utils — Intl formatting, search matching, asset paths
 ```
 
 ### Content is data, not markup
@@ -43,6 +77,8 @@ serve the same JSON with no change to the component tree.
 
 To add a course, append to `src/content/courses.ts`. It appears on the courses
 page, in the filters, in the sitemap and at its own detail route automatically.
+The same pattern holds for workshops, series, services, mentorship plans,
+projects, study material and blog posts.
 
 ### Placeholder content is labelled, never disguised
 
@@ -73,24 +109,70 @@ Razorpay's page, so this repository contains **no API keys, no order endpoint
 and no card data**. Moving to a server-side Orders integration later means
 changing what that one field points at, not rebuilding the UI around it.
 
-## What still needs doing
+## Deployment
 
+Pushing to `main` triggers `.github/workflows/deploy.yml`, which lints and
+type-checks, builds the static export, and publishes it to GitHub Pages. No
+secrets are needed — there are no API keys in the project.
+
+Because Pages serves a project site from a subpath, the workflow sets
+`BASE_PATH=/Electronics101-web` so links and assets resolve. When a custom
+domain is connected, drop `BASE_PATH` from the workflow and set the real
+address in `site.url` (see below).
+
+## Before launch — what still needs filling in
+
+These are the gaps between "site is live" and "site is done". Each points at
+the exact file to edit.
+
+**Owner details (blockers — these look broken until filled in):**
+
+- [ ] **Social links & handles** — all five (YouTube, Instagram, LinkedIn,
+      Facebook, WhatsApp) are `null` in `src/config/site.ts` and render as
+      "Link coming soon". Add real `href` + `handle` values.
+- [ ] **Contact email** — `site.email` in `src/config/site.ts` is empty.
+      Enquiries currently route only through the contact form.
+- [ ] **Instructor profile** — `instructors` in `src/content/misc.ts` is a
+      placeholder ("Programme Lead"). Add a real name, biography, expertise and
+      a photo at `public/images/mentor-placeholder.jpg`.
+- [ ] **Custom domain (optional)** — currently on the GitHub Pages subpath. To
+      move: set `site.url` in `src/config/site.ts`, remove `BASE_PATH` from
+      `.github/workflows/deploy.yml`, and add the domain in the repo's Pages
+      settings.
+
+**Content (replace placeholders with the real thing, then drop `placeholder: true`):**
+
+- [ ] **Courses** — `src/content/courses.ts`: three courses are outlined but
+      marked placeholder with `priceInr: null`. Confirm curricula and set prices.
+- [ ] **Series episodes** — `src/content/series.ts`: eleven tracks with full
+      topic lists, but no episodes published yet (no `episodeCount`). Add
+      videos/links as they go live.
+- [ ] **Study material** — `src/content/resources.ts`: every resource has
+      `file: null`. Add the real PDFs/notebooks under `public/` and point
+      `file` at them.
+- [ ] **Blog posts** — `src/content/misc.ts`: three illustrative articles.
+      Replace with real posts.
+- [ ] **Projects** — `src/content/misc.ts`: four placeholder case studies with
+      empty galleries. Add real projects and images.
+- [ ] **Testimonials** — `src/content/misc.ts`: sample quotes, labelled as
+      such. Real feedback from the form replaces them (subject to approval).
+- [ ] **Other workshops** — `src/content/workshops.ts`: the RF & Microwave
+      Antenna Design workshop is real; the other two are illustrative until
+      scheduled.
+
+**Wiring & review:**
+
+- [ ] **Connect the forms.** `ContactForm` and `FeedbackForm` validate fully
+      but have no backend; both say so on success rather than faking a
+      confirmation. Wire `submit()` in `src/components/forms/` to an API route
+      or a form service.
+- [ ] **Have the legal pages reviewed.** The three policies under `/legal` are
+      drafts on a common shape and carry a visible warning. They create real
+      obligations around payments and personal data — get them checked before
+      relying on them.
 - [ ] **Generate the remaining images.** `docs/asset-prompts.md` has
       paste-ready prompts. Missing images degrade to a drawn grid motif rather
       than breaking, so this is not urgent.
-- [ ] **Fill in the social URLs** in `src/config/site.ts`. They are `null`
-      today and render as "Link coming soon" — a dead link that looks real is
-      worse than an honest gap.
-- [ ] **Connect the forms.** `ContactForm` and `FeedbackForm` validate fully
-      but have no backend; both say so on success rather than faking a
-      confirmation. Wire `submit()` to an API route or a form service.
-- [ ] **Have the legal pages reviewed.** The three policies under `/legal` are
-      drafts written to a common shape and carry a visible warning saying so.
-      They create real obligations around payments and personal data — get them
-      checked before launch.
-- [ ] **Replace the instructor placeholder** with a real biography and photograph.
-- [ ] **Set the real domain** in `src/config/site.ts` (`site.url`) — it feeds
-      canonical URLs, Open Graph tags and the sitemap.
 
 ## SEO
 
