@@ -127,9 +127,10 @@ the exact file to edit.
 
 **Owner details (blockers — these look broken until filled in):**
 
-- [ ] **Social links & handles** — all five (YouTube, Instagram, LinkedIn,
-      Facebook, WhatsApp) are `null` in `src/config/site.ts` and render as
-      "Link coming soon". Add real `href` + `handle` values.
+- [x] **Social links** — YouTube, Instagram, LinkedIn and Facebook are wired up
+      in `src/config/site.ts` and also feed the site-wide `sameAs` JSON-LD.
+- [ ] **WhatsApp community** — still `null` in `src/config/site.ts`; renders as
+      "Link coming soon" until a join link is added.
 - [ ] **Contact email** — `site.email` in `src/config/site.ts` is empty.
       Enquiries currently route only through the contact form.
 - [ ] **Instructor profile** — `instructors` in `src/content/misc.ts` is a

@@ -3,7 +3,7 @@ import { Sora, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { site } from "@/config/site";
+import { site, socials } from "@/config/site";
 
 /**
  * Sora for headings and UI — geometric and technical, and it sets numerals
@@ -93,6 +93,11 @@ export default function RootLayout({
     url: site.url,
     slogan: site.tagline,
     logo: `${site.url}/brand/icon-512.png`,
+    // Social profiles, so search engines can tie the site to its accounts.
+    // Derived from the socials config, so it only ever lists live links.
+    sameAs: socials
+      .map((s) => s.href)
+      .filter((href): href is string => href !== null),
   };
 
   return (
