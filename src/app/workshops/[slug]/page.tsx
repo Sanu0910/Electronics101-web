@@ -51,6 +51,13 @@ export default async function WorkshopDetailPage({ params }: Params) {
   const seatTiers = tiers.filter((t) => !t.addOn);
   const addOnTiers = tiers.filter((t) => t.addOn);
 
+  /*
+   * An early-bird date is a price change; applyBy is a hard close. Both drive
+   * the same countdown, but they must not be announced in the same words.
+   */
+  const deadline = item.earlyBirdUntil ?? item.applyBy;
+  const deadlineIsPriceChange = Boolean(item.earlyBirdUntil);
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "EducationEvent",
@@ -373,19 +380,21 @@ export default async function WorkshopDetailPage({ params }: Params) {
             />
           </Reveal>
 
-          {item.applyBy ? (
+          {deadline ? (
             <Reveal>
               <div className="mt-8 flex flex-wrap items-center gap-4 rounded-2xl border border-warn-400/40 bg-warn-400/5 p-5">
                 <div className="min-w-0 flex-1">
                   <p className="font-semibold text-warn-400">
-                    Applications close{" "}
-                    <time dateTime={item.applyBy}>{formatDate(item.applyBy)}</time>
+                    {deadlineIsPriceChange ? "Early-bird pricing ends" : "Applications close"}{" "}
+                    <time dateTime={deadline}>{formatDate(deadline)}</time>
                   </p>
                   <p className="mt-1 text-sm text-muted">
-                    Early-bird pricing applies until then.
+                    {deadlineIsPriceChange
+                      ? "Seats stay open after that, at the standard price."
+                      : "Early-bird pricing applies until then."}
                   </p>
                 </div>
-                <Countdown iso={item.applyBy} />
+                <Countdown iso={deadline} />
               </div>
             </Reveal>
           ) : null}
@@ -431,10 +440,10 @@ export default async function WorkshopDetailPage({ params }: Params) {
                           </Badge>
                         ) : null}
                       </div>
-                      {tier.standardPriceInr && item.applyBy ? (
+                      {tier.standardPriceInr && deadline ? (
                         <p className="mt-1 text-xs text-faint">
                           Early-bird price until{" "}
-                          <time dateTime={item.applyBy}>{formatDate(item.applyBy)}</time>
+                          <time dateTime={deadline}>{formatDate(deadline)}</time>
                           {" · "}
                           {priceLabel(tier.standardPriceInr)} after that
                         </p>

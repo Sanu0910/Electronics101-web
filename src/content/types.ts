@@ -152,8 +152,15 @@ export type Workshop = Placeholder & {
   /** ISO 8601 with offset. Rendered through Intl, never hardcoded. */
   startsAt: string;
   endsAt?: string;
-  /** Registration closes at this instant. Drives the early-bird countdown. */
+  /** Registration closes at this instant — no seat is sold after it. */
   applyBy?: string;
+  /**
+   * When early-bird pricing ends, for a workshop that keeps selling seats at
+   * the standard price afterwards. Kept separate from `applyBy` because
+   * announcing that registration shuts on the early-bird date would turn a
+   * price change into a false deadline.
+   */
+  earlyBirdUntil?: string;
   durationLabel: string;
   /** True when nothing is recorded — said plainly, since people ask. */
   liveOnly?: boolean;

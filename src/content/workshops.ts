@@ -21,9 +21,11 @@ export const workshops: Workshop[] = [
       "Five evenings, live and hands-on, taking a research paper through to a high-fidelity EM model — unit cells, phased arrays, FI-BI hybrid analysis and SBR+.",
     description:
       "A five-evening intensive for engineers who already model antennas and now need the methods larger problems demand. It covers periodic and Master/Slave boundaries with Floquet ports for unit cells and metasurfaces, phased arrays with mutual coupling and active S-parameters, FI-BI and hybrid FEM–BI for antenna–platform interaction, and SBR+ for electrically large structures and RCS. The through-line is solver choice: not only how to drive HFSS, but which EM method fits which problem. It closes with a mini-project that carries a published paper all the way to an interpreted result.",
-    /* Five 2-hour evening sessions, 7–9 pm IST. */
+    /* Five 2-hour evening sessions on consecutive days, 7–9 pm IST. */
     startsAt: "2026-11-21T19:00:00+05:30",
-    endsAt: "2026-11-26T21:00:00+05:30",
+    endsAt: "2026-11-25T21:00:00+05:30",
+    /* Seats keep selling after this — only the price changes. */
+    earlyBirdUntil: "2026-10-20T23:59:00+05:30",
     durationLabel: "5 sessions × 2 hrs · 7–9 pm IST",
     mode: "Live Online",
     level: "Advanced",
@@ -132,11 +134,6 @@ export const workshops: Workshop[] = [
       "M.Tech / PhD Researchers",
       "Final-year B.Tech / M.Tech",
     ],
-    /**
-     * Prices are confirmed off the carousel; the Razorpay links are not
-     * created yet, so `href` stays null and each card offers an enquiry
-     * route rather than a dead button.
-     */
     tiers: [
       {
         id: "student",
@@ -144,7 +141,7 @@ export const workshops: Workshop[] = [
         forWho: "Students and researchers. Early-bird seats are limited.",
         priceInr: 2499,
         standardPriceInr: 2999,
-        href: null,
+        href: "https://rzp.io/rzp/XlSQZcl",
         note: "Early bird",
       },
       {
@@ -152,23 +149,25 @@ export const workshops: Workshop[] = [
         label: "Working Professional",
         forWho: "Working engineers on the standard plan.",
         priceInr: 3999,
-        href: null,
+        href: "https://rzp.io/rzp/F92ASzv",
       },
       {
         id: "premium",
         label: "Premium",
         forWho:
-          "Professional and research batch — every resource above, plus post-workshop Q&A and updates.",
+          "Professional and research batch — every resource above, with the Certificate of Completion included, plus post-workshop Q&A and updates.",
         priceInr: 4999,
-        href: null,
+        href: "https://rzp.io/rzp/ZgRxDLXe",
         note: "Best value",
         highlight: true,
       },
       {
+        /* No payment link of its own: it is arranged on top of a seat, and
+           Premium already carries it. */
         id: "certificate",
         label: "Certificate",
         forWho:
-          "Add-on to any seat: a Certificate of Completion carrying a unique ID.",
+          "Add-on to a Student or Professional seat: a Certificate of Completion carrying a unique ID. Already included with Premium.",
         priceInr: 500,
         href: null,
         addOn: true,
