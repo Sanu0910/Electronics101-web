@@ -442,26 +442,40 @@ export default async function WorkshopDetailPage({ params }: Params) {
             </Reveal>
             <Reveal delay={60}>
               <Card className="mt-10 p-6 sm:p-8">
-                {/* presented by credentials when there is no name to show */}
-                <p className="text-2xl font-bold">
-                  {instructor.name ?? instructor.title}
-                </p>
-                {instructor.name ? (
-                  <p className="mt-1 font-semibold text-accent">{instructor.title}</p>
-                ) : null}
-                <p className="mt-4 max-w-3xl text-muted">{instructor.bio}</p>
+                <div className="flex flex-wrap items-start gap-6">
+                  {instructor.image ? (
+                    <div className="relative size-24 shrink-0 overflow-hidden rounded-2xl border border-line bg-subtle">
+                      <SafeImage
+                        src={instructor.image}
+                        alt={`${instructor.name ?? "Instructor"} — ${instructor.title}`}
+                        sizes="96px"
+                      />
+                    </div>
+                  ) : null}
 
-                {instructor.credentials?.length ? (
-                  <ul className="mt-6 flex flex-wrap gap-2">
-                    {instructor.credentials.map((c) => (
-                      <li key={c}>
-                        <Badge tone="ok">{c}</Badge>
-                      </li>
-                    ))}
-                  </ul>
-                ) : null}
+                  <div className="min-w-0 flex-1">
+                    {/* presented by credentials when there is no name to show */}
+                    <p className="text-2xl font-bold">
+                      {instructor.name ?? instructor.title}
+                    </p>
+                    {instructor.name ? (
+                      <p className="mt-1 font-semibold text-accent">{instructor.title}</p>
+                    ) : null}
+                    <p className="mt-4 max-w-3xl text-muted">{instructor.bio}</p>
 
-                {instructor.placeholder ? <PlaceholderTag className="mt-6" /> : null}
+                    {instructor.credentials?.length ? (
+                      <ul className="mt-6 flex flex-wrap gap-2">
+                        {instructor.credentials.map((c) => (
+                          <li key={c}>
+                            <Badge tone="ok">{c}</Badge>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : null}
+
+                    {instructor.placeholder ? <PlaceholderTag className="mt-6" /> : null}
+                  </div>
+                </div>
               </Card>
             </Reveal>
           </Container>

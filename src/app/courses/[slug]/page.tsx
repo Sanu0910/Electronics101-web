@@ -14,6 +14,7 @@ import {
   SectionHead,
 } from "@/components/ui/primitives";
 import { Accordion } from "@/components/ui/Accordion";
+import { SafeImage } from "@/components/ui/SafeImage";
 import { priceLabel } from "@/lib/utils";
 import { site } from "@/config/site";
 
@@ -197,12 +198,25 @@ export default async function CourseDetailPage({ params }: Params) {
               <div>
                 <SectionHead eyebrow="Instructor" title="Who teaches it" />
                 <Card className="mt-8 p-6">
-                  <p className="text-lg font-bold">
-                    {instructor.name ?? instructor.title}
-                  </p>
-                  {instructor.name ? (
-                    <p className="text-sm text-accent">{instructor.title}</p>
-                  ) : null}
+                  <div className="flex items-start gap-4">
+                    {instructor.image ? (
+                      <div className="relative size-16 shrink-0 overflow-hidden rounded-xl border border-line bg-subtle">
+                        <SafeImage
+                          src={instructor.image}
+                          alt={`${instructor.name ?? "Instructor"} — ${instructor.title}`}
+                          sizes="64px"
+                        />
+                      </div>
+                    ) : null}
+                    <div className="min-w-0">
+                      <p className="text-lg font-bold">
+                        {instructor.name ?? instructor.title}
+                      </p>
+                      {instructor.name ? (
+                        <p className="text-sm text-accent">{instructor.title}</p>
+                      ) : null}
+                    </div>
+                  </div>
                   <p className="mt-3 text-sm text-muted">{instructor.bio}</p>
                   {instructor.placeholder ? <PlaceholderTag className="mt-4" /> : null}
                 </Card>

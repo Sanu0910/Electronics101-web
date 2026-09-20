@@ -276,6 +276,7 @@ export const workshops: Workshop[] = [
     /** The headline figure on cards is the lowest seat price. */
     priceInr: 299,
     status: "Open",
+    instructorId: "lead",
     image: "/images/workshop-rf-antenna.jpg",
   },
   {
