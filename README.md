@@ -138,11 +138,12 @@ the exact file to edit.
       in `src/config/site.ts` and also feed the site-wide `sameAs` JSON-LD.
 - [ ] **WhatsApp community** — still `null` in `src/config/site.ts`; renders as
       "Link coming soon" until a join link is added.
-- [ ] **Contact email** — `site.email` in `src/config/site.ts` is empty.
-      Enquiries currently route only through the contact form.
-- [ ] **Instructor profile** — `instructors` in `src/content/misc.ts` is a
-      placeholder ("Programme Lead"). Add a real name, biography, expertise and
-      a photo at `public/images/mentor-placeholder.jpg`.
+- [x] **Contact email** — published on the contact page from `site.email`.
+- [x] **Instructor profile** — real credentials and biography in
+      `src/content/misc.ts`, rendered on the workshop page.
+- [ ] **Instructor full name and photo** — the entry currently carries a first
+      name only, and `public/images/mentor-placeholder.jpg` does not exist yet
+      (the card degrades to the grid motif).
 - [ ] **Custom domain (optional)** — currently on the GitHub Pages subpath. To
       move: set `site.url` in `src/config/site.ts`, remove `BASE_PATH` from
       `.github/workflows/deploy.yml`, and add the domain in the repo's Pages

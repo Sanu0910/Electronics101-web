@@ -176,6 +176,32 @@ export const workshops: Workshop[] = [
     /** The headline figure on cards is the lowest seat price. */
     priceInr: 2499,
     status: "Open",
+    image: "/images/workshop-antenna-101.webp",
+    imageOrientation: "landscape",
+    instructorId: "lead",
+    /*
+     * The case for the seat. Kept to things that are checkable — what you
+     * leave with, how the batch is run, what a wrong design spin costs —
+     * rather than urgency language the audience would see straight through.
+     */
+    valueProps: [
+      {
+        title: "A small batch, deliberately",
+        body: "Seats are limited so questions get answered live, in the session, rather than in a queue afterwards.",
+      },
+      {
+        title: "You keep the files",
+        body: "HFSS and SBR+ projects, unit-cell and phased-array templates and the MATLAB/Python scripts stay with you — the workshop ends, the toolkit does not.",
+      },
+      {
+        title: "Cheaper than one wrong spin",
+        body: "A board respun because a converged result was mistaken for a correct one costs more than a seat. Five evenings against that is the trade.",
+      },
+      {
+        title: "Methods, not menu clicks",
+        body: "Tool tutorials age with the interface. Knowing when FEM, FI-BI, hybrid or SBR+ is the right solver does not.",
+      },
+    ],
     disclaimer:
       "Antenna 101 by Electronics 101 is an independent educational initiative, not affiliated with any institution, company, government body, PSU or defence organisation. Ansys, HFSS and SBR+ are trademarks of their respective owners.",
   },

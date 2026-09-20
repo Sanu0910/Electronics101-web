@@ -135,12 +135,17 @@ export const publishedTestimonials = testimonials.filter((t) => t.published);
 
 export const instructors: Instructor[] = [
   {
-    placeholder: true,
     id: "lead",
-    name: "Programme Lead",
-    title: "RF & Antenna Engineering",
-    bio: "Placeholder profile. Replace with a real biography before launch — an instructor page is a credibility page, and generic text undermines it.",
-    expertise: ["RF & Microwave", "Antenna Design", "HFSS", "PCB"],
+    name: "Sanu",
+    title: "RF & Microwave Engineering",
+    bio: "A master's degree in RF and microwave engineering, and three years split between industry design work and teaching it. The courses and workshops here are built around the same simulation and verification workflow used on real design jobs — which is why they spend as much time on checking a result as on producing one.",
+    credentials: [
+      "M.Tech — RF & Microwave Engineering",
+      "3+ years industry design & simulation",
+      "3+ years teaching",
+      "100+ participants trained",
+    ],
+    expertise: ["RF & Microwave", "Antenna Design", "HFSS", "ADS", "PCB"],
     image: "/images/mentor-placeholder.jpg",
   },
 ];

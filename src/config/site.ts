@@ -26,8 +26,8 @@ export const site = {
    */
   url: "https://sanu0910.github.io/Electronics101-web",
   locale: "en_IN",
-  /** Placeholder. Route enquiries through the contact form, not an inbox. */
-  email: "",
+  /** Published on the contact page beside the form, for people who prefer email. */
+  email: "rf101.sanu@gmail.com",
 } as const;
 
 export type NavItem = {

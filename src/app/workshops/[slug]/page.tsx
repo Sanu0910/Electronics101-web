@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getWorkshop, workshops } from "@/content/workshops";
+import { getInstructor } from "@/content/misc";
 import {
   Badge,
   Bullets,
@@ -57,6 +58,26 @@ export default async function WorkshopDetailPage({ params }: Params) {
    */
   const deadline = item.earlyBirdUntil ?? item.applyBy;
   const deadlineIsPriceChange = Boolean(item.earlyBirdUntil);
+
+  const instructor = getInstructor(item.instructorId);
+
+  /* A wide poster cannot go in the portrait slot beside the copy. */
+  const portraitPoster = Boolean(item.image) && item.imageOrientation !== "landscape";
+  const landscapePoster = Boolean(item.image) && item.imageOrientation === "landscape";
+
+  /*
+   * Sections alternate tone, and the optional ones are what shift the rhythm,
+   * so the order is derived once here rather than hardcoded per section.
+   */
+  const optionalSections = [
+    item.audience?.length ? "audience" : null,
+    item.valueProps?.length ? "value" : null,
+    instructor ? "instructor" : null,
+  ].filter((x): x is string => x !== null);
+
+  const toneAt = (i: number): "subtle" | "default" =>
+    i % 2 === 0 ? "subtle" : "default";
+  const toneOf = (name: string) => toneAt(optionalSections.indexOf(name));
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -118,7 +139,7 @@ export default async function WorkshopDetailPage({ params }: Params) {
             <span className="text-muted">{item.title}</span>
           </nav>
 
-          <div className={cn("grid gap-10", item.image && "lg:grid-cols-[1.5fr_1fr]")}>
+          <div className={cn("grid gap-10", portraitPoster && "lg:grid-cols-[1.5fr_1fr]")}>
             <div>
               <div
                 className="flex flex-wrap items-center gap-2 animate-rise"
@@ -208,7 +229,7 @@ export default async function WorkshopDetailPage({ params }: Params) {
               </div>
             </div>
 
-            {item.image ? (
+            {portraitPoster && item.image ? (
               /* the poster is portrait and carries the whole programme in it,
                  so it is contained rather than cropped to a landscape box */
               <div className="relative aspect-[3/4] overflow-hidden rounded-2xl border border-line bg-subtle">
@@ -222,6 +243,24 @@ export default async function WorkshopDetailPage({ params }: Params) {
               </div>
             ) : null}
           </div>
+
+          {landscapePoster && item.image ? (
+            /* rendered at its own aspect ratio, so nothing is cropped out of
+               a picture whose whole point is the radiation patterns */
+            <div
+              className="mx-auto mt-14 max-w-5xl animate-rise"
+              style={{ animationDelay: "440ms" }}
+            >
+              <div className="relative aspect-[10/7] overflow-hidden rounded-2xl border border-line bg-subtle">
+                <SafeImage
+                  src={item.image}
+                  priority
+                  alt={`${item.title} — phased array, beamforming and multi-user tracking`}
+                  sizes="(max-width: 1024px) 100vw, 64rem"
+                />
+              </div>
+            </div>
+          ) : null}
         </Container>
       </Section>
 
@@ -345,7 +384,7 @@ export default async function WorkshopDetailPage({ params }: Params) {
 
       {/* ------------------------------------------------------- audience */}
       {item.audience?.length ? (
-        <Section tone="subtle">
+        <Section tone={toneOf("audience")}>
           <Container wide>
             <Reveal>
               <SectionHead
@@ -369,8 +408,63 @@ export default async function WorkshopDetailPage({ params }: Params) {
         </Section>
       ) : null}
 
+      {/* ---------------------------------------------------------- value */}
+      {item.valueProps?.length ? (
+        <Section tone={toneOf("value")}>
+          <Container wide>
+            <Reveal>
+              <SectionHead
+                eyebrow="Why this one"
+                title="What the seat actually buys"
+                lead="Four reasons that survive a sceptical read."
+              />
+            </Reveal>
+            <div className="mt-10 grid gap-6 sm:grid-cols-2">
+              {item.valueProps.map((v, i) => (
+                <Reveal key={v.title} delay={i * 70} className="h-full">
+                  <Card className="h-full p-6 transition-transform duration-200 hover:-translate-y-1">
+                    <h3 className="text-lg font-bold">{v.title}</h3>
+                    <p className="mt-2 text-muted">{v.body}</p>
+                  </Card>
+                </Reveal>
+              ))}
+            </div>
+          </Container>
+        </Section>
+      ) : null}
+
+      {/* ----------------------------------------------------- instructor */}
+      {instructor ? (
+        <Section tone={toneOf("instructor")}>
+          <Container wide>
+            <Reveal>
+              <SectionHead eyebrow="Who teaches it" title="Your instructor" />
+            </Reveal>
+            <Reveal delay={60}>
+              <Card className="mt-10 p-6 sm:p-8">
+                <p className="text-2xl font-bold">{instructor.name}</p>
+                <p className="mt-1 font-semibold text-accent">{instructor.title}</p>
+                <p className="mt-4 max-w-3xl text-muted">{instructor.bio}</p>
+
+                {instructor.credentials?.length ? (
+                  <ul className="mt-6 flex flex-wrap gap-2">
+                    {instructor.credentials.map((c) => (
+                      <li key={c}>
+                        <Badge tone="ok">{c}</Badge>
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+
+                {instructor.placeholder ? <PlaceholderTag className="mt-6" /> : null}
+              </Card>
+            </Reveal>
+          </Container>
+        </Section>
+      ) : null}
+
       {/* ------------------------------------------------------- register */}
-      <Section tone={item.audience?.length ? "default" : "subtle"} id="register">
+      <Section tone={toneAt(optionalSections.length)} id="register">
         <Container wide>
           <Reveal>
             <SectionHead
@@ -546,7 +640,7 @@ export default async function WorkshopDetailPage({ params }: Params) {
       </Section>
 
       {/* ------------------------------------------------------ countdown */}
-      <Section tone={item.audience?.length ? "subtle" : "default"}>
+      <Section tone={toneAt(optionalSections.length + 1)}>
         <Container wide>
           <Reveal>
             <Card className="flex flex-wrap items-center justify-between gap-6 p-8">

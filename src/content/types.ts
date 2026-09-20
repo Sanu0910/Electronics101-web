@@ -183,6 +183,14 @@ export type Workshop = Placeholder & {
   pitch?: { title: string; body: string };
   /** Trademark and affiliation wording specific to this workshop. */
   disclaimer?: string;
+  /** The case for the seat — what it buys, in the buyer's terms. */
+  valueProps?: { title: string; body: string }[];
+  /**
+   * How `image` is shaped. A portrait poster sits beside the hero copy; a
+   * landscape one runs full width beneath it, because dropping a wide image
+   * into the portrait slot letterboxes it down to nothing.
+   */
+  imageOrientation?: "portrait" | "landscape";
   seats?: number;
   seatsLeft?: number;
   priceInr: number | null;
@@ -310,5 +318,7 @@ export type Instructor = Placeholder & {
   title: string;
   bio: string;
   expertise: string[];
+  /** Short, checkable credentials — a degree, years in the work, people taught. */
+  credentials?: string[];
   image?: string;
 };

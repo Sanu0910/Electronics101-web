@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Container, Section, SectionHead, Card } from "@/components/ui/primitives";
 import { ContactPageBody } from "./ContactPageBody";
-import { socials } from "@/config/site";
+import { site, socials } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -45,6 +45,23 @@ export default function ContactPage() {
                 ))}
               </ol>
             </Card>
+
+            {site.email ? (
+              <Card className="p-6">
+                <h2 className="font-bold">Prefer email?</h2>
+                <p className="mt-2 text-sm text-muted">
+                  The form reaches the same inbox, but if you would rather write
+                  directly — or need to attach a drawing, a datasheet or an
+                  S-parameter file — use this.
+                </p>
+                <a
+                  href={`mailto:${site.email}`}
+                  className="mt-4 inline-block font-medium break-all text-accent hover:underline"
+                >
+                  {site.email}
+                </a>
+              </Card>
+            ) : null}
 
             <Card className="p-6">
               <h2 className="font-bold">Community channels</h2>
