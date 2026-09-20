@@ -108,12 +108,33 @@ export type RegistrationTier = {
   priceInr: number | null;
   /** What this seat costs once the early-bird deadline passes. */
   standardPriceInr?: number | null;
-  href: string;
+  /**
+   * The Razorpay hosted payment link. Null or absent while the link has not
+   * been created yet: the card then offers an enquiry route instead of an
+   * anchor that goes nowhere, which is the same rule the social links follow.
+   */
+  href?: string | null;
   note?: string;
+  /** Bought alongside a seat rather than instead of one, e.g. a certificate. */
+  addOn?: boolean;
+  /** The recommended plan. At most one per workshop, or it means nothing. */
+  highlight?: boolean;
 };
 
 /** A curriculum module with its one-line scope, as printed on the poster. */
 export type WorkshopModule = { title: string; detail: string };
+
+/**
+ * One day of a multi-day workshop. Richer than a WorkshopModule because a
+ * day covers several distinct things rather than one, and the detail page
+ * renders it as an expandable timeline.
+ */
+export type WorkshopDay = {
+  /** Shown as the rail marker. 1-based, and the display order. */
+  day: number;
+  title: string;
+  points: string[];
+};
 
 export type Workshop = Placeholder & {
   slug: string;
@@ -124,13 +145,22 @@ export type Workshop = Placeholder & {
   description: string;
   /** Richer than `topics` — preferred by the detail page when present. */
   modules?: WorkshopModule[];
+  /** Day-by-day breakdown. Takes precedence over `modules` when present. */
+  days?: WorkshopDay[];
   /** Seat types. Empty → the page shows an enquiry CTA instead of Register. */
   tiers?: RegistrationTier[];
   /** ISO 8601 with offset. Rendered through Intl, never hardcoded. */
   startsAt: string;
   endsAt?: string;
-  /** Registration closes at this instant. Drives the early-bird countdown. */
+  /** Registration closes at this instant — no seat is sold after it. */
   applyBy?: string;
+  /**
+   * When early-bird pricing ends, for a workshop that keeps selling seats at
+   * the standard price afterwards. Kept separate from `applyBy` because
+   * announcing that registration shuts on the early-bird date would turn a
+   * price change into a false deadline.
+   */
+  earlyBirdUntil?: string;
   durationLabel: string;
   /** True when nothing is recorded — said plainly, since people ask. */
   liveOnly?: boolean;
@@ -139,6 +169,20 @@ export type Workshop = Placeholder & {
   domains: Domain[];
   topics: string[];
   includes: string[];
+  /**
+   * Scope for `includes` when it does not describe every tier — the poster
+   * itemises the top batch only, and letting that read as universal would
+   * promise the cheapest seat things it does not buy.
+   */
+  includesNote?: string;
+  /** Who the workshop is aimed at, rendered as chips. */
+  audience?: string[];
+  /** The end-to-end project pipeline, rendered as a flow. */
+  projectFlow?: string[];
+  /** The positioning claim — what this teaches that a tool tutorial does not. */
+  pitch?: { title: string; body: string };
+  /** Trademark and affiliation wording specific to this workshop. */
+  disclaimer?: string;
   seats?: number;
   seatsLeft?: number;
   priceInr: number | null;
