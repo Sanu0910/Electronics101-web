@@ -197,8 +197,12 @@ export default async function CourseDetailPage({ params }: Params) {
               <div>
                 <SectionHead eyebrow="Instructor" title="Who teaches it" />
                 <Card className="mt-8 p-6">
-                  <p className="text-lg font-bold">{instructor.name}</p>
-                  <p className="text-sm text-accent">{instructor.title}</p>
+                  <p className="text-lg font-bold">
+                    {instructor.name ?? instructor.title}
+                  </p>
+                  {instructor.name ? (
+                    <p className="text-sm text-accent">{instructor.title}</p>
+                  ) : null}
                   <p className="mt-3 text-sm text-muted">{instructor.bio}</p>
                   {instructor.placeholder ? <PlaceholderTag className="mt-4" /> : null}
                 </Card>

@@ -140,9 +140,10 @@ the exact file to edit.
 - [x] **Contact email** — published on the contact page from `site.email`.
 - [x] **Instructor profile** — real credentials and biography in
       `src/content/misc.ts`, rendered on the workshop page.
-- [ ] **Instructor full name and photo** — the entry currently carries a first
-      name only, and `public/images/mentor-placeholder.jpg` does not exist yet
-      (the card degrades to the grid motif).
+- [ ] **Instructor photo** — `public/images/mentor-placeholder.jpg` does not
+      exist yet, so the card degrades to the grid motif. The profile carries
+      no personal name by choice; `Instructor.name` is optional and the
+      heading falls back to the title.
 - [ ] **Custom domain (optional)** — currently on the GitHub Pages subpath. To
       move: set `site.url` in `src/config/site.ts`, remove `BASE_PATH` from
       `.github/workflows/deploy.yml`, and add the domain in the repo's Pages

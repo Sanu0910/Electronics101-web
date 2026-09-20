@@ -314,7 +314,11 @@ export type LinkGroup = {
 
 export type Instructor = Placeholder & {
   id: string;
-  name: string;
+  /**
+   * Omitted when the instructor is presented by credentials rather than by
+   * name. Renderers fall back to `title` for the heading.
+   */
+  name?: string;
   title: string;
   bio: string;
   expertise: string[];

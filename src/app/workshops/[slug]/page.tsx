@@ -442,8 +442,13 @@ export default async function WorkshopDetailPage({ params }: Params) {
             </Reveal>
             <Reveal delay={60}>
               <Card className="mt-10 p-6 sm:p-8">
-                <p className="text-2xl font-bold">{instructor.name}</p>
-                <p className="mt-1 font-semibold text-accent">{instructor.title}</p>
+                {/* presented by credentials when there is no name to show */}
+                <p className="text-2xl font-bold">
+                  {instructor.name ?? instructor.title}
+                </p>
+                {instructor.name ? (
+                  <p className="mt-1 font-semibold text-accent">{instructor.title}</p>
+                ) : null}
                 <p className="mt-4 max-w-3xl text-muted">{instructor.bio}</p>
 
                 {instructor.credentials?.length ? (
