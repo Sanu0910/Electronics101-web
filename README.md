@@ -35,9 +35,8 @@ under **Useful Links**.
 - **RF & Microwave Antenna Design** (5–6 Dec 2026) — eight-module outline, seat
   tiers and live Razorpay payment links.
 - **Advanced Antenna Design & EM Simulation with Ansys HFSS + SBR+**
-  (21–26 Nov 2026) — five-day intensive, day-by-day curriculum, four priced
-  tiers. Razorpay links are not created yet, so each tier offers an enquiry
-  route instead of a dead button.
+  (21–25 Nov 2026) — five-day intensive, day-by-day curriculum, four priced
+  tiers with live Razorpay links, and an early-bird cutoff of 20 Oct 2026.
 
 Everything else carries a visible **Placeholder** tag and honest "Coming soon" /
 "Pricing on registration" states until the real content lands — see below.
