@@ -175,6 +175,44 @@
     padding-left: max(1.25rem, env(safe-area-inset-left));
     padding-right: max(1.25rem, env(safe-area-inset-right));
   }
+
+  /*
+   * Entrance for content above the fold. It runs on load rather than on an
+   * intersection, so there is no window where hero text sits invisible
+   * waiting for hydration. Stagger it with an inline animation-delay.
+   */
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translateY(1.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .animate-rise {
+    animation: rise-in 0.8s var(--ease-out-expo) both;
+  }
+
+  /*
+   * Scroll-triggered reveal, driven by Reveal.tsx. Hidden until the observer
+   * adds .is-shown — see that component for the three ways out of the hidden
+   * state, one of which is the <noscript> rule in layout.tsx.
+   */
+  .reveal-item {
+    opacity: 0;
+    transform: translateY(1.25rem);
+    transition:
+      opacity 0.7s var(--ease-out-expo),
+      transform 0.7s var(--ease-out-expo);
+  }
+
+  .reveal-item.is-shown {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /*
@@ -192,5 +230,15 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  /*
+   * Scroll reveals are shown outright rather than waiting on an observer:
+   * someone who asked for less movement should not also wait on JS to read
+   * the page.
+   */
+  .reveal-item {
+    opacity: 1;
+    transform: none;
   }
 }

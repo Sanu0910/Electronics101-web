@@ -13,6 +13,174 @@ import type { Workshop } from "./types";
  */
 export const workshops: Workshop[] = [
   {
+    slug: "advanced-antenna-design-em-simulation",
+    title: "Advanced Antenna Design & EM Simulation",
+    /** The line the carousel leads with. */
+    subtitle: "with Ansys HFSS + SBR+",
+    summary:
+      "Five evenings, live and hands-on, taking a research paper through to a high-fidelity EM model — unit cells, phased arrays, FI-BI hybrid analysis and SBR+.",
+    description:
+      "A five-evening intensive for engineers who already model antennas and now need the methods larger problems demand. It covers periodic and Master/Slave boundaries with Floquet ports for unit cells and metasurfaces, phased arrays with mutual coupling and active S-parameters, FI-BI and hybrid FEM–BI for antenna–platform interaction, and SBR+ for electrically large structures and RCS. The through-line is solver choice: not only how to drive HFSS, but which EM method fits which problem. It closes with a mini-project that carries a published paper all the way to an interpreted result.",
+    /* Five 2-hour evening sessions, 7–9 pm IST. */
+    startsAt: "2026-11-21T19:00:00+05:30",
+    endsAt: "2026-11-26T21:00:00+05:30",
+    durationLabel: "5 sessions × 2 hrs · 7–9 pm IST",
+    mode: "Live Online",
+    level: "Advanced",
+    domains: ["Antenna", "RF", "Simulation"],
+    /** The capability chips from the cover slide. */
+    topics: [
+      "Phased Arrays",
+      "Unit Cells",
+      "FI-BI",
+      "Hybrid Analysis",
+      "SBR+",
+      "Beam Steering",
+      "Metasurfaces",
+      "Advanced HFSS",
+    ],
+    days: [
+      {
+        day: 1,
+        title: "Advanced HFSS & Unit-Cell Techniques",
+        points: [
+          "Periodic & Master/Slave boundaries",
+          "Floquet ports & infinite arrays",
+          "Reflection / transmission phase",
+          "Metasurface & FSS unit cells",
+        ],
+      },
+      {
+        day: 2,
+        title: "Phased Arrays & Beam Steering",
+        points: [
+          "Array factor: linear & planar",
+          "Beam steering & grating lobes",
+          "Mutual coupling & active S-params",
+          "Finite-array simulation",
+        ],
+      },
+      {
+        day: 3,
+        title: "FI-BI & Hybrid Analysis",
+        points: [
+          "FI-BI & hybrid FEM–BI concepts",
+          "Full-wave vs hybrid: when to use",
+          "Antenna–platform interaction",
+          "Hybrid workflow in HFSS",
+        ],
+      },
+      {
+        day: 4,
+        title: "SBR+ & High-Frequency EM",
+        points: [
+          "Shooting & bouncing rays",
+          "RCS & electrically large platforms",
+          "Antenna placement on platforms",
+          "SBR+ vs FEM: picking a solver",
+        ],
+      },
+      {
+        day: 5,
+        title: "Advanced Architectures + Research Workflow",
+        points: [
+          "Conformal & metasurface antennas",
+          "CDDAM / FDDAM concepts",
+          "Optimetrics & Design Explorer",
+          "PyAEDT & MATLAB automation",
+        ],
+      },
+    ],
+    projectFlow: [
+      "Paper",
+      "Geometry",
+      "HFSS Model",
+      "Simulate",
+      "Optimise",
+      "Interpret",
+    ],
+    pitch: {
+      title: "Not just how to use HFSS.",
+      body: "Learn which EM method fits which problem: FEM, FI-BI, hybrid or SBR+.",
+    },
+    includes: [
+      "5 live sessions (10 hours)",
+      "Recorded session access",
+      "HFSS + SBR+ project files",
+      "Unit-cell & phased-array templates",
+      "FI-BI / hybrid-analysis examples",
+      "MATLAB / Python source codes",
+      "Research-paper reading list",
+      "Assignments + final mini-project",
+      "Certificate of Completion",
+      "Post-workshop Q&A + updates",
+    ],
+    /* The carousel itemises the Premium batch only. Saying so keeps the
+       cheapest seat from appearing to buy all ten lines. */
+    includesNote:
+      "As itemised for the Premium (Professional / Research) batch. Every plan includes the five live sessions — check the rest against your plan before paying.",
+    audience: [
+      "RF & Microwave Engineers",
+      "Antenna Design Engineers",
+      "EM Simulation Engineers",
+      "RF System Engineers",
+      "Radar Engineers",
+      "Defence & Aerospace",
+      "Wireless / 5G / 6G",
+      "PCB & High-Speed Hardware",
+      "R&D Engineers & Scientists",
+      "M.Tech / PhD Researchers",
+      "Final-year B.Tech / M.Tech",
+    ],
+    /**
+     * Prices are confirmed off the carousel; the Razorpay links are not
+     * created yet, so `href` stays null and each card offers an enquiry
+     * route rather than a dead button.
+     */
+    tiers: [
+      {
+        id: "student",
+        label: "Student / Researcher",
+        forWho: "Students and researchers. Early-bird seats are limited.",
+        priceInr: 2499,
+        standardPriceInr: 2999,
+        href: null,
+        note: "Early bird",
+      },
+      {
+        id: "professional",
+        label: "Working Professional",
+        forWho: "Working engineers on the standard plan.",
+        priceInr: 3999,
+        href: null,
+      },
+      {
+        id: "premium",
+        label: "Premium",
+        forWho:
+          "Professional and research batch — every resource above, plus post-workshop Q&A and updates.",
+        priceInr: 4999,
+        href: null,
+        note: "Best value",
+        highlight: true,
+      },
+      {
+        id: "certificate",
+        label: "Certificate",
+        forWho:
+          "Add-on to any seat: a Certificate of Completion carrying a unique ID.",
+        priceInr: 500,
+        href: null,
+        addOn: true,
+      },
+    ],
+    /** The headline figure on cards is the lowest seat price. */
+    priceInr: 2499,
+    status: "Open",
+    disclaimer:
+      "Antenna 101 by Electronics 101 is an independent educational initiative, not affiliated with any institution, company, government body, PSU or defence organisation. Ansys, HFSS and SBR+ are trademarks of their respective owners.",
+  },
+  {
     slug: "rf-microwave-antenna-design",
     title: "RF & Microwave Antenna Design",
     /** The line the poster leads with. */

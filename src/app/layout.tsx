@@ -108,6 +108,11 @@ export default function RootLayout({
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        {/* Scroll reveals start hidden and are shown by JS. With scripting
+            off nothing would ever show them, so force them visible. */}
+        <noscript>
+          <style>{`.reveal-item{opacity:1;transform:none}`}</style>
+        </noscript>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}

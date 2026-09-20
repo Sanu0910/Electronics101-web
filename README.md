@@ -29,11 +29,18 @@ design, PCB and EMI/EMC, semiconductor technology and simulation.
 | **About / Contact / Feedback / Links** | `/about`, `/contact`, `/feedback`, `/links` | The platform, its forms and a curated resource hub |
 | **Legal** | `/legal/{terms,privacy,refunds}` | Policy pages |
 
-**What is real today:** the **RF & Microwave Antenna Design** workshop (dates,
-eight-module outline, seat tiers and live Razorpay payment links) and the
-external tool/learning links under **Useful Links**. Everything else carries a
-visible **Placeholder** tag and honest "Coming soon" / "Pricing on
-registration" states until the real content lands — see below.
+**What is real today:** two workshops and the external tool/learning links
+under **Useful Links**.
+
+- **RF & Microwave Antenna Design** (5–6 Dec 2026) — eight-module outline, seat
+  tiers and live Razorpay payment links.
+- **Advanced Antenna Design & EM Simulation with Ansys HFSS + SBR+**
+  (21–26 Nov 2026) — five-day intensive, day-by-day curriculum, four priced
+  tiers. Razorpay links are not created yet, so each tier offers an enquiry
+  route instead of a dead button.
+
+Everything else carries a visible **Placeholder** tag and honest "Coming soon" /
+"Pricing on registration" states until the real content lands — see below.
 
 ## Running it
 
@@ -157,9 +164,15 @@ the exact file to edit.
       empty galleries. Add real projects and images.
 - [ ] **Testimonials** — `src/content/misc.ts`: sample quotes, labelled as
       such. Real feedback from the form replaces them (subject to approval).
-- [ ] **Other workshops** — `src/content/workshops.ts`: the RF & Microwave
-      Antenna Design workshop is real; the other two are illustrative until
-      scheduled.
+- [ ] **Razorpay links for the Antenna 101 workshop** —
+      `src/content/workshops.ts`: the four tiers of
+      `advanced-antenna-design-em-simulation` have `href: null`. Add the hosted
+      payment links and the tier cards switch from "Enquire to book" to
+      "Register".
+- [ ] **Early-bird deadline** — that workshop has no `applyBy`, so the
+      countdown and the "early-bird price until …" line do not render.
+- [ ] **Other workshops** — `src/content/workshops.ts`: the two real workshops
+      are listed above; the remaining two are illustrative until scheduled.
 
 **Wiring & review:**
 
