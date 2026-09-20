@@ -172,8 +172,9 @@ the exact file to edit.
       "Register".
 - [ ] **Early-bird deadline** — that workshop has no `applyBy`, so the
       countdown and the "early-bird price until …" line do not render.
-- [ ] **Other workshops** — `src/content/workshops.ts`: the two real workshops
-      are listed above; the remaining two are illustrative until scheduled.
+- [ ] **Future workshops** — `src/content/workshops.ts` now holds only the two
+      real workshops; the illustrative entries were removed. Append a new entry
+      and its page, filters and sitemap URL follow automatically.
 
 **Wiring & review:**
 

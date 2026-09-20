@@ -279,58 +279,6 @@ export const workshops: Workshop[] = [
     instructorId: "lead",
     image: "/images/workshop-rf-antenna.jpg",
   },
-  {
-    placeholder: true,
-    slug: "smith-chart-intensive",
-    title: "The Smith Chart, Properly",
-    summary:
-      "A half-day intensive on the one tool every RF engineer is assumed to have internalised.",
-    description:
-      "Matching networks built by hand on the chart, then checked in simulation. Placeholder entry — structure and dates are illustrative.",
-    startsAt: "2026-11-08T10:00:00+05:30",
-    durationLabel: "Half day · 4 hours",
-    mode: "Live Online",
-    level: "Beginner",
-    domains: ["RF"],
-    topics: [
-      "Reading the chart",
-      "Impedance and admittance",
-      "Single-stub matching",
-      "L-network design",
-      "Verifying a match in simulation",
-    ],
-    includes: ["Live session with Q&A", "Worked problem set", "Certificate of participation"],
-    seats: 60,
-    seatsLeft: 60,
-    priceInr: null,
-    status: "Coming Soon" as Workshop["status"],
-    image: "/images/series/rf-101.jpg",
-  },
-  {
-    placeholder: true,
-    slug: "pcb-signal-integrity",
-    title: "PCB Signal Integrity for Fast Edges",
-    summary:
-      "Return paths, stack-ups and controlled impedance — with the measurements that show why they matter.",
-    description:
-      "Placeholder entry. Structure and dates are illustrative until scheduled.",
-    startsAt: "2026-11-22T10:00:00+05:30",
-    durationLabel: "1 day · 6 hours",
-    mode: "Live Online",
-    level: "Advanced",
-    domains: ["PCB", "EMI/EMC"],
-    topics: [
-      "Where return current actually flows",
-      "Stack-up choices",
-      "Controlled impedance in practice",
-      "Crosstalk and gaps in the plane",
-      "Debugging a failed scan",
-    ],
-    includes: ["Live session with Q&A", "Design checklist", "Certificate of participation"],
-    priceInr: null,
-    status: "Coming Soon" as Workshop["status"],
-    image: "/images/series/pcb-101.jpg",
-  },
 ];
 
 export const getWorkshop = (slug: string) => workshops.find((w) => w.slug === slug);
