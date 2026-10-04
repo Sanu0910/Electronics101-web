@@ -172,8 +172,10 @@ the exact file to edit.
       "Register".
 - [ ] **Early-bird deadline** — that workshop has no `applyBy`, so the
       countdown and the "early-bird price until …" line do not render.
-- [ ] **Future workshops** — `src/content/workshops.ts` now holds only the two
-      real workshops; the illustrative entries were removed. Append a new entry
+- [ ] **Future workshops** — `src/content/workshops.ts` now holds only the
+      real workshops (Antenna 101 Slot 1 and Slot 2, which share one programme
+      and one set of payment links, plus the RF & Microwave intro); the
+      illustrative entries were removed. Append a new entry
       and its page, filters and sitemap URL follow automatically.
 
 **Wiring & review:**
