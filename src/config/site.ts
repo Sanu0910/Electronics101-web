@@ -21,10 +21,10 @@ export const site = {
    * the sitemap, so it must match reality or search engines are told the
    * wrong address.
    *
-   * This is the GitHub Pages project URL. When a custom domain is connected,
-   * change this AND drop BASE_PATH from .github/workflows/deploy.yml.
+   * The custom domain, declared to GitHub Pages by public/CNAME. It is served
+   * from the root, which is why the deploy workflow sets no BASE_PATH.
    */
-  url: "https://sanu0910.github.io/Electronics101-web",
+  url: "https://electronics101.online",
   locale: "en_IN",
   /** Published on the contact page beside the form, for people who prefer email. */
   email: "rf101.sanu@gmail.com",

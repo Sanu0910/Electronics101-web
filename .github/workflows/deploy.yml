@@ -39,10 +39,9 @@ jobs:
         run: npm run lint
 
       - name: Build static site
-        env:
-          # the repository name, so asset and link paths resolve on the
-          # project-site subpath
-          BASE_PATH: /Electronics101-web
+        # No BASE_PATH: the site is served from the root of its own domain
+        # (public/CNAME), not from a /Electronics101-web subpath. Setting it
+        # here again would break every link and asset on the custom domain.
         run: npm run build
 
       - name: Disable Jekyll

@@ -3,14 +3,14 @@ import type { NextConfig } from "next";
 /**
  * Built as a fully static site so it can be served from GitHub Pages.
  *
- * GitHub Pages serves a project site from a subpath —
- * https://<user>.github.io/Electronics101-web — so `basePath` and
- * `assetPrefix` must match the repository name or every link and asset 404s.
- * Both come from one env var set in the deploy workflow, so a local
- * `npm run dev` still serves from "/" with no special handling.
+ * The site is served from the root of its own domain (public/CNAME), so
+ * BASE_PATH is unset and `basePath` is empty.
  *
- * When a custom domain is connected, drop BASE_PATH and update `site.url` in
- * src/config/site.ts.
+ * It stays configurable because a GitHub Pages PROJECT site is served from a
+ * subpath — https://<user>.github.io/Electronics101-web — where `basePath`
+ * and `assetPrefix` must equal the repository name or every link and asset
+ * 404s. Setting BASE_PATH in the deploy workflow restores that mode; leaving
+ * it unset keeps a local `npm run dev` on "/" either way.
  */
 const basePath = process.env.BASE_PATH ?? "";
 
