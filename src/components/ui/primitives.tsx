@@ -89,9 +89,9 @@ type ButtonVariant = "primary" | "secondary" | "ghost";
 type ButtonSize = "sm" | "md" | "lg";
 
 const buttonBase =
-  "inline-flex items-center justify-center gap-2 rounded-full font-semibold " +
-  "transition-[background-color,border-color,color,transform] duration-200 " +
-  "disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]";
+  "inline-flex items-center justify-center gap-2 rounded-full py-1.5 text-center " +
+  "font-semibold transition-[background-color,border-color,color,transform] " +
+  "duration-200 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]";
 
 const buttonVariants: Record<ButtonVariant, string> = {
   primary: "bg-accent text-accent-fg hover:brightness-110",
@@ -100,10 +100,16 @@ const buttonVariants: Record<ButtonVariant, string> = {
   ghost: "text-fg hover:bg-elevated",
 };
 
+/*
+ * min-height rather than height. A fixed height clips a label the moment it
+ * wraps — which it does on a narrow screen, or when the reader has scaled
+ * their font up — and a clipped button is worse than a slightly taller one.
+ * Single-line buttons are unchanged: the minimum still sets the height.
+ */
 const buttonSizes: Record<ButtonSize, string> = {
-  sm: "h-9 px-4 text-sm",
-  md: "h-11 px-6 text-sm",
-  lg: "h-13 px-8 text-base",
+  sm: "min-h-9 px-4 text-sm",
+  md: "min-h-11 px-6 text-sm",
+  lg: "min-h-13 px-8 text-base",
 };
 
 export const buttonClass = (

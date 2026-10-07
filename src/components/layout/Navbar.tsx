@@ -96,8 +96,21 @@ export function Navbar() {
 
         <div className="ml-auto flex items-center gap-2 xl:ml-0">
           <ThemeToggle />
-          <Link href="/contact" className={buttonClass("primary", "sm", "hidden sm:inline-flex")}>
-            Join Electronics 101
+          <Link
+            href="/contact"
+            className={buttonClass(
+              "primary",
+              "sm",
+              "hidden shrink-0 whitespace-nowrap sm:inline-flex",
+            )}
+          >
+            {/*
+              The full label only fits once the header is wide. Below that it
+              would wrap inside a pill the header has no room to grow, so it
+              shortens — the brand name is already in the logo beside it.
+            */}
+            <span className="lg:hidden">Join</span>
+            <span className="hidden lg:inline">Join Electronics 101</span>
           </Link>
 
           <button
