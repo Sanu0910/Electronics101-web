@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getSeries, series } from "@/content/series";
+import { allSeries, getSeries } from "@/content/series";
 import { courses } from "@/content/courses";
 import { resources } from "@/content/resources";
 import { projects } from "@/content/misc";
@@ -19,9 +19,9 @@ import { site } from "@/config/site";
 
 type Params = { params: Promise<{ slug: string }> };
 
-/** Pre-render every series — there are eleven and they never change per request. */
+/** Pre-render every series — tracks and channel series — they never change per request. */
 export function generateStaticParams() {
-  return series.map((s) => ({ slug: s.slug }));
+  return allSeries.map((s) => ({ slug: s.slug }));
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
@@ -117,7 +117,11 @@ export default async function SeriesDetailPage({ params }: Params) {
           <SectionHead
             eyebrow="Episodes"
             title="What this series covers"
-            lead={`${item.topics.length} topics. Each one is an episode with its own worked examples.`}
+            lead={
+              item.kind === "channel"
+                ? `${item.topics.length} episodes made so far${item.episodeCount ? `, ${item.episodeCount} of them published` : ""}. A tick marks the ones already on YouTube.`
+                : `${item.topics.length} topics. Each one is an episode with its own worked examples.`
+            }
           />
 
           <ol className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -128,12 +132,25 @@ export default async function SeriesDetailPage({ params }: Params) {
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <span className="min-w-0 font-medium">{topic.title}</span>
+                  {topic.done ? (
+                    <span className="ml-auto shrink-0 text-sm font-semibold text-accent" title="Published">
+                      ✓<span className="sr-only"> published</span>
+                    </span>
+                  ) : null}
                 </Card>
               </li>
             ))}
           </ol>
 
-          {!item.episodeCount ? (
+          {item.kind === "channel" ? (
+            <p className="mt-8 max-w-2xl text-sm text-faint">
+              Watch them on{" "}
+              <a className="font-semibold text-accent hover:underline" href="https://www.youtube.com/@electroniz101">
+                the Electronics 101 YouTube channel
+              </a>
+              . Episodes without a tick are finished and queued for release.
+            </p>
+          ) : !item.episodeCount ? (
             <p className="mt-8 max-w-2xl text-sm text-faint">
               Episode releases are announced on the community channels first. The
               topic list above is the committed scope for this series.

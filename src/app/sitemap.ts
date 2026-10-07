@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { site } from "@/config/site";
-import { series } from "@/content/series";
+import { allSeries } from "@/content/series";
 import { courses } from "@/content/courses";
 import { workshops } from "@/content/workshops";
 import { blogPosts } from "@/content/misc";
@@ -40,7 +40,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const dynamic = [
-    ...series.map((s) => `/series/${s.slug}`),
+    ...allSeries.map((s) => `/series/${s.slug}`),
     ...courses.map((c) => `/courses/${c.slug}`),
     ...workshops.map((w) => `/workshops/${w.slug}`),
     ...blogPosts.map((p) => `/blog/${p.slug}`),

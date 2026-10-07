@@ -52,7 +52,8 @@ export function SeriesCard({ item }: { item: Series }) {
         </h3>
         <p className="mt-2 line-clamp-3 flex-1 text-sm text-muted">{item.description}</p>
         <p className="mt-4 text-sm font-semibold text-accent">
-          {item.topics.length} topics <span aria-hidden="true">→</span>
+          {item.topics.length} {item.kind === "channel" ? "episodes" : "topics"}{" "}
+          <span aria-hidden="true">→</span>
         </p>
       </div>
     </Card>

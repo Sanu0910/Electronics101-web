@@ -1,4 +1,5 @@
 import type { Series } from "./types";
+import { channelSeries } from "./channel-series";
 
 /**
  * The eleven learning series. Topic lists are the ones that define each
@@ -249,7 +250,6 @@ export const series: Series[] = [
       "Embedded from the hardware side — buses on a scope, ADC front-ends that actually settle, RF interfaces, and debugging a board that will not enumerate.",
     domains: ["Embedded", "Electronics"],
     level: "Intermediate",
-    image: "/images/series/embedded-101.jpg",
     topics: [
       { title: "Microcontrollers" },
       { title: "STM32" },
@@ -273,7 +273,6 @@ export const series: Series[] = [
       "Where machine learning genuinely helps an electronics engineer — surrogate models for EM simulation, optimisation loops, and the Python to run them.",
     domains: ["AI", "Simulation"],
     level: "Advanced",
-    image: "/images/series/ai-electronics.jpg",
     topics: [
       { title: "AI for Circuit Design" },
       { title: "AI for RF Design" },
@@ -287,7 +286,12 @@ export const series: Series[] = [
   },
 ];
 
-export const getSeries = (slug: string) => series.find((s) => s.slug === slug);
+/** The learning tracks above plus the series running on the channel. */
+export const allSeries: Series[] = [...series, ...channelSeries];
+
+export { channelSeries };
+
+export const getSeries = (slug: string) => allSeries.find((s) => s.slug === slug);
 
 /** The "What We Teach" grid on the home page. */
 export const teachingAreas = [

@@ -34,6 +34,12 @@ export type Placeholder = {
 export type SeriesTopic = { title: string; done?: boolean };
 
 export type Series = Placeholder & {
+  /**
+   * "track" (the default) is a planned learning path whose topics are its
+   * syllabus. "channel" is a series as it runs on YouTube: its topics are the
+   * real episodes, and `done` marks the ones already published.
+   */
+  kind?: "track" | "channel";
   slug: string;
   /** "Series 01" — display order is taken from this, not array position. */
   index: number;
