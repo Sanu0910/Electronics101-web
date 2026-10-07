@@ -135,8 +135,9 @@ the exact file to edit.
 
 - [x] **Social links** — YouTube, Instagram, LinkedIn and Facebook are wired up
       in `src/config/site.ts` and also feed the site-wide `sameAs` JSON-LD.
-- [ ] **WhatsApp community** — still `null` in `src/config/site.ts`; renders as
-      "Link coming soon" until a join link is added.
+- [x] **WhatsApp community** — join link wired up. It carries
+      `profile: false`, which keeps an invite code out of the `sameAs` JSON-LD
+      while still rendering everywhere the other socials do.
 - [x] **Contact email** — published on the contact page from `site.email`.
 - [x] **Instructor profile** — real credentials and biography in
       `src/content/misc.ts`, rendered on the workshop page.

@@ -102,6 +102,13 @@ export type SocialLink = {
   href: string | null;
   blurb: string;
   cta: string;
+  /**
+   * False for a link that lets people in somewhere rather than identifying
+   * the organisation — a group invite, not a profile. Those are kept out of
+   * the sameAs JSON-LD, which is meant for stable identity URLs and not for
+   * an invite code that can be rotated or revoked.
+   */
+  profile?: boolean;
 };
 
 export const socials: SocialLink[] = [
@@ -140,10 +147,12 @@ export const socials: SocialLink[] = [
   {
     id: "whatsapp",
     label: "WhatsApp Community",
+    /* A group invite has no public handle, so there is none to show. */
     handle: null,
-    href: null,
+    href: "https://chat.whatsapp.com/KiwSEsCa7IM2VqaY4TwX33",
     blurb: "Doubt-solving, resource drops and workshop reminders.",
     cta: "Join",
+    profile: false,
   },
 ];
 

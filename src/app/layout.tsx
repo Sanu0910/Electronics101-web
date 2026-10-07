@@ -96,6 +96,7 @@ export default function RootLayout({
     // Social profiles, so search engines can tie the site to its accounts.
     // Derived from the socials config, so it only ever lists live links.
     sameAs: socials
+      .filter((s) => s.profile !== false)
       .map((s) => s.href)
       .filter((href): href is string => href !== null),
   };
