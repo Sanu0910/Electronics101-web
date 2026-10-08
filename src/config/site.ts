@@ -46,6 +46,7 @@ export const mainNav: NavItem[] = [
   { label: "Services", href: "/services", blurb: "Design, simulation and training" },
   { label: "Mentorship", href: "/mentorship", blurb: "One-to-one and project guidance" },
   { label: "Projects", href: "/projects", blurb: "What has been built and measured" },
+  { label: "Jobs", href: "/jobs", blurb: "RF pay, skills and open roles" },
   { label: "Blog", href: "/blog", blurb: "Technical articles" },
   { label: "About", href: "/about", blurb: "What this platform is" },
 ];
@@ -68,6 +69,7 @@ export const footerNav: { title: string; items: NavItem[] }[] = [
       { label: "Services", href: "/services" },
       { label: "Mentorship", href: "/mentorship" },
       { label: "Projects", href: "/projects" },
+      { label: "RF Jobs", href: "/jobs" },
       { label: "Contact", href: "/contact" },
     ],
   },
