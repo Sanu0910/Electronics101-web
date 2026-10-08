@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Filter Designer · Electronics 101</title>
+<meta name="description" content="Design low-pass, high-pass, band-pass and band-stop LC ladder filters in the browser: element values, response, group delay, and SPICE, Touchstone and CSV export. A free Electronics 101 tool."/>
+<link rel="canonical" href="https://electronics101.online/tools/filter-designer/"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg:       #050A0F;
+    --surface:  #0C1420;
+    --surface2: #111D2E;
+    --border:   #1A2D45;
+    --cyan:     #00C8FF;
+    --orange:   #FF6B35;
+    --cyan-dim: rgba(0,200,255,0.12);
+    --orange-dim:rgba(255,107,53,0.12);
+    --text:     #E0EAF4;
+    --muted:    #5A7A9A;
+    --green:    #00E5A0;
+    --red:      #FF4466;
+    --font-head:'Orbitron', sans-serif;
+    --font-body:'Inter', sans-serif;
+    --radius:   10px;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@300;400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 14px;
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 28px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top:0; z-index:100;
+  }
+  .logo { display:flex; align-items:center; gap:10px; }
+  .logo-mark {
+    width:36px; height:36px; border-radius:8px;
+    background: linear-gradient(135deg,var(--cyan),var(--orange));
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-head); font-size:11px; font-weight:900;
+    color:#000; letter-spacing:0.5px;
+  }
+  .logo-text { font-family:var(--font-head); font-size:13px; font-weight:700; letter-spacing:2px; }
+  .logo-text span { color:var(--cyan); }
+  .logo-sub { font-size:10px; color:var(--muted); letter-spacing:1px; margin-top:1px; }
+  .header-right { display:flex; align-items:center; gap:16px; }
+  .ver-badge {
+    font-size:10px; padding:3px 8px; border-radius:20px;
+    border:1px solid var(--border); color:var(--muted);
+    font-family:var(--font-head); letter-spacing:1px;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg,var(--cyan),#0090CC);
+    color:#000; border:none; border-radius:6px;
+    padding:8px 18px; font-family:var(--font-head);
+    font-size:10px; font-weight:700; letter-spacing:1px;
+    cursor:pointer; transition: opacity .2s, transform .1s;
+  }
+  .btn-primary:hover { opacity:.85; transform:translateY(-1px); }
+  .btn-secondary {
+    background:transparent; color:var(--cyan);
+    border:1px solid var(--cyan); border-radius:6px;
+    padding:7px 16px; font-family:var(--font-head);
+    font-size:10px; letter-spacing:1px; cursor:pointer;
+    transition: background .2s;
+  }
+  .btn-secondary:hover { background:var(--cyan-dim); }
+
+  /* ── LAYOUT ── */
+  .app { display:grid; grid-template-columns:340px 1fr; min-height:calc(100vh - 61px); }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    background:var(--surface); border-right:1px solid var(--border);
+    overflow-y:auto; padding: 20px 18px;
+    display:flex; flex-direction:column; gap:18px;
+  }
+  .panel-title {
+    font-family:var(--font-head); font-size:9px; font-weight:700;
+    letter-spacing:2.5px; color:var(--muted); text-transform:uppercase;
+    padding-bottom:10px; border-bottom:1px solid var(--border);
+    margin-bottom:4px;
+  }
+  .section { display:flex; flex-direction:column; gap:10px; }
+
+  /* FILTER TYPE GRID */
+  .type-grid { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+  .type-btn {
+    background:var(--surface2); border:1px solid var(--border);
+    color:var(--text); border-radius:var(--radius);
+    padding:10px 8px; cursor:pointer; text-align:center;
+    transition: all .2s; font-size:12px;
+  }
+  .type-btn .ico { font-size:18px; display:block; margin-bottom:4px; }
+  .type-btn:hover { border-color:var(--cyan); color:var(--cyan); }
+  .type-btn.active {
+    border-color:var(--cyan); background:var(--cyan-dim);
+    color:var(--cyan); box-shadow:0 0 12px rgba(0,200,255,.15);
+  }
+
+  /* RESPONSE TYPE */
+  .resp-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:5px; }
+  .resp-btn {
+    background:var(--surface2); border:1px solid var(--border);
+    color:var(--muted); border-radius:6px;
+    padding:7px 4px; cursor:pointer; text-align:center;
+    font-size:10px; font-family:var(--font-head); letter-spacing:.5px;
+    transition: all .2s;
+  }
+  .resp-btn:hover { border-color:var(--orange); color:var(--orange); }
+  .resp-btn.active {
+    border-color:var(--orange); background:var(--orange-dim);
+    color:var(--orange);
+  }
+
+  /* FORM FIELDS */
+  .field { display:flex; flex-direction:column; gap:5px; }
+  .field label {
+    font-size:11px; color:var(--muted); letter-spacing:.5px;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .field label .unit {
+    font-family:var(--font-head); font-size:9px; color:var(--cyan);
+    background:var(--cyan-dim); padding:2px 6px; border-radius:4px;
+  }
+  .field input, .field select {
+    background:var(--surface2); border:1px solid var(--border);
+    color:var(--text); border-radius:6px;
+    padding:9px 12px; font-size:13px; font-family:var(--font-body);
+    transition: border-color .2s; outline:none; width:100%;
+  }
+  .field input:focus, .field select:focus { border-color:var(--cyan); }
+  .field input[type=range] {
+    padding:0; height:4px; accent-color:var(--cyan); border:none;
+    background:transparent; cursor:pointer;
+  }
+  .range-row { display:flex; align-items:center; gap:10px; }
+  .range-val {
+    font-family:var(--font-head); font-size:11px; color:var(--cyan);
+    min-width:32px; text-align:right;
+  }
+
+  /* TOPOLOGY PREVIEW */
+  .topo-box {
+    background:var(--surface2); border:1px solid var(--border);
+    border-radius:var(--radius); padding:12px;
+    text-align:center; position:relative; overflow:hidden;
+  }
+  .topo-box canvas { width:100% !important; height:80px !important; }
+  .topo-label {
+    font-size:10px; color:var(--muted); margin-top:6px;
+    font-family:var(--font-head); letter-spacing:1px;
+  }
+
+  /* COMPUTE BUTTON */
+  .compute-btn {
+    width:100%; padding:14px;
+    background: linear-gradient(135deg,var(--cyan),#0090CC);
+    color:#000; border:none; border-radius:var(--radius);
+    font-family:var(--font-head); font-size:12px; font-weight:700;
+    letter-spacing:2px; cursor:pointer;
+    transition: opacity .2s, transform .1s;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .compute-btn:hover { opacity:.85; transform:translateY(-1px); }
+  .compute-btn:active { transform:translateY(0); }
+
+  /* ── MAIN PANEL ── */
+  .main { display:flex; flex-direction:column; overflow:hidden; }
+
+  /* TABS */
+  .tab-bar {
+    display:flex; background:var(--surface); border-bottom:1px solid var(--border);
+    padding:0 20px; gap:2px;
+  }
+  .tab {
+    padding:14px 20px; font-size:11px; font-family:var(--font-head);
+    letter-spacing:1px; color:var(--muted); cursor:pointer;
+    border-bottom:2px solid transparent; transition: all .2s;
+    white-space:nowrap;
+  }
+  .tab:hover { color:var(--text); }
+  .tab.active { color:var(--cyan); border-bottom-color:var(--cyan); }
+
+  /* CONTENT AREA */
+  .content { flex:1; padding:20px; overflow-y:auto; display:flex; flex-direction:column; gap:20px; }
+
+  /* CHARTS GRID */
+  .charts-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .chart-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--radius); padding:16px;
+  }
+  .chart-card.full { grid-column:1/-1; }
+  .chart-title {
+    font-family:var(--font-head); font-size:9px; letter-spacing:2px;
+    color:var(--muted); margin-bottom:12px;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .chart-title .badge {
+    padding:2px 8px; border-radius:20px; font-size:9px;
+    background:var(--cyan-dim); color:var(--cyan); border:1px solid rgba(0,200,255,.3);
+  }
+  .chart-wrap { position:relative; height:220px; }
+
+  /* RESULTS TABLE */
+  .results-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; }
+  .metric-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--radius); padding:14px 16px;
+  }
+  .metric-label { font-size:10px; color:var(--muted); margin-bottom:4px; }
+  .metric-value { font-family:var(--font-head); font-size:18px; color:var(--cyan); font-weight:700; }
+  .metric-unit { font-size:10px; color:var(--muted); margin-left:3px; }
+
+  /* ELEMENTS TABLE */
+  .el-table { width:100%; border-collapse:collapse; font-size:12px; }
+  .el-table th {
+    background:var(--surface2); padding:10px 14px; text-align:left;
+    font-family:var(--font-head); font-size:9px; letter-spacing:1.5px;
+    color:var(--muted); border-bottom:1px solid var(--border);
+  }
+  .el-table td {
+    padding:10px 14px; border-bottom:1px solid rgba(26,45,69,.5);
+    font-family:var(--font-head); font-size:11px;
+  }
+  .el-table tr:last-child td { border-bottom:none; }
+  .el-table .type-L { color:var(--orange); }
+  .el-table .type-C { color:var(--cyan); }
+  .el-table .type-R { color:var(--green); }
+
+  /* EMPTY STATE */
+  .empty-state {
+    flex:1; display:flex; flex-direction:column; align-items:center;
+    justify-content:center; gap:16px; color:var(--muted); text-align:center;
+    padding:40px;
+  }
+  .empty-icon { font-size:56px; opacity:.3; }
+  .empty-title { font-family:var(--font-head); font-size:14px; letter-spacing:2px; color:var(--muted); }
+  .empty-sub { font-size:12px; max-width:320px; line-height:1.7; }
+
+  /* SMITHCHART placeholder */
+  .smith-wrap { position:relative; height:280px; display:flex; align-items:center; justify-content:center; }
+  .smith-svg { width:100%; height:100%; max-width:280px; margin:auto; }
+
+  /* EXPORT ROW */
+  .export-row { display:flex; gap:10px; flex-wrap:wrap; }
+  .export-btn {
+    background:var(--surface2); border:1px solid var(--border);
+    color:var(--text); border-radius:6px; padding:8px 16px;
+    font-size:11px; cursor:pointer; font-family:var(--font-head);
+    letter-spacing:1px; transition: all .2s; display:flex; align-items:center; gap:6px;
+  }
+  .export-btn:hover { border-color:var(--cyan); color:var(--cyan); }
+
+  /* STATUS BAR */
+  .status-bar {
+    background:var(--surface); border-top:1px solid var(--border);
+    padding:8px 20px; display:flex; gap:24px; font-size:11px; color:var(--muted);
+  }
+  .status-item { display:flex; align-items:center; gap:6px; }
+  .status-dot { width:6px; height:6px; border-radius:50%; background:var(--green); }
+  .status-dot.warn { background:var(--orange); }
+
+  /* TOAST */
+  #toast {
+    position:fixed; bottom:24px; right:24px; z-index:999;
+    background:var(--surface); border:1px solid var(--cyan);
+    border-radius:var(--radius); padding:12px 20px;
+    font-size:12px; color:var(--cyan); font-family:var(--font-head);
+    letter-spacing:1px; opacity:0; transform:translateY(12px);
+    transition: all .3s; pointer-events:none;
+  }
+  #toast.show { opacity:1; transform:translateY(0); }
+
+  /* TAB PANELS */
+  .tab-panel { display:none; }
+  .tab-panel.active { display:flex; flex-direction:column; gap:20px; }
+
+  /* RESPONSIVE */
+  @media(max-width:900px) {
+    .app { grid-template-columns:1fr; }
+    .sidebar { border-right:none; border-bottom:1px solid var(--border); }
+    .charts-grid { grid-template-columns:1fr; }
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width:5px; height:5px; }
+  ::-webkit-scrollbar-track { background:var(--bg); }
+  ::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+  ::-webkit-scrollbar-thumb:hover { background:var(--muted); }
+
+  /* Glow effect on active compute */
+  .computing { animation: glowPulse 0.8s ease-in-out; }
+  @keyframes glowPulse {
+    0% { box-shadow:0 0 0 rgba(0,200,255,0); }
+    50% { box-shadow:0 0 30px rgba(0,200,255,.3); }
+    100% { box-shadow:0 0 0 rgba(0,200,255,0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-mark">RF</div>
+    <div>
+      <div class="logo-text"><span>ELECTRONICS 101</span> · FILTER DESIGNER</div>
+      <div class="logo-sub">BY SANU · OPEN SOURCE INITIATIVE</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="ver-badge">v1.0.0</span>
+    <button class="btn-secondary" onclick="exportNetlist()">⬇ SPICE</button>
+    <a class="btn-primary" href="../" style="text-decoration:none">← ALL TOOLS</a>
+  </div>
+</header>
+
+<!-- APP GRID -->
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- FILTER TYPE -->
+    <div class="section">
+      <div class="panel-title">Filter Topology</div>
+      <div class="type-grid">
+        <button class="type-btn active" onclick="setType('LP',this)">
+          <span class="ico">⬇</span>Low-Pass
+        </button>
+        <button class="type-btn" onclick="setType('HP',this)">
+          <span class="ico">⬆</span>High-Pass
+        </button>
+        <button class="type-btn" onclick="setType('BP',this)">
+          <span class="ico">↔</span>Band-Pass
+        </button>
+        <button class="type-btn" onclick="setType('BS',this)">
+          <span class="ico">⛔</span>Band-Stop
+        </button>
+      </div>
+    </div>
+
+    <!-- RESPONSE TYPE -->
+    <div class="section">
+      <div class="panel-title">Response Type</div>
+      <div class="resp-grid">
+        <button class="resp-btn active" onclick="setResp('BT',this)">BUTTER</button>
+        <button class="resp-btn" onclick="setResp('CH',this)">CHEBY</button>
+        <button class="resp-btn" onclick="setResp('BS',this)">BESSEL</button>
+      </div>
+      <!-- Ripple (shown for Cheby/Ellip) -->
+      <div class="field" id="rippleField" style="display:none;">
+        <label>Passband Ripple <span class="unit">dB</span></label>
+        <div class="range-row">
+          <input type="range" min="0.01" max="3" step="0.01" value="0.5" id="rippleRange"
+            oninput="document.getElementById('rippleVal').textContent=this.value;"/>
+          <span class="range-val" id="rippleVal">0.5</span>
+        </div>
+      </div>
+      <div class="field" id="stopRippleField" style="display:none;">
+        <label>Stopband Attenuation <span class="unit">dB</span></label>
+        <div class="range-row">
+          <input type="range" min="20" max="100" step="1" value="40" id="stopRange"
+            oninput="document.getElementById('stopVal').textContent=this.value;"/>
+          <span class="range-val" id="stopVal">40</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SPECIFICATIONS -->
+    <div class="section">
+      <div class="panel-title">Specifications</div>
+      <div class="field" id="fcField">
+        <label>Cutoff Frequency <span class="unit">MHz</span></label>
+        <input type="number" id="fc" value="1000" min="0.001" step="any"/>
+      </div>
+      <div class="field" id="fbwField" style="display:none;">
+        <label>Bandwidth <span class="unit">MHz</span></label>
+        <input type="number" id="fbw" value="200" min="1" step="any"/>
+      </div>
+      <div class="field">
+        <label>Filter Order
+          <span class="unit" id="orderBadge">N=5</span>
+        </label>
+        <div class="range-row">
+          <input type="range" min="1" max="10" step="1" value="5" id="orderRange"
+            oninput="syncOrder(this.value)"/>
+          <span class="range-val" id="orderVal">5</span>
+        </div>
+      </div>
+      <div class="field">
+        <label>Source Impedance <span class="unit">Ω</span></label>
+        <input type="number" id="rs" value="50" min="1"/>
+      </div>
+      <div class="field">
+        <label>Load Impedance · set by the design <span class="unit">Ω</span></label>
+        <input type="number" id="rl" value="50" min="1" readonly/>
+      </div>
+    </div>
+
+    <!-- TOPOLOGY SVG PREVIEW -->
+    <div class="section">
+      <div class="panel-title">Circuit Preview</div>
+      <div class="topo-box">
+        <canvas id="topoCanvas" width="300" height="80"></canvas>
+        <div class="topo-label" id="topoLabel">BUTTERWORTH LPF · N=5 · LADDER</div>
+      </div>
+    </div>
+
+    <!-- COMPUTE -->
+    <button class="compute-btn" id="computeBtn" onclick="compute()">
+      ⚡ DESIGN FILTER
+    </button>
+
+  </div><!-- /sidebar -->
+
+  <!-- MAIN -->
+  <div class="main">
+    <!-- TAB BAR -->
+    <div class="tab-bar">
+      <div class="tab active" onclick="switchTab('response',this)">Response</div>
+      <div class="tab" onclick="switchTab('elements',this)">Elements</div>
+      <div class="tab" onclick="switchTab('smith',this)">Smith Chart</div>
+      <div class="tab" onclick="switchTab('group',this)">Group Delay</div>
+      <div class="tab" onclick="switchTab('export',this)">Export</div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- RESPONSE TAB -->
+      <div id="tab-response" class="tab-panel active">
+        <div id="metricsRow" class="results-grid" style="display:none;">
+          <div class="metric-card">
+            <div class="metric-label">Cutoff Frequency</div>
+            <div class="metric-value" id="m-fc">—<span class="metric-unit">MHz</span></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">-3 dB Bandwidth</div>
+            <div class="metric-value" id="m-bw">—<span class="metric-unit">MHz</span></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Stopband Atten.</div>
+            <div class="metric-value" id="m-atten">—<span class="metric-unit">dB</span></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Group Delay (fc)</div>
+            <div class="metric-value" id="m-gd">—<span class="metric-unit">ns</span></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Phase @ fc</div>
+            <div class="metric-value" id="m-phase">—<span class="metric-unit">°</span></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">S11 @ fc (match)</div>
+            <div class="metric-value" id="m-il">—<span class="metric-unit">dB</span></div>
+          </div>
+        </div>
+        <div class="chart-card full">
+          <div class="chart-title">
+            S21 · TRANSMISSION RESPONSE
+            <span class="badge" id="respBadge">—</span>
+          </div>
+          <div class="chart-wrap"><canvas id="chartS21"></canvas></div>
+        </div>
+        <div class="charts-grid">
+          <div class="chart-card">
+            <div class="chart-title">S11 · REFLECTION (dB) — 0 dB = total reflection</div>
+            <div class="chart-wrap"><canvas id="chartS11"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-title">PHASE RESPONSE</div>
+            <div class="chart-wrap"><canvas id="chartPhase"></canvas></div>
+          </div>
+        </div>
+        <!-- EMPTY STATE shown until computed -->
+        <div class="empty-state" id="emptyState">
+          <div class="empty-icon">📡</div>
+          <div class="empty-title">NO DESIGN YET</div>
+          <div class="empty-sub">Set your specs on the left and click <strong>DESIGN FILTER</strong> to compute the response, element values, and Smith Chart.</div>
+        </div>
+      </div>
+
+      <!-- ELEMENTS TAB -->
+      <div id="tab-elements" class="tab-panel">
+        <div class="chart-card">
+          <div class="chart-title">ELEMENT VALUES · PROTOTYPE (normalised to 1 Ω · 1 rad/s)</div>
+          <div id="elTableWrap">
+            <div class="empty-state" style="padding:30px;">
+              <div class="empty-title">COMPUTE FIRST</div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">SCALED ELEMENT VALUES · ACTUAL CIRCUIT</div>
+          <div id="scaledTableWrap">
+            <div class="empty-state" style="padding:30px;">
+              <div class="empty-title">COMPUTE FIRST</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SMITH CHART TAB -->
+      <div id="tab-smith" class="tab-panel">
+        <div class="chart-card full">
+          <div class="chart-title">SMITH CHART · S11 LOCUS</div>
+          <div class="smith-wrap">
+            <svg class="smith-svg" id="smithSvg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+              <!-- Static Smith Chart grid -->
+              <circle cx="200" cy="200" r="190" fill="none" stroke="#1A2D45" stroke-width="1.5"/>
+              <!-- r=0 circle (outer) -->
+              <circle cx="200" cy="200" r="190" fill="none" stroke="#1A2D45" stroke-width="1"/>
+              <!-- r=1 circle -->
+              <circle cx="295" cy="200" r="95" fill="none" stroke="#1A2D45" stroke-width="1"/>
+              <!-- r=0.5 -->
+              <circle cx="263" cy="200" r="127" fill="none" stroke="#1A2D45" stroke-width="0.7"/>
+              <!-- r=2 -->
+              <circle cx="325" cy="200" r="65" fill="none" stroke="#1A2D45" stroke-width="0.7"/>
+              <!-- imaginary circles -->
+              <circle cx="200" cy="105" r="95" fill="none" stroke="#1A2D45" stroke-width="0.7"/>
+              <circle cx="200" cy="295" r="95" fill="none" stroke="#1A2D45" stroke-width="0.7"/>
+              <circle cx="200" cy="58"  r="142" fill="none" stroke="#1A2D45" stroke-width="0.5"/>
+              <circle cx="200" cy="342" r="142" fill="none" stroke="#1A2D45" stroke-width="0.5"/>
+              <!-- horizontal axis -->
+              <line x1="10" y1="200" x2="390" y2="200" stroke="#1A2D45" stroke-width="1"/>
+              <!-- Labels -->
+              <text x="200" y="396" fill="#5A7A9A" font-size="9" text-anchor="middle" font-family="Orbitron">∞</text>
+              <text x="15"  y="204" fill="#5A7A9A" font-size="9" text-anchor="middle" font-family="Orbitron">-1</text>
+              <text x="200" y="196" fill="#5A7A9A" font-size="8" text-anchor="middle" font-family="Orbitron" dy="-4">0</text>
+              <text x="295" y="196" fill="#5A7A9A" font-size="8" text-anchor="middle" font-family="Orbitron" dy="-4">1</text>
+              <!-- Locus path -->
+              <path id="smithLocus" d="" fill="none" stroke="#00C8FF" stroke-width="2"/>
+              <!-- Start/end markers -->
+              <circle id="smithStart" cx="0" cy="0" r="5" fill="#00E5A0" opacity="0"/>
+              <circle id="smithEnd"   cx="0" cy="0" r="5" fill="#FF4466" opacity="0"/>
+              <!-- Center cross -->
+              <circle cx="200" cy="200" r="4" fill="none" stroke="#FF6B35" stroke-width="1.5"/>
+            </svg>
+          </div>
+          <div style="display:flex;justify-content:center;gap:20px;margin-top:8px;font-size:11px;font-family:var(--font-head);letter-spacing:1px;">
+            <span style="color:var(--green)">● START (DC)</span>
+            <span style="color:var(--cyan)">── S11 LOCUS</span>
+            <span style="color:var(--red)">● END (fmax)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- GROUP DELAY TAB -->
+      <div id="tab-group" class="tab-panel">
+        <div class="chart-card full">
+          <div class="chart-title">GROUP DELAY</div>
+          <div class="chart-wrap"><canvas id="chartGD"></canvas></div>
+        </div>
+      </div>
+
+      <!-- EXPORT TAB -->
+      <div id="tab-export" class="tab-panel">
+        <div class="chart-card">
+          <div class="chart-title">EXPORT OPTIONS</div>
+          <div class="export-row" style="margin-top:8px;">
+            <button class="export-btn" onclick="exportNetlist()">📄 SPICE Netlist</button>
+            <button class="export-btn" onclick="exportCSV()">📊 CSV Data</button>
+            <button class="export-btn" onclick="exportTouchstone()">📡 Touchstone S2P</button>
+            <button class="export-btn" onclick="exportADS()">⚡ ADS Schematic</button>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">SPICE NETLIST PREVIEW</div>
+          <pre id="spicePreview" style="font-size:11px;color:var(--cyan);line-height:1.7;overflow:auto;max-height:300px;background:var(--surface2);padding:16px;border-radius:8px;">* Compute filter first</pre>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">TOUCHSTONE (.S2P) PREVIEW</div>
+          <pre id="s2pPreview" style="font-size:11px;color:var(--orange);line-height:1.7;overflow:auto;max-height:200px;background:var(--surface2);padding:16px;border-radius:8px;">* Compute filter first</pre>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+
+    <!-- STATUS BAR -->
+    <div class="status-bar">
+      <div class="status-item"><div class="status-dot" id="statusDot"></div><span id="statusText">Ready — click DESIGN FILTER</span></div>
+      <div class="status-item">TYPE: <strong id="sbType" style="color:var(--cyan)">LP</strong></div>
+      <div class="status-item">RESP: <strong id="sbResp" style="color:var(--orange)">BUTTERWORTH</strong></div>
+      <div class="status-item">N: <strong id="sbOrder" style="color:var(--text)">5</strong></div>
+      <div class="status-item">fc: <strong id="sbFc" style="color:var(--text)">1000 MHz</strong></div>
+    </div>
+  </div><!-- /main -->
+
+</div><!-- /app -->
+
+<!-- TOAST -->
+<div id="toast">★ Action complete</div>
+
+<script>
+// ═══════════════════════════════════════════
+//   STATE
+// ═══════════════════════════════════════════
+let state = {
+  type: 'LP', resp: 'BT', N: 5,
+  fc: 1000, fbw: 200, rs: 50, rl: 50,
+  ripple: 0.5, stopAtten: 40
+};
+let computed = null;
+let charts = {};
+
+// ═══════════════════════════════════════════
+//   UI HELPERS
+// ═══════════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2800);
+}
+
+function setType(t, el) {
+  state.type = t;
+  document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('fbwField').style.display = (t==='BP'||t==='BS') ? '' : 'none';
+  document.getElementById('fcField').querySelector('label').childNodes[0].nodeValue =
+    (t==='BP'||t==='BS') ? 'Center Frequency ' : 'Cutoff Frequency ';
+  document.getElementById('sbType').textContent = t;
+  updateTopoPreview();
+  updateTopoLabel();
+}
+
+function setResp(r, el) {
+  state.resp = r;
+  document.querySelectorAll('.resp-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('rippleField').style.display = (r==='CH'||r==='EL') ? '' : 'none';
+  document.getElementById('stopRippleField').style.display = (r==='EL') ? '' : 'none';
+  document.getElementById('sbResp').textContent = {BT:'BUTTERWORTH',CH:'CHEBYSHEV',EL:'ELLIPTIC',BS:'BESSEL'}[r];
+  updateTopoLabel();
+}
+
+function syncOrder(v) {
+  state.N = parseInt(v);
+  document.getElementById('orderVal').textContent = v;
+  document.getElementById('orderBadge').textContent = 'N='+v;
+  document.getElementById('sbOrder').textContent = v;
+  updateTopoPreview();
+  updateTopoLabel();
+}
+
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+}
+
+function updateTopoLabel() {
+  const labels = {BT:'BUTTERWORTH',CH:'CHEBYSHEV',EL:'ELLIPTIC',BS:'BESSEL'};
+  const types  = {LP:'LPF',HP:'HPF',BP:'BPF',BS:'BSF'};
+  document.getElementById('topoLabel').textContent =
+    `${labels[state.resp]} ${types[state.type]} · N=${state.N} · LADDER`;
+}
+
+// ═══════════════════════════════════════════
+//   TOPOLOGY CANVAS PREVIEW
+// ═══════════════════════════════════════════
+function updateTopoPreview() {
+  const cv = document.getElementById('topoCanvas');
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  ctx.clearRect(0,0,W,H);
+
+  const N = Math.min(state.N, 7);
+  const elW = (W - 60) / (N + 1);
+  const midY = H/2;
+
+  // wire color
+  ctx.strokeStyle = '#1A2D45'; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(10, midY); ctx.lineTo(W-10, midY); ctx.stroke();
+
+  // Rs
+  drawResistor(ctx, 10, midY, 28, '#00E5A0');
+  // Rl
+  drawResistor(ctx, W-28, midY, W-10, '#00E5A0');
+
+  for (let i=0; i<N; i++) {
+    const x = 35 + i * elW + elW/2;
+    const isShunt = (state.type === 'LP') ? (i%2===1) : (i%2===0);
+    if (state.type === 'LP') {
+      if (i%2===0) drawInductor(ctx, x-15, midY, x+15, '#FF6B35');
+      else drawCapShunt(ctx, x, midY, '#00C8FF');
+    } else if (state.type === 'HP') {
+      if (i%2===0) drawCapSeries(ctx, x-15, midY, x+15, '#00C8FF');
+      else drawInductorShunt(ctx, x, midY, '#FF6B35');
+    } else if (state.type === 'BP') {
+      if (i%2===0) drawLCseries(ctx, x-15, midY, x+15);
+      else drawLCshunt(ctx, x, midY);
+    } else {
+      if (i%2===0) drawLCshunt(ctx, x, midY);
+      else drawLCseries(ctx, x-15, midY, x+15);
+    }
+  }
+}
+
+function drawResistor(ctx, x1, y, x2, col) {
+  ctx.strokeStyle = col; ctx.lineWidth=1.5;
+  const dx=(x2-x1)/6;
+  ctx.beginPath(); ctx.moveTo(x1,y);
+  for(let i=0;i<6;i++) { ctx.lineTo(x1+(i+.25)*dx, y-(i%2===0?5:-5)); ctx.lineTo(x1+(i+.75)*dx, y-(i%2===0?-5:5)); }
+  ctx.lineTo(x2,y); ctx.stroke();
+}
+function drawInductor(ctx, x1, y, x2, col) {
+  ctx.strokeStyle = col; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(x1, y);
+  const n=3, r=(x2-x1)/(2*n);
+  for(let i=0;i<n;i++) {
+    ctx.arc(x1+r+2*r*i, y, r, Math.PI, 0, false);
+  }
+  ctx.lineTo(x2,y); ctx.stroke();
+}
+function drawCapSeries(ctx, x1, y, x2, col) {
+  ctx.strokeStyle = col; ctx.lineWidth=1.5;
+  const mid=(x1+x2)/2;
+  ctx.beginPath(); ctx.moveTo(x1,y); ctx.lineTo(mid-5,y); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(mid-5,y-8); ctx.lineTo(mid-5,y+8); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(mid+5,y-8); ctx.lineTo(mid+5,y+8); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(mid+5,y); ctx.lineTo(x2,y); ctx.stroke();
+}
+function drawCapShunt(ctx, x, y, col) {
+  ctx.strokeStyle = col; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y+18); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x-8,y+18); ctx.lineTo(x+8,y+18); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x-8,y+24); ctx.lineTo(x+8,y+24); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x, y+24); ctx.lineTo(x, y+32); ctx.stroke();
+  // ground
+  ctx.beginPath(); ctx.moveTo(x-5,y+32); ctx.lineTo(x+5,y+32); ctx.stroke();
+}
+function drawInductorShunt(ctx, x, y, col) {
+  ctx.strokeStyle = col; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x,y+10); ctx.stroke();
+  const n=2, r=5;
+  ctx.beginPath(); ctx.moveTo(x,y+10);
+  for(let i=0;i<n;i++) ctx.arc(x, y+10+r+2*r*i, r, -Math.PI/2, Math.PI/2, false);
+  ctx.lineTo(x,y+10+4*r+10); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x-5,y+10+4*r+12); ctx.lineTo(x+5,y+10+4*r+12); ctx.stroke();
+}
+function drawLCseries(ctx,x1,y,x2,col) {
+  ctx.strokeStyle='#FF6B35'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(x1,y); ctx.arc(x1+6,y,6,Math.PI,0); ctx.arc(x1+18,y,6,Math.PI,0); ctx.stroke();
+  drawCapSeries(ctx,x1+24,y,x2,'#00C8FF');
+}
+function drawLCshunt(ctx,x,y) {
+  ctx.strokeStyle='#FF6B35'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x,y+8);
+  ctx.arc(x,y+14,6,-Math.PI/2,Math.PI/2); ctx.stroke();
+  drawCapShunt(ctx,x,y+20,'#00C8FF');
+}
+
+// ═══════════════════════════════════════════
+//   FILTER MATH — PROTOTYPE COEFFICIENTS
+// ═══════════════════════════════════════════
+function butterworthG(N) {
+  const g = [1]; // g0
+  for (let k=1; k<=N; k++)
+    g.push(2 * Math.sin((2*k-1)*Math.PI/(2*N)));
+  g.push(1); // gN+1
+  return g;
+}
+
+function chebyshevG(N, ripple_dB) {
+  const e = Math.sqrt(Math.pow(10, ripple_dB/10) - 1);
+  const beta = Math.log(1/Math.tanh(Math.asinh(1/e)/N)); // not exact for Chebyshev, use standard coefficients
+  const g = [1];
+  // Standard Chebyshev ladder prototype
+  const eps = Math.sqrt(Math.pow(10, ripple_dB/10)-1);
+  const gamma = Math.sinh(Math.asinh(1/eps)/N);
+  const a=[], b=[];
+  for(let k=1;k<=N;k++) a.push(Math.sin((2*k-1)*Math.PI/(2*N)));
+  for(let k=1;k<N;k++) b.push(gamma*gamma + Math.pow(Math.sin(k*Math.PI/N),2));
+  g.push(2*a[0]/gamma);
+  for(let k=2;k<=N;k++) g.push(4*a[k-2]*a[k-1]/(b[k-2]*g[k-1]));
+  // Even orders need an unequal load: g(N+1) = coth²(β/4), β = ln(coth(ripple/17.37))
+  const betaL = Math.log(1/Math.tanh(ripple_dB/17.37));
+  g.push(N%2===0 ? 1/Math.pow(Math.tanh(betaL/4),2) : 1);
+  return g;
+}
+
+function besselG(N) {
+  // Bessel prototype values (tabulated, normalised to GD=1)
+  const tables = {
+    1:[1,2.0000,1],2:[1,1.5774,0.4226,1],3:[1,1.2550,0.5528,0.1922,1],
+    4:[1,1.0598,0.5116,0.3181,0.1104,1],
+    5:[1,0.9303,0.4577,0.3312,0.2090,0.0718,1],
+    6:[1,0.8377,0.4116,0.3158,0.2364,0.1480,0.0505,1],
+    7:[1,0.7677,0.3744,0.2944,0.2378,0.1778,0.1104,0.0375,1],
+    8:[1,0.7125,0.3446,0.2735,0.2297,0.1867,0.1505,0.0921,0.0312,1],
+    9:[1,0.6678,0.3203,0.2547,0.2184,0.1859,0.1594,0.1281,0.0778,0.0262,1],
+    10:[1,0.6305,0.3002,0.2384,0.2066,0.1808,0.1614,0.1380,0.1103,0.0668,0.0225,1]
+  };
+  return tables[Math.min(N,10)] || butterworthG(N);
+}
+
+function getPrototypeG(N, resp, ripple, stopA) {
+  if (resp==='BT') return butterworthG(N);
+  if (resp==='CH') return chebyshevG(N, ripple);
+  if (resp==='EL') return chebyshevG(N, ripple); // simplified: use Cheby for now
+  if (resp==='BS') return besselG(N);
+  return butterworthG(N);
+}
+
+// ═══════════════════════════════════════════
+//   SCALE ELEMENTS
+// ═══════════════════════════════════════════
+function scaleElements(g, type, fc_Hz, bw_Hz, rs, rl) {
+  const wc = 2*Math.PI*fc_Hz;
+  const wo = 2*Math.PI*fc_Hz;
+  const N = g.length - 2;
+  const elements = [];
+
+  for (let k=1; k<=N; k++) {
+    const gk = g[k];
+    const isSeries = k%2===1; // odd → series (L for LP), even → shunt (C for LP)
+
+    if (type==='LP') {
+      if (isSeries) elements.push({n:k,type:'L',proto:gk.toFixed(4),val:gk*rs/wc,unit:'H'});
+      else          elements.push({n:k,type:'C',proto:gk.toFixed(4),val:gk/(wc*rs),unit:'F'});
+    } else if (type==='HP') {
+      if (isSeries) elements.push({n:k,type:'C',proto:gk.toFixed(4),val:1/(gk*wc*rs),unit:'F'});
+      else          elements.push({n:k,type:'L',proto:gk.toFixed(4),val:rs/(gk*wc),unit:'H'});
+    } else if (type==='BP') {
+      const Bw = 2*Math.PI*bw_Hz;
+      if (isSeries) {
+        elements.push({n:k,type:'L',proto:gk.toFixed(4),val:gk*rs/Bw,unit:'H',extra:true,
+          twinType:'C',twinVal:Bw/(gk*rs*wo*wo),twinUnit:'F'});
+      } else {
+        elements.push({n:k,type:'C',proto:gk.toFixed(4),val:gk/(rs*Bw),unit:'F',extra:true,
+          twinType:'L',twinVal:Bw*rs/(gk*wo*wo),twinUnit:'H'});
+      }
+    } else if (type==='BS') {
+      const Bw = 2*Math.PI*bw_Hz;
+      if (isSeries) {
+        elements.push({n:k,type:'L',proto:gk.toFixed(4),val:gk*rs*Bw/(wo*wo),unit:'H',extra:true,
+          twinType:'C',twinVal:1/(gk*rs*Bw),twinUnit:'F'});
+      } else {
+        elements.push({n:k,type:'C',proto:gk.toFixed(4),val:gk*Bw/(rs*wo*wo),unit:'F',extra:true,
+          twinType:'L',twinVal:rs/(gk*Bw),twinUnit:'H'});
+      }
+    }
+  }
+  return elements;
+}
+
+function fmtVal(v, unit) {
+  if (unit==='H') {
+    if (v<1e-9) return (v*1e12).toFixed(3)+' pH';
+    if (v<1e-6) return (v*1e9).toFixed(3)+' nH';
+    if (v<1e-3) return (v*1e6).toFixed(3)+' µH';
+    return (v*1e3).toFixed(3)+' mH';
+  }
+  if (unit==='F') {
+    if (v<1e-12) return (v*1e15).toFixed(3)+' fF';
+    if (v<1e-9) return (v*1e12).toFixed(3)+' pF';
+    if (v<1e-6) return (v*1e9).toFixed(3)+' nF';
+    return (v*1e6).toFixed(3)+' µF';
+  }
+  return v.toExponential(3)+' '+unit;
+}
+
+// ═══════════════════════════════════════════
+//   FREQUENCY RESPONSE — FROM THE ACTUAL LADDER
+// ═══════════════════════════════════════════
+// The S-parameters are computed from the scaled L and C values themselves
+// (cascaded ABCD matrices between Rs and RL), so the plots, the Smith locus
+// and the Touchstone export all describe the circuit in the element table.
+function computeResponse(type, elements, fc, bw, rs, rl) {
+  const pts = 801;
+  const fcH = fc*1e6;
+
+  // Log sweep centred on fc, so fc itself is a sample and the "@ fc" readouts are exact
+  const span = (type==='BP'||type==='BS') ? 8 : 100;
+  const fmin = fcH / span;
+  const fmax = fcH * span;
+  const freqs = [];
+  for (let i=0;i<pts;i++) freqs.push(fmin * Math.pow(fmax/fmin, i/(pts-1)));
+
+  const S21_dB=[], S11_dB=[], S22_dB=[], S11_mag_arr=[];
+  const s21_ang=[], s11_ang=[], s22_ang=[], gd_ns=[];
+  // 1/x, capped so a branch sitting exactly on resonance stays finite through the cascade
+  const inv = x => (Math.abs(x) < 1e-12 ? 1e12 : 1/x);
+
+  freqs.forEach((f) => {
+    const w = 2*Math.PI*f;
+    // Lossless ladder: A and D stay real, B and C stay imaginary.
+    // ABCD = [[a, j·b], [j·c, d]]
+    let a=1, b=0, c=0, d=1;
+
+    elements.forEach(e => {
+      const L = e.type==='L' ? e.val : e.twinVal;
+      const C = e.type==='C' ? e.val : e.twinVal;
+      const xL = L!==undefined ? w*L : 0;        // reactance of the inductor
+      const bC = C!==undefined ? w*C : 0;        // susceptance of the capacitor
+      const series = e.n%2===1;
+
+      if (series) {
+        let X;                                    // branch impedance = jX
+        if      (type==='LP') X = xL;
+        else if (type==='HP') X = -inv(bC);
+        else if (type==='BP') X = xL - inv(bC);   // L and C in series
+        else                  X = inv(inv(xL) - bC); // L and C in parallel
+        b = a*X + b;
+        d = d - c*X;
+      } else {
+        let B;                                    // branch admittance = jB
+        if      (type==='LP') B = bC;
+        else if (type==='HP') B = -inv(xL);
+        else if (type==='BP') B = bC - inv(xL);   // L and C in parallel
+        else                  B = -inv(xL - inv(bC)); // L and C in series
+        a = a - b*B;
+        c = c + d*B;
+      }
+    });
+
+    const dRe = a*rl + d*rs, dIm = b + c*rs*rl;
+    const dMag2 = dRe*dRe + dIm*dIm;
+    const n11Re = a*rl - d*rs, n11Im = b - c*rs*rl;
+    const n22Re = d*rs - a*rl;                    // imaginary part is the same as S11's
+
+    const s21mag = 2*Math.sqrt(rs*rl)/Math.sqrt(dMag2);
+    const s11mag = Math.sqrt((n11Re*n11Re + n11Im*n11Im)/dMag2);
+
+    S21_dB.push(20*Math.log10(Math.max(s21mag, 1e-12)));
+    S11_dB.push(20*Math.log10(Math.max(s11mag, 1e-12)));
+    S22_dB.push(S11_dB[S11_dB.length-1]);         // lossless two-port: |S22| = |S11|
+    S11_mag_arr.push(Math.min(s11mag, 1));
+    s21_ang.push(-Math.atan2(dIm, dRe));
+    s11_ang.push(Math.atan2(n11Im, n11Re) - Math.atan2(dIm, dRe));
+    s22_ang.push(Math.atan2(n11Im, n22Re) - Math.atan2(dIm, dRe));
+  });
+
+  // Unwrap the transmission phase so it is continuous across the sweep
+  const phase_rad_arr = [s21_ang[0]];
+  for (let i=1; i<s21_ang.length; i++) {
+    let step = s21_ang[i] - s21_ang[i-1];
+    step -= 2*Math.PI*Math.round(step/(2*Math.PI));
+    phase_rad_arr.push(phase_rad_arr[i-1] + step);
+  }
+
+  // Group delay = −dφ/dω, in seconds
+  for (let i=0; i<freqs.length; i++) {
+    if (i===0) { gd_ns.push(0); continue; }
+    const dph = phase_rad_arr[i] - phase_rad_arr[i-1];
+    const dw  = 2*Math.PI*(freqs[i] - freqs[i-1]);
+    gd_ns.push(Math.min(Math.max(-dph/dw*1e9, 0), 1000));
+  }
+
+  const deg = arr => arr.map(p => p*180/Math.PI);
+  const wrap = arr => arr.map(p => Math.atan2(Math.sin(p), Math.cos(p)));
+
+  return {freqs, S21_dB, S11_dB, S22_dB, gd_ns, S11_mag_arr,
+          phase_rad_arr, phase_deg: deg(phase_rad_arr),
+          s11_rad: s11_ang, s11_deg: deg(wrap(s11_ang)),
+          s21_deg: deg(wrap(s21_ang)), s22_deg: deg(wrap(s22_ang))};
+}
+
+// −3 dB edges of the passband, read off the computed response.
+function minus3dB(type, resp) {
+  const f = resp.freqs, s = resp.S21_dB;
+  const lvl = Math.max(...s) - 3.0103;
+  // where the response crosses the −3 dB level between neighbouring samples i and j
+  const cross = (i, j) => (j < 0 || j >= f.length) ? f[i]
+    : f[i]*Math.pow(f[j]/f[i], (lvl - s[i])/(s[j] - s[i]));
+  const pass = s.map(v => v >= lvl);
+  const first = pass.indexOf(true), last = pass.lastIndexOf(true);
+  if (type==='LP') return cross(last, last+1);
+  if (type==='HP') return cross(first, first-1);
+  if (type==='BP') return cross(last, last+1) - cross(first, first-1);
+  const lo = pass.indexOf(false), hi = pass.lastIndexOf(false);   // BS: width of the notch
+  return lo < 0 ? 0 : cross(hi, hi+1) - cross(lo, lo-1);
+}
+
+// ═══════════════════════════════════════════
+//   SMITH CHART LOCUS
+// ═══════════════════════════════════════════
+function drawSmithLocus(S11_mag_arr, phase_rad_arr) {
+  // S11_mag_arr: linear |S11| (0..1)
+  // phase_rad_arr: S11 phase in radians
+  const R=190, cx=200, cy=200;
+  const pts = [];
+  const n = Math.min(S11_mag_arr.length, phase_rad_arr.length);
+  const step = Math.max(1, Math.floor(n/300));
+  for (let i=0;i<n;i+=step) {
+    const mag = Math.min(S11_mag_arr[i], 1.0);
+    const ang = phase_rad_arr[i];
+    const re = mag*Math.cos(ang);
+    const im = mag*Math.sin(ang);
+    const sx = cx + re*R;
+    const sy = cy - im*R;
+    pts.push([sx,sy]);
+  }
+  if (pts.length===0) return;
+  let d = `M ${pts[0][0].toFixed(1)},${pts[0][1].toFixed(1)}`;
+  for (let i=1;i<pts.length;i++) d += ` L ${pts[i][0].toFixed(1)},${pts[i][1].toFixed(1)}`;
+  document.getElementById('smithLocus').setAttribute('d',d);
+  const [sx,sy]=[pts[0][0],pts[0][1]];
+  const [ex,ey]=[pts[pts.length-1][0],pts[pts.length-1][1]];
+  const st=document.getElementById('smithStart'); st.setAttribute('cx',sx); st.setAttribute('cy',sy); st.setAttribute('opacity','1');
+  const en=document.getElementById('smithEnd');   en.setAttribute('cx',ex); en.setAttribute('cy',ey); en.setAttribute('opacity','1');
+}
+
+// ═══════════════════════════════════════════
+//   CHART.JS HELPERS
+// ═══════════════════════════════════════════
+function fmtFreq(f) {
+  if (f>=1e9) return (f/1e9).toFixed(2)+'G';
+  if (f>=1e6) return (f/1e6).toFixed(1)+'M';
+  if (f>=1e3) return (f/1e3).toFixed(1)+'k';
+  return f.toFixed(0);
+}
+
+function makeChart(id, label, color, xlabel, ylabel) {
+  if (charts[id]) { charts[id].destroy(); }
+  const ctx = document.getElementById(id).getContext('2d');
+  charts[id] = new Chart(ctx, {
+    type:'line',
+    data:{datasets:[{label,data:[],borderColor:color,borderWidth:1.5,pointRadius:0,fill:false,tension:0.3}]},
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      animation:{duration:600,easing:'easeInOutQuart'},
+      plugins:{legend:{display:false},tooltip:{
+        backgroundColor:'#0C1420',titleColor:color,bodyColor:'#E0EAF4',
+        borderColor:'#1A2D45',borderWidth:1,
+        callbacks:{title:d=>'f = '+fmtFreq(d[0].parsed.x)+'Hz'}
+      }},
+      scales:{
+        x:{type:'logarithmic',title:{display:true,text:xlabel,color:'#5A7A9A',font:{size:10}},
+          grid:{color:'#1A2D45'},ticks:{color:'#5A7A9A',font:{size:9},
+            callback:v=>fmtFreq(v)+'Hz'}},
+        y:{title:{display:true,text:ylabel,color:'#5A7A9A',font:{size:10}},
+          grid:{color:'#1A2D45'},ticks:{color:'#5A7A9A',font:{size:9}}}
+      }
+    }
+  });
+  return charts[id];
+}
+
+function updateChart(id, freqs, vals) {
+  if (!charts[id]) return;
+  charts[id].data.datasets[0].data = freqs.map((f,i)=>({x:f,y:vals[i]}));
+  charts[id].update();
+}
+
+// ═══════════════════════════════════════════
+//   ELEMENT TABLES
+// ═══════════════════════════════════════════
+function renderTables(g, elements) {
+  const N = g.length-2;
+  let html = `<table class="el-table"><thead><tr><th>k</th><th>gk (prototype)</th><th>Element</th></tr></thead><tbody>`;
+  html += `<tr><td>0</td><td>1.0000</td><td>Rs (source)</td></tr>`;
+  for (let k=1;k<=N;k++) {
+    html += `<tr><td>${k}</td><td>${parseFloat(g[k]).toFixed(4)}</td><td>${k%2===1?'Series':'Shunt'} element</td></tr>`;
+  }
+  html += `<tr><td>${N+1}</td><td>${parseFloat(g[N+1]).toFixed(4)}</td><td>RL (load)</td></tr>`;
+  html += `</tbody></table>`;
+  document.getElementById('elTableWrap').innerHTML = html;
+
+  let sh = `<table class="el-table"><thead><tr><th>k</th><th>Type</th><th>Value</th><th>Topology</th></tr></thead><tbody>`;
+  elements.forEach(e=>{
+    sh += `<tr>
+      <td>${e.n}</td>
+      <td class="type-${e.type}">${e.type}</td>
+      <td>${fmtVal(e.val, e.unit)}</td>
+      <td>${e.extra ? `${e.type}-${e.twinType} Resonator` : (e.n%2===1?'Series':'Shunt')}</td>
+    </tr>`;
+    if (e.extra) sh += `<tr><td>${e.n}</td><td class="type-${e.twinType}">${e.twinType}</td><td>${fmtVal(e.twinVal,e.twinUnit)}</td><td></td></tr>`;
+  });
+  sh += `</tbody></table>`;
+  document.getElementById('scaledTableWrap').innerHTML = sh;
+}
+
+// ═══════════════════════════════════════════
+//   SPICE & TOUCHSTONE EXPORT
+// ═══════════════════════════════════════════
+function buildSpice(elements, rs, rl, fc) {
+  let s = `* Electronics 101 Filter Designer — SPICE Netlist\n* Generated by Electronics 101 · BY SANU (electronics101.online/tools)\n`;
+  s += `* ${state.resp} ${state.type} N=${state.N} fc=${fc}MHz Rs=${rs}Ω\n.ac dec 100 ${(fc*1e4).toFixed(0)} ${(fc*1e8).toFixed(0)}\n\n`;
+  s += `Vs  1  0  AC  1  DC  0\n`;
+  s += `Rs  1  2  ${rs}\n`;
+  let node=2;
+  elements.forEach((e,i)=>{
+    const next=node+1;
+    // A band-pass series branch and a band-stop shunt branch are L and C in SERIES,
+    // so they need a node between them; the other pairs sit in parallel.
+    const mid = `m${i+1}`;
+    if (e.n%2===1) { // series
+      const inSeries = e.extra && state.type==='BP';
+      s += `${e.type}${i+1}  ${node}  ${inSeries ? mid : next}  ${e.val.toExponential(5)}\n`;
+      if(e.extra) s += `${e.twinType}${i+1}t  ${inSeries ? mid : node}  ${next}  ${e.twinVal.toExponential(5)}\n`;
+      node=next;
+    } else { // shunt
+      const inSeries = e.extra && state.type==='BS';
+      s += `${e.type}${i+1}  ${node}  ${inSeries ? mid : 0}  ${e.val.toExponential(5)}\n`;
+      if(e.extra) s += `${e.twinType}${i+1}t  ${inSeries ? mid : node}  0  ${e.twinVal.toExponential(5)}\n`;
+    }
+  });
+  s += `RL  ${node}  0  ${rl}\n.probe V(${node})\n.end\n`;
+  return s;
+}
+
+function buildS2P(resp) {
+  let s = `! Electronics 101 Touchstone S2P\n! ${state.resp} ${state.type} N=${state.N} fc=${state.fc}MHz\n`;
+  if (state.rl !== state.rs) s += `! Port 2 is referenced to ${state.rl} ohm (the design load), port 1 to ${state.rs} ohm\n`;
+  s += `# MHz S DB R ${state.rs}\n! Freq  S11(dB) S11(ang)  S21(dB) S21(ang)  S12(dB) S12(ang)  S22(dB) S22(ang)\n`;
+  const step = Math.floor(resp.freqs.length/40);
+  for(let i=0;i<resp.freqs.length;i+=step) {
+    const f_MHz = (resp.freqs[i]/1e6).toFixed(4);
+    const s21 = `${resp.S21_dB[i].toFixed(3)}  ${resp.s21_deg[i].toFixed(1)}`;
+    s += `${f_MHz}  ${resp.S11_dB[i].toFixed(3)}  ${resp.s11_deg[i].toFixed(1)}  ${s21}  ${s21}  ${resp.S22_dB[i].toFixed(3)}  ${resp.s22_deg[i].toFixed(1)}\n`;
+  }
+  return s;
+}
+
+// ═══════════════════════════════════════════
+//   MAIN COMPUTE
+// ═══════════════════════════════════════════
+function compute() {
+  state.fc  = parseFloat(document.getElementById('fc').value) || 1000;
+  state.fbw = parseFloat(document.getElementById('fbw').value) || 200;
+  state.rs  = parseFloat(document.getElementById('rs').value) || 50;
+  state.rl  = parseFloat(document.getElementById('rl').value) || 50;
+  state.N   = parseInt(document.getElementById('orderRange').value);
+  state.ripple = parseFloat(document.getElementById('rippleRange').value);
+  state.stopAtten = parseFloat(document.getElementById('stopRange').value);
+
+  document.getElementById('sbFc').textContent = state.fc + ' MHz';
+  document.getElementById('statusText').textContent = 'Computing…';
+  document.getElementById('statusDot').className = 'status-dot warn';
+
+  const btn = document.getElementById('computeBtn');
+  btn.textContent = '⏳ COMPUTING…';
+  btn.disabled = true;
+
+  setTimeout(()=>{
+    try {
+      const g = getPrototypeG(state.N, state.resp, state.ripple, state.stopAtten);
+      // The prototype fixes the load: g(N+1)·Rs. It equals Rs except for even-order Chebyshev.
+      state.rl = +(g[g.length-1]*state.rs).toFixed(3);
+      document.getElementById('rl').value = state.rl;
+      const elements = scaleElements(g, state.type, state.fc*1e6, state.fbw*1e6, state.rs, state.rl);
+      const resp = computeResponse(state.type, elements, state.fc, state.fbw, state.rs, state.rl);
+
+      computed = {g, elements, resp};
+
+      // Hide empty state
+      document.getElementById('emptyState').style.display='none';
+      document.getElementById('metricsRow').style.display='';
+
+      // Init charts if needed
+      if (!charts['chartS21']) {
+        makeChart('chartS21','S21','#00C8FF','Frequency','S21 (dB)');
+        makeChart('chartS11','S11','#FF6B35','Frequency','S11 (dB)  [0 = full reflect]');
+        makeChart('chartPhase','Phase','#00E5A0','Frequency','Phase (°)');
+        makeChart('chartGD','Group Delay','#FF6B35','Frequency','GD (ns)');
+      }
+      updateChart('chartS21', resp.freqs, resp.S21_dB);
+      updateChart('chartS11', resp.freqs, resp.S11_dB);
+      updateChart('chartPhase', resp.freqs, resp.phase_deg);
+      updateChart('chartGD', resp.freqs.slice(1), resp.gd_ns.slice(1));
+
+      // Metrics
+      const fcIdx = resp.freqs.findIndex(f=>f>=state.fc*1e6);
+      const safeIdx = Math.max(0, Math.min(fcIdx, resp.freqs.length-1));
+      document.getElementById('m-fc').innerHTML = state.fc+'<span class="metric-unit">MHz</span>';
+      document.getElementById('m-bw').innerHTML = (minus3dB(state.type, resp)/1e6).toPrecision(4) + '<span class="metric-unit">MHz</span>';
+      // Stopband attenuation: value at last 10% of sweep
+      const sbIdx = Math.floor(resp.freqs.length * 0.95);
+      document.getElementById('m-atten').innerHTML = Math.abs(resp.S21_dB[sbIdx]).toFixed(1)+'<span class="metric-unit">dB</span>';
+      document.getElementById('m-gd').innerHTML = (resp.gd_ns[safeIdx]||0).toFixed(2)+'<span class="metric-unit">ns</span>';
+      document.getElementById('m-phase').innerHTML = (resp.phase_deg[safeIdx]||0).toFixed(1)+'<span class="metric-unit">°</span>';
+      // S11 at fc
+      const s11AtFc = resp.S11_dB[safeIdx] || 0;
+      document.getElementById('m-il').innerHTML = s11AtFc.toFixed(1)+'<span class="metric-unit">dB</span>';
+
+      const rn = {BT:'Butterworth',CH:'Chebyshev',EL:'Elliptic',BS:'Bessel'};
+      document.getElementById('respBadge').textContent = `${rn[state.resp]} · N=${state.N}`;
+
+      // Tables
+      renderTables(g, elements);
+
+      // Smith — pass linear |S11| and the S11 phase in radians
+      drawSmithLocus(resp.S11_mag_arr, resp.s11_rad);
+
+      // Export previews
+      const spice = buildSpice(elements, state.rs, state.rl, state.fc);
+      document.getElementById('spicePreview').textContent = spice;
+      document.getElementById('s2pPreview').textContent = buildS2P(resp);
+
+      document.getElementById('statusText').textContent = 'Design complete · ' + elements.length + ' elements';
+      document.getElementById('statusDot').className = 'status-dot';
+
+      btn.textContent = '✓ FILTER DESIGNED';
+      setTimeout(()=>{ btn.textContent='⚡ DESIGN FILTER'; btn.disabled=false; },1500);
+      btn.classList.add('computing');
+      setTimeout(()=>btn.classList.remove('computing'),800);
+      showToast('Filter designed · N='+state.N+' · '+state.fc+' MHz');
+
+    } catch(e) {
+      console.error(e);
+      document.getElementById('statusText').textContent = 'Error: '+e.message;
+      btn.textContent='⚡ DESIGN FILTER'; btn.disabled=false;
+    }
+  }, 80);
+}
+
+// ═══════════════════════════════════════════
+//   EXPORT FUNCTIONS
+// ═══════════════════════════════════════════
+function download(name, content) {
+  const a=document.createElement('a');
+  a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(content);
+  a.download=name; a.click();
+}
+function exportNetlist() {
+  if (!computed) { showToast('Compute filter first!'); return; }
+  const spice = buildSpice(computed.elements, state.rs, state.rl, state.fc);
+  download('e101_filter.cir', spice);
+  showToast('SPICE netlist exported!');
+}
+function exportCSV() {
+  if (!computed) { showToast('Compute filter first!'); return; }
+  let csv = 'Freq_Hz,S21_dB,S11_dB,Phase_deg,GD_ns\n';
+  computed.resp.freqs.forEach((f,i)=>{
+    csv += `${f.toFixed(2)},${computed.resp.S21_dB[i].toFixed(4)},${computed.resp.S11_dB[i].toFixed(4)},${computed.resp.phase_deg[i].toFixed(4)},${(computed.resp.gd_ns[i]||0).toFixed(4)}\n`;
+  });
+  download('e101_filter_response.csv', csv);
+  showToast('CSV exported!');
+}
+function exportTouchstone() {
+  if (!computed) { showToast('Compute filter first!'); return; }
+  download('e101_filter.s2p', buildS2P(computed.resp));
+  showToast('Touchstone .s2p exported!');
+}
+function exportADS() {
+  if (!computed) { showToast('Compute filter first!'); return; }
+  let ads = `/* Electronics 101 ADS Schematic Snippet — ${state.resp} ${state.type} N=${state.N} */\n`;
+  computed.elements.forEach((e,i)=>{
+    ads += `${e.type}${i+1}  val=${fmtVal(e.val,e.unit)}\n`;
+  });
+  download('e101_filter_ads.txt', ads);
+  showToast('ADS snippet exported!');
+}
+
+// ═══════════════════════════════════════════
+//   INIT
+// ═══════════════════════════════════════════
+window.addEventListener('load',()=>{
+  updateTopoPreview();
+  updateTopoLabel();
+  // Auto-run demo
+  compute();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Antenna Design Calculator — Electronics 101</title>
+<meta name="description" content="Size eight antenna types in the browser, from microstrip patch and dipole to Yagi-Uda, horn and parabolic reflector, with interactive 2D and 3D radiation patterns. A free Electronics 101 tool.">
+<link rel="canonical" href="https://electronics101.online/tools/antenna-calculator/">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/plotly.js/2.27.0/plotly.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0f2952;--blue:#1a56db;--blue-mid:#2563eb;--sky:#3b82f6;
+  --cyan:#0ea5e9;--teal:#0891b2;--light:#f0f7ff;--lighter:#f8fafc;
+  --border:#dbeafe;--border2:#bfdbfe;--text:#0f172a;--muted:#475569;
+  --white:#ffffff;--green:#059669;--orange:#ea580c;--red:#dc2626;
+  --card-shadow:0 1px 3px rgba(15,41,82,0.08),0 1px 2px rgba(15,41,82,0.06);
+  --card-shadow-hover:0 8px 24px rgba(15,41,82,0.12);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:var(--lighter);color:var(--text);min-height:100vh}
+
+/* ── HEADER ── */
+.site-header{
+  background:var(--navy);color:var(--white);
+  padding:0;position:sticky;top:0;z-index:100;
+  box-shadow:0 2px 12px rgba(15,41,82,0.25);
+}
+.header-inner{
+  max-width:1400px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 24px;
+}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-badge{
+  background:var(--cyan);color:var(--navy);
+  font-weight:800;font-size:13px;letter-spacing:1.5px;
+  padding:4px 10px;border-radius:6px;
+}
+.logo-text{font-size:20px;font-weight:700;letter-spacing:-0.3px}
+.logo-sub{font-size:11px;color:#93c5fd;font-weight:500;letter-spacing:2px;text-transform:uppercase;margin-top:1px}
+.header-right{text-align:right;font-size:12px;color:#93c5fd}
+.header-right strong{display:block;color:var(--white);font-size:14px}
+
+/* ── ANTENNA NAV ── */
+.antenna-nav{
+  background:var(--white);border-bottom:2px solid var(--border);
+  position:sticky;top:61px;z-index:90;
+  overflow-x:auto;scrollbar-width:none;
+}
+.antenna-nav::-webkit-scrollbar{display:none}
+.nav-inner{
+  max-width:1400px;margin:0 auto;
+  display:flex;gap:0;padding:0 16px;
+  min-width:max-content;
+}
+.nav-tab{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:10px 18px;cursor:pointer;border:none;background:none;
+  font-family:'Inter',sans-serif;font-size:11px;font-weight:600;
+  color:var(--muted);letter-spacing:0.5px;text-transform:uppercase;
+  border-bottom:3px solid transparent;margin-bottom:-2px;
+  transition:all .2s;white-space:nowrap;
+}
+.nav-tab:hover{color:var(--blue);background:var(--light)}
+.nav-tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.nav-tab .tab-icon{font-size:18px;margin-bottom:2px}
+
+/* ── MAIN LAYOUT ── */
+.main{max-width:1400px;margin:0 auto;padding:24px 16px 48px}
+.antenna-panel{display:none}
+.antenna-panel.active{display:block}
+.panel-grid{display:grid;grid-template-columns:380px 1fr;gap:20px;align-items:start}
+
+/* ── CARDS ── */
+.card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:12px;padding:20px;box-shadow:var(--card-shadow);
+}
+.card+.card{margin-top:16px}
+.card-title{
+  font-size:13px;font-weight:700;letter-spacing:1px;
+  text-transform:uppercase;color:var(--navy);
+  border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+}
+.card-title .dot{
+  width:8px;height:8px;border-radius:50%;background:var(--cyan);display:inline-block;
+}
+
+/* ── ANTENNA DESCRIPTION ── */
+.desc-card{
+  background:linear-gradient(135deg,var(--navy) 0%,#1e3a6e 100%);
+  color:var(--white);border-radius:12px;padding:20px;margin-bottom:16px;
+}
+.desc-card h2{font-size:22px;font-weight:700;margin-bottom:4px}
+.desc-card p{font-size:13px;color:#93c5fd;line-height:1.6}
+.desc-badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.badge{
+  font-size:11px;font-weight:600;letter-spacing:0.5px;
+  padding:3px 10px;border-radius:20px;border:1px solid;
+}
+.badge-cyan{color:#22d3ee;border-color:#22d3ee;background:rgba(34,211,238,0.1)}
+.badge-green{color:#34d399;border-color:#34d399;background:rgba(52,211,153,0.1)}
+.badge-orange{color:#fb923c;border-color:#fb923c;background:rgba(251,146,60,0.1)}
+
+/* ── FORM ELEMENTS ── */
+.form-group{margin-bottom:14px}
+.form-group label{
+  display:block;font-size:12px;font-weight:600;color:var(--navy);
+  margin-bottom:5px;letter-spacing:0.3px;
+}
+.form-group label sup{color:var(--cyan);font-size:10px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.input-wrap{position:relative;display:flex;align-items:center}
+.input-wrap input{
+  width:100%;padding:9px 12px;border:1.5px solid var(--border2);
+  border-radius:8px;font-size:14px;font-family:'JetBrains Mono',monospace;
+  background:var(--light);color:var(--text);transition:all .2s;
+  font-weight:500;
+}
+.input-wrap input:focus{outline:none;border-color:var(--blue);background:var(--white);
+  box-shadow:0 0 0 3px rgba(26,86,219,0.1)}
+.input-unit{
+  position:absolute;right:10px;font-size:11px;color:var(--muted);
+  font-weight:600;pointer-events:none;
+}
+.input-wrap select{
+  width:100%;padding:9px 12px;border:1.5px solid var(--border2);
+  border-radius:8px;font-size:13px;background:var(--light);
+  color:var(--text);cursor:pointer;font-family:'Inter',sans-serif;
+}
+.input-wrap select:focus{outline:none;border-color:var(--blue)}
+
+.calc-btn{
+  width:100%;padding:11px;background:var(--blue);color:var(--white);
+  border:none;border-radius:8px;font-size:14px;font-weight:700;
+  cursor:pointer;letter-spacing:0.5px;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px;
+}
+.calc-btn:hover{background:var(--navy);transform:translateY(-1px);box-shadow:0 4px 12px rgba(26,86,219,0.3)}
+.calc-btn:active{transform:translateY(0)}
+.reset-btn{
+  width:100%;padding:8px;background:none;color:var(--muted);
+  border:1.5px solid var(--border2);border-radius:8px;font-size:12px;
+  font-weight:600;cursor:pointer;margin-top:8px;transition:all .2s;
+}
+.reset-btn:hover{border-color:var(--sky);color:var(--blue)}
+
+/* ── RESULTS ── */
+.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.result-item{
+  background:var(--light);border:1px solid var(--border);
+  border-radius:8px;padding:10px 12px;
+}
+.result-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px}
+.result-value{
+  font-size:19px;font-weight:700;color:var(--navy);
+  font-family:'JetBrains Mono',monospace;margin-top:2px;
+  line-height:1.1;
+}
+.result-unit{font-size:11px;font-weight:400;color:var(--muted);margin-left:2px}
+.result-item.highlight{background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:var(--border2)}
+.result-item.gain-item{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#bbf7d0}
+.result-item.gain-item .result-value{color:var(--green)}
+
+/* ── FORMULA CARD ── */
+.formula-card{
+  background:var(--navy);color:var(--white);
+  border-radius:10px;padding:14px 16px;font-family:'JetBrains Mono',monospace;
+  font-size:12px;line-height:1.9;overflow-x:auto;
+}
+.formula-card .f-label{color:#93c5fd;font-size:10px;letter-spacing:1px;text-transform:uppercase;
+  font-family:'Inter',sans-serif;font-weight:600;margin-bottom:6px;display:block}
+.formula-card .f-line{display:flex;gap:6px;align-items:baseline}
+.formula-card .f-sym{color:#22d3ee;min-width:60px}
+.formula-card .f-eq{color:#94a3b8}
+.formula-card .f-val{color:#f8fafc}
+
+/* ── PLOTS ── */
+.plots-col{display:flex;flex-direction:column;gap:16px}
+.plot-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:10px;
+}
+.plot-title{font-size:13px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:6px}
+.plot-tabs{display:flex;gap:4px}
+.plot-tab-btn{
+  font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px;
+  border:1.5px solid var(--border2);background:none;cursor:pointer;
+  color:var(--muted);transition:all .15s;
+}
+.plot-tab-btn.active{background:var(--blue);color:var(--white);border-color:var(--blue)}
+.plot-container{width:100%;height:340px;border-radius:10px;overflow:hidden}
+.plot-3d-container{width:100%;height:420px;border-radius:10px;overflow:hidden}
+
+/* ── INFO BOXES ── */
+.info-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:0}
+.info-box{
+  background:var(--white);border:1px solid var(--border);border-radius:10px;
+  padding:14px;text-align:center;
+}
+.info-box .ib-val{font-size:20px;font-weight:800;color:var(--blue);font-family:'JetBrains Mono',monospace}
+.info-box .ib-lbl{font-size:11px;color:var(--muted);font-weight:500;margin-top:3px}
+
+/* ── PLACEHOLDER ── */
+.plot-placeholder{
+  width:100%;background:var(--light);border:2px dashed var(--border2);
+  border-radius:10px;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;color:var(--muted);gap:8px;font-size:13px;
+}
+.plot-placeholder .ph-icon{font-size:32px;opacity:0.5}
+
+/* ── SUBSTRATE SECTION ── */
+.section-sep{height:1px;background:var(--border);margin:14px 0}
+.substrate-note{
+  font-size:11px;color:var(--muted);background:var(--light);
+  border-left:3px solid var(--cyan);padding:8px 10px;border-radius:0 6px 6px 0;
+  margin-top:10px;line-height:1.6;
+}
+.preset-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.preset-chip{
+  font-size:11px;font-weight:600;padding:4px 10px;border-radius:20px;
+  border:1.5px solid var(--border2);background:var(--light);color:var(--navy);
+  cursor:pointer;transition:all .15s;
+}
+.preset-chip:hover{border-color:var(--blue);background:#eff6ff;color:var(--blue)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .panel-grid{grid-template-columns:1fr}
+  .info-row{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:600px){
+  .results-grid{grid-template-columns:1fr}
+  .form-row{grid-template-columns:1fr}
+}
+
+/* ── FOOTER ── */
+.site-footer{
+  background:var(--navy);color:#93c5fd;text-align:center;
+  padding:20px;font-size:12px;margin-top:40px;
+}
+.site-footer strong{color:var(--white)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="logo">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <span class="logo-badge">ELECTRONICS 101</span>
+          <span class="logo-text">Antenna Design Calculator</span>
+        </div>
+        <div class="logo-sub">By Sanu &nbsp;·&nbsp; RF & Microwave Engineering</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <strong>8 Antenna Types</strong>
+      Interactive 2D + 3D Radiation Patterns
+    </div>
+  </div>
+</header>
+
+<!-- ANTENNA NAV -->
+<nav class="antenna-nav">
+  <div class="nav-inner">
+    <button class="nav-tab active" onclick="switchTab('patch')" id="tab-patch">
+      <span class="tab-icon">📡</span>Microstrip Patch
+    </button>
+    <button class="nav-tab" onclick="switchTab('dipole')" id="tab-dipole">
+      <span class="tab-icon">〰️</span>Dipole
+    </button>
+    <button class="nav-tab" onclick="switchTab('monopole')" id="tab-monopole">
+      <span class="tab-icon">📶</span>Monopole
+    </button>
+    <button class="nav-tab" onclick="switchTab('yagi')" id="tab-yagi">
+      <span class="tab-icon">📻</span>Yagi-Uda
+    </button>
+    <button class="nav-tab" onclick="switchTab('horn')" id="tab-horn">
+      <span class="tab-icon">🔊</span>Horn
+    </button>
+    <button class="nav-tab" onclick="switchTab('slot')" id="tab-slot">
+      <span class="tab-icon">⬛</span>Slot
+    </button>
+    <button class="nav-tab" onclick="switchTab('loop')" id="tab-loop">
+      <span class="tab-icon">⭕</span>Loop
+    </button>
+    <button class="nav-tab" onclick="switchTab('parabolic')" id="tab-parabolic">
+      <span class="tab-icon">🔭</span>Parabolic
+    </button>
+  </div>
+</nav>
+
+<main class="main">
+
+<!-- ════════════════════════════════════════════
+  MICROSTRIP PATCH
+═════════════════════════════════════════════ -->
+<div class="antenna-panel active" id="panel-patch">
+<div class="desc-card">
+  <h2>📡 Microstrip Patch Antenna</h2>
+  <p>Rectangular patch resonator on a grounded dielectric substrate. Based on cavity model and transmission-line analysis. Effective εᵣ model from Patnaik et al. (IEEE TAP, 1997).</p>
+  <div class="desc-badges">
+    <span class="badge badge-cyan">5–8 dBi Gain</span>
+    <span class="badge badge-green">Broadside Radiation</span>
+    <span class="badge badge-orange">~2–5% Bandwidth</span>
+  </div>
+</div>
+<div class="panel-grid">
+  <div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Substrate Parameters</div>
+      <div class="form-group">
+        <label>Dielectric Constant (εᵣ)</label>
+        <div class="preset-row">
+          <span class="preset-chip" onclick="patchPreset(2.2,'Rogers RT/duroid 5880')">RT5880 2.2</span>
+          <span class="preset-chip" onclick="patchPreset(3.55,'Rogers RO4003C')">RO4003 3.55</span>
+          <span class="preset-chip" onclick="patchPreset(4.4,'FR4')">FR4 4.4</span>
+          <span class="preset-chip" onclick="patchPreset(9.8,'Alumina')">Al₂O₃ 9.8</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>εᵣ</label>
+          <div class="input-wrap"><input type="number" id="p_er" value="4.4" step="0.1" min="1" max="20"></div>
+        </div>
+        <div class="form-group">
+          <label>Height h</label>
+          <div class="input-wrap"><input type="number" id="p_h" value="1.6" step="0.1" min="0.1"><span class="input-unit">mm</span></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Loss Tangent (tan δ) — optional</label>
+        <div class="input-wrap"><input type="number" id="p_tand" value="0.02" step="0.001" min="0"></div>
+      </div>
+      <div class="section-sep"></div>
+      <div class="card-title"><span class="dot"></span>Design Frequency</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Resonant Freq (fᵣ)</label>
+          <div class="input-wrap"><input type="number" id="p_fr" value="2.4" step="0.1" min="0.1"><span class="input-unit">GHz</span></div>
+        </div>
+        <div class="form-group">
+          <label>Feed Position x_f</label>
+          <div class="input-wrap"><input type="number" id="p_xf" value="0" step="0.1"><span class="input-unit">mm</span></div>
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calcPatch()">⚡ Calculate Patch</button>
+      <button class="reset-btn" onclick="resetForm('patch')">↺ Reset</button>
+    </div>
+    <div class="card" id="patch-results" style="display:none">
+      <div class="card-title"><span class="dot"></span>Design Results</div>
+      <div class="results-grid" id="patch-results-grid"></div>
+      <div style="margin-top:14px">
+        <div class="formula-card">
+          <span class="f-label">Key Equations</span>
+          <div class="f-line"><span class="f-sym">W</span><span class="f-eq">=</span><span class="f-val">(c/2fᵣ)·√(2/(εᵣ+1))</span></div>
+          <div class="f-line"><span class="f-sym">εᵣₑff</span><span class="f-eq">=</span><span class="f-val">(εᵣ+1)/2 + (εᵣ-1)/2·(1+12h/W)⁻⁰·⁵</span></div>
+          <div class="f-line"><span class="f-sym">ΔL</span><span class="f-eq">=</span><span class="f-val">0.412h·(εᵣₑff+0.3)(W/h+0.264)/((εᵣₑff-0.258)(W/h+0.8))</span></div>
+          <div class="f-line"><span class="f-sym">L</span><span class="f-eq">=</span><span class="f-val">c/(2fᵣ√εᵣₑff) − 2ΔL</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="plots-col">
+    <div class="card">
+      <div class="plot-header">
+        <div class="plot-title">📊 Radiation Pattern — E-plane (φ=0°)</div>
+        <div class="plot-tabs">
+          <button class="plot-tab-btn active" onclick="showPlot2D('patch')">2D Polar</button>
+          <button class="plot-tab-btn" onclick="showPlot3D('patch')">3D Pattern</button>
+        </div>
+      </div>
+      <div id="patch-plot2d" class="plot-container plot-placeholder" style="height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+        <div class="ph-icon">📡</div><div>Enter parameters and click Calculate</div>
+      </div>
+      <div id="patch-plot3d" class="plot-3d-container" style="display:none"></div>
+    </div>
+    <div class="card" id="patch-info-row" style="display:none">
+      <div class="card-title"><span class="dot"></span>Performance Summary</div>
+      <div class="info-row" id="patch-info-grid"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════
+  DIPOLE
+═════════════════════════════════════════════ -->
+<div class="antenna-panel" id="panel-dipole">
+<div class="desc-card">
+  <h2>〰️ Half-Wave Dipole Antenna</h2>
+  <p>The reference antenna. A center-fed conductor of total length λ/2, producing a toroidal (donut-shaped) radiation pattern. Self-resonant, 73 Ω balanced impedance.</p>
+  <div class="desc-badges">
+    <span class="badge badge-cyan">2.15 dBi Gain</span>
+    <span class="badge badge-green">Omnidirectional</span>
+    <span class="badge badge-orange">73 Ω Impedance</span>
+  </div>
+</div>
+<div class="panel-grid">
+  <div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Dipole Parameters</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Resonant Freq (f)</label>
+          <div class="input-wrap"><input type="number" id="d_fr" value="433" step="1" min="1"><span class="input-unit">MHz</span></div>
+        </div>
+        <div class="form-group">
+          <label>Wire Diameter</label>
+          <div class="input-wrap"><input type="number" id="d_diam" value="1" step="0.1" min="0.1"><span class="input-unit">mm</span></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Dipole Type</label>
+        <div class="input-wrap">
+          <select id="d_type">
+            <option value="half">Half-wave (λ/2)</option>
+            <option value="short">Short dipole (L &lt;&lt; λ)</option>
+            <option value="full">Full-wave (λ)</option>
+            <option value="custom">Custom length</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group" id="d_custom_group" style="display:none">
+        <label>Custom Length L</label>
+        <div class="input-wrap"><input type="number" id="d_len" value="0" step="1"><span class="input-unit">mm</span></div>
+      </div>
+      <div class="form-group">
+        <label>Feed Medium</label>
+        <div class="input-wrap">
+          <select id="d_medium">
+            <option value="1">Free Space (εᵣ=1)</option>
+            <option value="2.2">RT5880 (εᵣ=2.2)</option>
+            <option value="4.4">FR4 (εᵣ=4.4)</option>
+          </select>
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calcDipole()">⚡ Calculate Dipole</button>
+      <button class="reset-btn" onclick="resetForm('dipole')">↺ Reset</button>
+    </div>
+    <div class="card" id="dipole-results" style="display:none">
+      <div class="card-title"><span class="dot"></span>Design Results</div>
+      <div class="results-grid" id="dipole-results-grid"></div>
+      <div style="margin-top:14px">
+        <div class="formula-card">
+          <span class="f-label">Key Equations</span>
+          <div class="f-line"><span class="f-sym">λ</span><span class="f-eq">=</span><span class="f-val">c / f</span></div>
+          <div class="f-line"><span class="f-sym">L</span><span class="f-eq">=</span><span class="f-val">0.95 · λ/2 (practical)</span></div>
+          <div class="f-line"><span class="f-sym">Rᵣₐd</span><span class="f-eq">=</span><span class="f-val">73.1 Ω (half-wave)</span></div>
+          <div class="f-line"><span class="f-sym">G</span><span class="f-eq">=</span><span class="f-val">2.15 dBi</span></div>
+          <div class="f-line"><span class="f-sym">F(θ)</span><span class="f-eq">=</span><span class="f-val">[cos(π·cosθ/2)/sinθ]²</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="plots-col">
+    <div class="card">
+      <div class="plot-header">
+        <div class="plot-title">📊 Radiation Pattern</div>
+        <div class="plot-tabs">
+          <button class="plot-tab-btn active" onclick="showPlot2D('dipole')">2D Polar</button>
+          <button class="plot-tab-btn" onclick="showPlot3D('dipole')">3D Pattern</button>
+        </div>
+      </div>
+      <div id="dipole-plot2d" class="plot-container plot-placeholder" style="height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+        <div class="ph-icon">〰️</div><div>Enter parameters and click Calculate</div>
+      </div>
+      <div id="dipole-plot3d" class="plot-3d-container" style="display:none"></div>
+    </div>
+    <div class="card" id="dipole-info-row" style="display:none">
+      <div class="card-title"><span class="dot"></span>Performance Summary</div>
+      <div class="info-row" id="dipole-info-grid"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════
+  MONOPOLE
+═════════════════════════════════════════════ -->
+<div class="antenna-panel" id="panel-monopole">
+<div class="desc-card">
+  <h2>📶 Monopole Antenna</h2>
+  <p>Quarter-wave vertical radiator over a ground plane. Image theory makes it equivalent to a half-wave dipole. 5.15 dBi gain, 36.5 Ω impedance — the basis for every vertical whip antenna.</p>
+  <div class="desc-badges">
+    <span class="badge badge-cyan">5.15 dBi Gain</span>
+    <span class="badge badge-green">Hemispherical Pattern</span>
+    <span class="badge badge-orange">36.5 Ω Impedance</span>
+  </div>
+</div>
+<div class="panel-grid">
+  <div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Monopole Parameters</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Frequency</label>
+          <div class="input-wrap"><input type="number" id="m_fr" value="900" step="1" min="1"><span class="input-unit">MHz</span></div>
+        </div>
+        <div class="form-group">
+          <label>Wire Diameter</label>
+          <div class="input-wrap"><input type="number" id="m_diam" value="2" step="0.1" min="0.1"><span class="input-unit">mm</span></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Monopole Type</label>
+        <div class="input-wrap">
+          <select id="m_type">
+            <option value="quarter">Quarter-wave (λ/4)</option>
+            <option value="three-eighth">3λ/8</option>
+            <option value="five-eighth">5λ/8 (max gain)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Ground Plane Diameter</label>
+        <div class="input-wrap"><input type="number" id="m_gp" value="0" step="10" min="0" placeholder="≥ λ/4 ideal"><span class="input-unit">mm</span></div>
+      </div>
+      <button class="calc-btn" onclick="calcMonopole()">⚡ Calculate Monopole</button>
+      <button class="reset-btn" onclick="resetForm('monopole')">↺ Reset</button>
+    </div>
+    <div class="card" id="monopole-results" style="display:none">
+      <div class="card-title"><span class="dot"></span>Design Results</div>
+      <div class="results-grid" id="monopole-results-grid"></div>
+      <div style="margin-top:14px">
+        <div class="formula-card">
+          <span class="f-label">Key Equations</span>
+          <div class="f-line"><span class="f-sym">L</span><span class="f-eq">=</span><span class="f-val">0.95 · λ/4 (practical)</span></div>
+          <div class="f-line"><span class="f-sym">Rᵣₐd</span><span class="f-eq">=</span><span class="f-val">36.5 Ω</span></div>
+          <div class="f-line"><span class="f-sym">G</span><span class="f-eq">=</span><span class="f-val">5.15 dBi (λ/4)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="plots-col">
+    <div class="card">
+      <div class="plot-header">
+        <div class="plot-title">📊 Radiation Pattern</div>
+        <div class="plot-tabs">
+          <button class="plot-tab-btn active" onclick="showPlot2D('monopole')">2D Polar</button>
+          <button class="plot-tab-btn" onclick="showPlot3D('monopole')">3D Pattern</button>
+        </div>
+      </div>
+      <div id="monopole-plot2d" class="plot-container plot-placeholder" style="height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+        <div class="ph-icon">📶</div><div>Enter parameters and click Calculate</div>
+      </div>
+      <div id="monopole-plot3d" class="plot-3d-container" style="display:none"></div>
+    </div>
+    <div class="card" id="monopole-info-row" style="display:none">
+      <div class="card-title"><span class="dot"></span>Performance Summary</div>
+      <div class="info-row" id="monopole-info-grid"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════
+  YAGI-UDA
+═════════════════════════════════════════════ -->
+<div class="antenna-panel" id="panel-yagi">
+<div class="desc-card">
+  <h2>📻 Yagi-Uda Antenna</h2>
+  <p>Parasitic array with driven element, one reflector, and multiple directors. Gain increases with element count. Classic design for TV, ham radio, and point-to-point links.</p>
+  <div class="desc-badges">
+    <span class="badge badge-cyan">7–20+ dBi Gain</span>
+    <span class="badge badge-green">High Directivity</span>
+    <span class="badge badge-orange">Narrow Beam</span>
+  </div>
+</div>
+<div class="panel-grid">
+  <div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Yagi Parameters</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Frequency</label>
+          <div class="input-wrap"><input type="number" id="y_fr" value="144" step="1" min="1"><span class="input-unit">MHz</span></div>
+        </div>
+        <div class="form-group">
+          <label>No. of Directors</label>
+          <div class="input-wrap"><input type="number" id="y_nd" value="4" step="1" min="0" max="20"></div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Director Spacing</label>
+          <div class="input-wrap"><input type="number" id="y_ds" value="0.35" step="0.01" min="0.1" max="0.5"><span class="input-unit">λ</span></div>
+        </div>
+        <div class="form-group">
+          <label>Reflector Spacing</label>
+          <div class="input-wrap"><input type="number" id="y_rs" value="0.25" step="0.01" min="0.1" max="0.4"><span class="input-unit">λ</span></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Element Diameter</label>
+        <div class="input-wrap"><input type="number" id="y_diam" value="6" step="1" min="1"><span class="input-unit">mm</span></div>
+      </div>
+      <button class="calc-btn" onclick="calcYagi()">⚡ Calculate Yagi</button>
+      <button class="reset-btn" onclick="resetForm('yagi')">↺ Reset</button>
+    </div>
+    <div class="card" id="yagi-results" style="display:none">
+      <div class="card-title"><span class="dot"></span>Design Results</div>
+      <div class="results-grid" id="yagi-results-grid"></div>
+      <div style="margin-top:14px">
+        <div class="formula-card">
+          <span class="f-label">Element Lengths</span>
+          <div class="f-line"><span class="f-sym">Reflector</span><span class="f-eq">≈</span><span class="f-val">0.500 λ</span></div>
+          <div class="f-line"><span class="f-sym">Driven</span><span class="f-eq">≈</span><span class="f-val">0.470 λ (dipole)</span></div>
+          <div class="f-line"><span class="f-sym">Directors</span><span class="f-eq">≈</span><span class="f-val">0.400–0.450 λ</span></div>
+          <div class="f-line"><span class="f-sym">G</span><span class="f-eq">≈</span><span class="f-val">10·log₁₀(0.8·N·d/λ)+2.15</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="plots-col">
+    <div class="card">
+      <div class="plot-header">
+        <div class="plot-title">📊 Radiation Pattern (H-plane)</div>
+        <div class="plot-tabs">
+          <button class="plot-tab-btn active" onclick="showPlot2D('yagi')">2D Polar</button>
+          <button class="plot-tab-btn" onclick="showPlot3D('yagi')">3D Pattern</button>
+        </div>
+      </div>
+      <div id="yagi-plot2d" class="plot-container plot-placeholder" style="height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+        <div class="ph-icon">📻</div><div>Enter parameters and click Calculate</div>
+      </div>
+      <div id="yagi-plot3d" class="plot-3d-container" style="display:none"></div>
+    </div>
+    <div class="card" id="yagi-info-row" style="display:none">
+      <div class="card-title"><span class="dot"></span>Performance Summary</div>
+      <div class="info-row" id="yagi-info-grid"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════
+  HORN
+═════════════════════════════════════════════ -->
+<div class="antenna-panel" id="panel-horn">
+<div class="desc-card">
+  <h2>🔊 Pyramidal Horn Antenna</h2>
+  <p>Flared waveguide aperture antenna. Primary feed for parabolic dishes and standard gain reference. Pyramidal horn combines E-plane and H-plane flaring for maximum gain.</p>
+  <div class="desc-badges">
+    <span class="badge badge-cyan">10–25 dBi Gain</span>
+    <span class="badge badge-green">Broadband</span>
+    <span class="badge badge-orange">Known Gain Standard</span>
+  </div>
+</div>
+<div class="panel-grid">
+  <div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Waveguide & Aperture</div>
+      <div class="form-group">
+        <label>Operating Frequency</label>
+        <div class="input-wrap"><input type="number" id="h_fr" value="10" step="0.5" min="0.5"><span class="input-unit">GHz</span></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>WG width a</label>
+          <div class="input-wrap"><input type="number" id="h_a" value="22.86" step="0.1" min="1"><span class="input-unit">mm</span></div>
+        </div>
+        <div class="form-group">
+          <label>WG height b</label>
+          <div class="input-wrap"><input type="number" id="h_b" value="10.16" step="0.1" min="1"><span class="input-unit">mm</span></div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Aperture A₁ (E)</label>
+          <div class="input-wrap"><input type="number" id="h_a1" value="60" step="1" min="1"><span class="input-unit">mm</span></div>
+        </div>
+        <div class="form-group">
+          <label>Aperture B₁ (H)</label>
+          <div class="input-wrap"><input type="number" id="h_b1" value="80" step="1" min="1"><span class="input-unit">mm</span></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Aperture Efficiency η</label>
+        <div class="input-wrap"><input type="number" id="h_eta" value="0.51" step="0.01" min="0.3" max="0.8"></div>
+      </div>
+      <button class="calc-btn" onclick="calcHorn()">⚡ Calculate Horn</button>
+      <button class="reset-btn" onclick="resetForm('horn')">↺ Reset</button>
+    </div>
+    <div class="card" id="horn-results" style="display:none">
+      <div class="card-title"><span class="dot"></span>Design Results</div>
+      <div class="results-grid" id="horn-results-grid"></div>
+      <div style="margin-top:14px">
+        <div class="formula-card">
+          <span class="f-label">Key Equations</span>
+          <div class="f-line"><span class="f-sym">G</span><span class="f-eq">=</span><span class="f-val">η·(4π/λ²)·A₁·B₁</span></div>
+          <div class="f-line"><span class="f-sym">HPBW_E</span><span class="f-eq">≈</span><span class="f-val">56·λ/B₁ °</span></div>
+          <div class="f-line"><span class="f-sym">HPBW_H</span><span class="f-eq">≈</span><span class="f-val">67·λ/A₁ °</span></div>
+          <div class="f-line"><span class="f-sym">ρ_E</span><span class="f-eq">=</span><span class="f-val">B₁²/(8λ) (opt. slant)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="plots-col">
+    <div class="card">
+      <div class="plot-header">
+        <div class="plot-title">📊 Radiation Pattern</div>
+        <div class="plot-tabs">
+          <button class="plot-tab-btn active" onclick="showPlot2D('horn')">2D Polar</button>
+          <button class="plot-tab-btn" onclick="showPlot3D('horn')">3D Pattern</button>
+        </div>
+      </div>
+      <div id="horn-plot2d" class="plot-container plot-placeholder" style="height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+        <div class="ph-icon">🔊</div><div>Enter parameters and click Calculate</div>
+      </div>
+      <div id="horn-plot3d" class="plot-3d-container" style="display:none"></div>
+    </div>
+    <div class="card" id="horn-info-row" style="display:none">
+      <div class="card-title"><span class="dot"></span>Performance Summary</div>
+      <div class="info-row" id="horn-info-grid"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════
+  SLOT
+═════════════════════════════════════════════ -->
+<div class="antenna-panel" id="panel-slot">
+<div class="desc-card">
+  <h2>⬛ Slot Antenna</h2>
+  <p>Aperture cut in a conducting ground plane. By Babinet's principle, complementary to the dipole. Used in aircraft, waveguide arrays, and flush-mounted applications requiring low profile.</p>
+  <div class="desc-badges">
+    <span class="badge badge-cyan">2.15 dBi Gain</span>
+    <span class="badge badge-green">Flush Mounted</span>
+    <span class="badge badge-orange">~485 Ω Impedance</span>
+  </div>
+</div>
+<div class="panel-grid">
+  <div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Slot Parameters</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Frequency</label>
+          <div class="input-wrap"><input type="number" id="s_fr" value="5.8" step="0.1" min="0.1"><span class="input-unit">GHz</span></div>
+        </div>
+        <div class="form-group">
+          <label>Slot Width w</label>
+          <div class="input-wrap"><input type="number" id="s_w" value="2" step="0.1" min="0.1"><span class="input-unit">mm</span></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Ground Plane Type</label>
+        <div class="input-wrap">
+          <select id="s_gp">
+            <option value="infinite">Infinite ground plane</option>
+            <option value="backed">Cavity-backed</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Substrate εᵣ (if any)</label>
+        <div class="input-wrap"><input type="number" id="s_er" value="1" step="0.1" min="1"></div>
+      </div>
+      <button class="calc-btn" onclick="calcSlot()">⚡ Calculate Slot</button>
+      <button class="reset-btn" onclick="resetForm('slot')">↺ Reset</button>
+    </div>
+    <div class="card" id="slot-results" style="display:none">
+      <div class="card-title"><span class="dot"></span>Design Results</div>
+      <div class="results-grid" id="slot-results-grid"></div>
+      <div style="margin-top:14px">
+        <div class="formula-card">
+          <span class="f-label">Babinet's Principle</span>
+          <div class="f-line"><span class="f-sym">L</span><span class="f-eq">=</span><span class="f-val">λ/2 (resonant length)</span></div>
+          <div class="f-line"><span class="f-sym">Zslot</span><span class="f-eq">=</span><span class="f-val">(η/2)² / Zdipole</span></div>
+          <div class="f-line"><span class="f-sym">Zslot</span><span class="f-eq">≈</span><span class="f-val">485 Ω (free-space)</span></div>
+          <div class="f-line"><span class="f-sym">G</span><span class="f-eq">=</span><span class="f-val">2.15 dBi</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="plots-col">
+    <div class="card">
+      <div class="plot-header">
+        <div class="plot-title">📊 Radiation Pattern</div>
+        <div class="plot-tabs">
+          <button class="plot-tab-btn active" onclick="showPlot2D('slot')">2D Polar</button>
+          <button class="plot-tab-btn" onclick="showPlot3D('slot')">3D Pattern</button>
+        </div>
+      </div>
+      <div id="slot-plot2d" class="plot-container plot-placeholder" style="height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+        <div class="ph-icon">⬛</div><div>Enter parameters and click Calculate</div>
+      </div>
+      <div id="slot-plot3d" class="plot-3d-container" style="display:none"></div>
+    </div>
+    <div class="card" id="slot-info-row" style="display:none">
+      <div class="card-title"><span class="dot"></span>Performance Summary</div>
+      <div class="info-row" id="slot-info-grid"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════
+  LOOP
+═════════════════════════════════════════════ -->
+<div class="antenna-panel" id="panel-loop">
+<div class="desc-card">
+  <h2>⭕ Loop Antenna</h2>
+  <p>Closed conductive loop. Small loops (C≪λ) behave as magnetic dipoles; large resonant loops (C≈λ) achieve 3.4 dBi gain. Widely used in AM reception, RFID, and NFC applications.</p>
+  <div class="desc-badges">
+    <span class="badge badge-cyan">1.76–3.4 dBi</span>
+    <span class="badge badge-green">Magnetic Dipole</span>
+    <span class="badge badge-orange">Multi-Turn Option</span>
+  </div>
+</div>
+<div class="panel-grid">
+  <div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Loop Parameters</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Frequency</label>
+          <div class="input-wrap"><input type="number" id="l_fr" value="13.56" step="0.1" min="0.001"><span class="input-unit">MHz</span></div>
+        </div>
+        <div class="form-group">
+          <label>Loop Radius</label>
+          <div class="input-wrap"><input type="number" id="l_r" value="50" step="1" min="1"><span class="input-unit">mm</span></div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>No. of Turns N</label>
+          <div class="input-wrap"><input type="number" id="l_n" value="1" step="1" min="1" max="100"></div>
+        </div>
+        <div class="form-group">
+          <label>Wire Diameter</label>
+          <div class="input-wrap"><input type="number" id="l_diam" value="1" step="0.1" min="0.1"><span class="input-unit">mm</span></div>
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calcLoop()">⚡ Calculate Loop</button>
+      <button class="reset-btn" onclick="resetForm('loop')">↺ Reset</button>
+    </div>
+    <div class="card" id="loop-results" style="display:none">
+      <div class="card-title"><span class="dot"></span>Design Results</div>
+      <div class="results-grid" id="loop-results-grid"></div>
+      <div style="margin-top:14px">
+        <div class="formula-card">
+          <span class="f-label">Key Equations (small loop)</span>
+          <div class="f-line"><span class="f-sym">C</span><span class="f-eq">=</span><span class="f-val">2πa (circumference)</span></div>
+          <div class="f-line"><span class="f-sym">Rᵣₐd</span><span class="f-eq">=</span><span class="f-val">197·(C/λ)⁴·N² Ω</span></div>
+          <div class="f-line"><span class="f-sym">L</span><span class="f-eq">≈</span><span class="f-val">μ₀·N²·a·[ln(8a/b)-2]</span></div>
+          <div class="f-line"><span class="f-sym">G</span><span class="f-eq">=</span><span class="f-val">1.76 dBi (small loop)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="plots-col">
+    <div class="card">
+      <div class="plot-header">
+        <div class="plot-title">📊 Radiation Pattern</div>
+        <div class="plot-tabs">
+          <button class="plot-tab-btn active" onclick="showPlot2D('loop')">2D Polar</button>
+          <button class="plot-tab-btn" onclick="showPlot3D('loop')">3D Pattern</button>
+        </div>
+      </div>
+      <div id="loop-plot2d" class="plot-container plot-placeholder" style="height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+        <div class="ph-icon">⭕</div><div>Enter parameters and click Calculate</div>
+      </div>
+      <div id="loop-plot3d" class="plot-3d-container" style="display:none"></div>
+    </div>
+    <div class="card" id="loop-info-row" style="display:none">
+      <div class="card-title"><span class="dot"></span>Performance Summary</div>
+      <div class="info-row" id="loop-info-grid"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════════════════
+  PARABOLIC
+═════════════════════════════════════════════ -->
+<div class="antenna-panel" id="panel-parabolic">
+<div class="desc-card">
+  <h2>🔭 Parabolic Reflector</h2>
+  <p>High-gain aperture antenna using a paraboloid reflector to focus energy. Gain scales with (D/λ)². Used in satellite communications, radio telescopes, and microwave links.</p>
+  <div class="desc-badges">
+    <span class="badge badge-cyan">20–50+ dBi Gain</span>
+    <span class="badge badge-green">Very Narrow Beam</span>
+    <span class="badge badge-orange">High Efficiency</span>
+  </div>
+</div>
+<div class="panel-grid">
+  <div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>Reflector Parameters</div>
+      <div class="form-group">
+        <label>Frequency</label>
+        <div class="input-wrap"><input type="number" id="par_fr" value="12" step="0.5" min="0.1"><span class="input-unit">GHz</span></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Diameter D</label>
+          <div class="input-wrap"><input type="number" id="par_d" value="600" step="10" min="10"><span class="input-unit">mm</span></div>
+        </div>
+        <div class="form-group">
+          <label>f/D Ratio</label>
+          <div class="input-wrap"><input type="number" id="par_fd" value="0.4" step="0.05" min="0.2" max="1.0"></div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Efficiency η</label>
+          <div class="input-wrap"><input type="number" id="par_eta" value="0.60" step="0.01" min="0.3" max="0.85"></div>
+        </div>
+        <div class="form-group">
+          <label>Feed Type</label>
+          <div class="input-wrap">
+            <select id="par_feed">
+              <option value="horn">Horn feed</option>
+              <option value="dipole">Dipole feed</option>
+              <option value="patch">Patch feed</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calcParabolic()">⚡ Calculate Parabolic</button>
+      <button class="reset-btn" onclick="resetForm('parabolic')">↺ Reset</button>
+    </div>
+    <div class="card" id="parabolic-results" style="display:none">
+      <div class="card-title"><span class="dot"></span>Design Results</div>
+      <div class="results-grid" id="parabolic-results-grid"></div>
+      <div style="margin-top:14px">
+        <div class="formula-card">
+          <span class="f-label">Key Equations</span>
+          <div class="f-line"><span class="f-sym">G</span><span class="f-eq">=</span><span class="f-val">η·(πD/λ)²</span></div>
+          <div class="f-line"><span class="f-sym">f</span><span class="f-eq">=</span><span class="f-val">(f/D)·D</span></div>
+          <div class="f-line"><span class="f-sym">HPBW</span><span class="f-eq">≈</span><span class="f-val">70·λ/D (degrees)</span></div>
+          <div class="f-line"><span class="f-sym">SLL</span><span class="f-eq">≈</span><span class="f-val">−17.6 dB (uniform)</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="plots-col">
+    <div class="card">
+      <div class="plot-header">
+        <div class="plot-title">📊 Radiation Pattern</div>
+        <div class="plot-tabs">
+          <button class="plot-tab-btn active" onclick="showPlot2D('parabolic')">2D Polar</button>
+          <button class="plot-tab-btn" onclick="showPlot3D('parabolic')">3D Pattern</button>
+        </div>
+      </div>
+      <div id="parabolic-plot2d" class="plot-container plot-placeholder" style="height:340px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">
+        <div class="ph-icon">🔭</div><div>Enter parameters and click Calculate</div>
+      </div>
+      <div id="parabolic-plot3d" class="plot-3d-container" style="display:none"></div>
+    </div>
+    <div class="card" id="parabolic-info-row" style="display:none">
+      <div class="card-title"><span class="dot"></span>Performance Summary</div>
+      <div class="info-row" id="parabolic-info-grid"></div>
+    </div>
+  </div>
+</div>
+</div>
+
+</main>
+
+<footer class="site-footer">
+  <strong>Electronics 101 Antenna Design Calculator</strong> &nbsp;·&nbsp; By Sanu Roy &nbsp;·&nbsp;
+  M.Tech RF & Microwave Engineering, IIT Kharagpur &nbsp;·&nbsp; 3+ Years RF Design & Simulation Experience &nbsp;·&nbsp; IEEE AP-MTTS Member<br>
+  <span style="opacity:0.6;margin-top:4px;display:block">Free educational resource for the RF engineering community · <a href="../" style="color:#93c5fd">More free tools at electronics101.online</a></span>
+</footer>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════════════
+//  CONSTANTS
+// ══════════════════════════════════════════════════════════════════════════════
+const C0 = 3e8; // speed of light
+const PI = Math.PI;
+const MU0 = 4*PI*1e-7;
+const EPS0 = 8.854e-12;
+const ETA0 = 376.73; // free-space impedance
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  TAB NAVIGATION
+// ══════════════════════════════════════════════════════════════════════════════
+function switchTab(name) {
+  document.querySelectorAll('.antenna-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  document.getElementById('tab-'+name).classList.add('active');
+  document.getElementById('panel-'+name).scrollIntoView({behavior:'smooth',block:'start'});
+  window.scrollBy(0,-130);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  PLOT TAB SWITCHING
+// ══════════════════════════════════════════════════════════════════════════════
+function showPlot2D(ant) {
+  const p2 = document.getElementById(ant+'-plot2d');
+  const p3 = document.getElementById(ant+'-plot3d');
+  p2.style.display='block'; p3.style.display='none';
+  const btns = document.querySelectorAll('#panel-'+ant+' .plot-tab-btn');
+  btns[0].classList.add('active'); btns[1].classList.remove('active');
+}
+function showPlot3D(ant) {
+  const p2 = document.getElementById(ant+'-plot2d');
+  const p3 = document.getElementById(ant+'-plot3d');
+  p2.style.display='none'; p3.style.display='block';
+  const btns = document.querySelectorAll('#panel-'+ant+' .plot-tab-btn');
+  btns[0].classList.remove('active'); btns[1].classList.add('active');
+  // Trigger resize for 3D plot
+  window.dispatchEvent(new Event('resize'));
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  HELPER: RESULTS CARD
+// ══════════════════════════════════════════════════════════════════════════════
+function renderResults(antId, items) {
+  const card = document.getElementById(antId+'-results');
+  const grid = document.getElementById(antId+'-results-grid');
+  card.style.display = 'block';
+  grid.innerHTML = items.map(it => `
+    <div class="result-item ${it.cls||''}">
+      <div class="result-label">${it.label}</div>
+      <div class="result-value">${it.val}<span class="result-unit">${it.unit||''}</span></div>
+    </div>`).join('');
+}
+
+function renderInfoRow(antId, stats) {
+  const row = document.getElementById(antId+'-info-row');
+  const grid = document.getElementById(antId+'-info-grid');
+  row.style.display = 'block';
+  grid.innerHTML = stats.map(s=>`
+    <div class="info-box">
+      <div class="ib-val">${s.val}</div>
+      <div class="ib-lbl">${s.lbl}</div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  PLOTLY HELPERS
+// ══════════════════════════════════════════════════════════════════════════════
+const PLT_LAYOUT_2D = (title) => ({
+  title:{text:title,font:{size:13,color:'#0f2952'},x:0.5},
+  paper_bgcolor:'#f8fafc', plot_bgcolor:'#f8fafc',
+  polar:{
+    radialaxis:{visible:true,range:[0,1],showticklabels:false,gridcolor:'#dbeafe'},
+    angularaxis:{direction:'clockwise',rotation:90,gridcolor:'#dbeafe',color:'#475569',tickfont:{size:11}},
+    bgcolor:'#f0f7ff'
+  },
+  margin:{l:20,r:20,t:40,b:20},
+  showlegend:true,
+  legend:{x:0.85,y:1,font:{size:11}},
+  font:{family:'Inter, sans-serif'}
+});
+
+const PLT_CONFIG = {displayModeBar:true,modeBarButtonsToRemove:['lasso2d','select2d'],
+  displaylogo:false,responsive:true};
+
+function genPolarTrace(rfn, name, color, N=360) {
+  const theta=[], r=[];
+  for(let i=0;i<=N;i++){
+    const t=i*PI/180;
+    theta.push(i);
+    r.push(Math.max(0,rfn(t)));
+  }
+  // normalise
+  const mx=Math.max(...r)||1;
+  return {type:'scatterpolar',mode:'lines',name,
+    theta,r:r.map(v=>v/mx),
+    line:{color,width:2.5},fill:'toself',fillcolor:color+'22'};
+}
+
+function gen3DSurface(rfn3, name) {
+  const NTH=60, NPH=60;
+  const x=[], y=[], z=[], cvals=[];
+  const row_x=[], row_y=[], row_z=[];
+  for(let it=0;it<=NTH;it++){
+    const th = it/NTH*PI;
+    const rx=[], ry=[], rz=[];
+    for(let ip=0;ip<=NPH;ip++){
+      const ph = ip/NPH*2*PI;
+      const r  = Math.max(0, rfn3(th,ph));
+      rx.push(r*Math.sin(th)*Math.cos(ph));
+      ry.push(r*Math.sin(th)*Math.sin(ph));
+      rz.push(r*Math.cos(th));
+    }
+    row_x.push(rx); row_y.push(ry); row_z.push(rz);
+  }
+  return {type:'surface', x:row_x, y:row_y, z:row_z,
+    colorscale:[
+      [0,'#dbeafe'],[0.25,'#3b82f6'],[0.5,'#1a56db'],
+      [0.75,'#0ea5e9'],[1,'#22d3ee']],
+    showscale:false, opacity:0.88,
+    hovertemplate:'r=%{text:.3f}<extra>'+name+'</extra>'};
+}
+
+const PLT_LAYOUT_3D = (title) => ({
+  title:{text:title,font:{size:13,color:'#0f2952'},x:0.5},
+  paper_bgcolor:'#f8fafc',
+  scene:{
+    xaxis:{showbackground:false,gridcolor:'#dbeafe',color:'#475569',title:'x'},
+    yaxis:{showbackground:false,gridcolor:'#dbeafe',color:'#475569',title:'y'},
+    zaxis:{showbackground:false,gridcolor:'#dbeafe',color:'#475569',title:'z'},
+    bgcolor:'#f0f7ff',
+    camera:{eye:{x:1.4,y:1.4,z:1.1}},
+    aspectmode:'cube'
+  },
+  margin:{l:0,r:0,t:40,b:0},
+  font:{family:'Inter, sans-serif'}
+});
+
+function plotAntenna(antId, fn2d, fn3d, title2d, title3d) {
+  const div2d = document.getElementById(antId+'-plot2d');
+  const div3d = document.getElementById(antId+'-plot3d');
+  div2d.className = 'plot-container';
+  div2d.style.height = '340px';
+
+  // 2D polar — E-plane and H-plane
+  const trE = genPolarTrace((t)=>fn2d(t,0),   'E-plane', '#1a56db');
+  const trH = genPolarTrace((t)=>fn2d(t,PI/2), 'H-plane', '#0ea5e9');
+  Plotly.newPlot(div2d, [trE,trH], PLT_LAYOUT_2D(title2d), PLT_CONFIG);
+
+  // 3D surface
+  div3d.style.height = '420px';
+  const surf = gen3DSurface(fn3d, antId);
+  Plotly.newPlot(div3d, [surf], PLT_LAYOUT_3D(title3d), PLT_CONFIG);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  RESET
+// ══════════════════════════════════════════════════════════════════════════════
+const DEFAULTS = {
+  patch:   {p_er:4.4, p_h:1.6, p_tand:0.02, p_fr:2.4, p_xf:0},
+  dipole:  {d_fr:433, d_diam:1, d_type:'half', d_len:0, d_medium:'1'},
+  monopole:{m_fr:900, m_diam:2, m_type:'quarter', m_gp:0},
+  yagi:    {y_fr:144, y_nd:4, y_ds:0.35, y_rs:0.25, y_diam:6},
+  horn:    {h_fr:10,h_a:22.86,h_b:10.16,h_a1:60,h_b1:80,h_eta:0.51},
+  slot:    {s_fr:5.8, s_w:2, s_gp:'infinite', s_er:1},
+  loop:    {l_fr:13.56, l_r:50, l_n:1, l_diam:1},
+  parabolic:{par_fr:12, par_d:600, par_fd:0.4, par_eta:0.60, par_feed:'horn'}
+};
+
+function resetForm(ant) {
+  const d = DEFAULTS[ant];
+  Object.entries(d).forEach(([id,val]) => {
+    const el = document.getElementById(id);
+    if(el) el.value = val;
+  });
+  document.getElementById(ant+'-results').style.display='none';
+  const infoRow = document.getElementById(ant+'-info-row');
+  if(infoRow) infoRow.style.display='none';
+  const p2 = document.getElementById(ant+'-plot2d');
+  p2.className = 'plot-container plot-placeholder';
+  p2.style.height='340px';
+  p2.style.display='flex';
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  PRESETS
+// ══════════════════════════════════════════════════════════════════════════════
+function patchPreset(er, name) {
+  document.getElementById('p_er').value = er;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  1. MICROSTRIP PATCH CALCULATOR
+// ══════════════════════════════════════════════════════════════════════════════
+function calcPatch() {
+  const er  = parseFloat(document.getElementById('p_er').value);
+  const h   = parseFloat(document.getElementById('p_h').value)*1e-3;
+  const fr  = parseFloat(document.getElementById('p_fr').value)*1e9;
+  const td  = parseFloat(document.getElementById('p_tand').value)||0;
+
+  // Width
+  const W = (C0/(2*fr)) * Math.sqrt(2/(er+1));
+  // Effective εr (Hammerstad & Jensen)
+  const ereff = (er+1)/2 + (er-1)/2 * Math.pow(1+12*h/W,-0.5);
+  // Length extension
+  const dL = 0.412*h*((ereff+0.3)*(W/h+0.264))/((ereff-0.258)*(W/h+0.8));
+  // Effective + actual length
+  const Leff = C0/(2*fr*Math.sqrt(ereff));
+  const L    = Leff - 2*dL;
+  // Practical resonant frequency
+  const fr_actual = C0/(2*(L+2*dL)*Math.sqrt(ereff));
+  // Gain estimate (Balanis)
+  const k0  = 2*PI*fr/C0;
+  const Glin = 4.5*Math.pow(W/h,0.5); // simplified
+  const G_dBi = 10*Math.log10(Math.min(8.5, 4.5*(W/h)*h/Leff));
+  const gain = Math.min(8.5, Math.max(4,
+    10*Math.log10((2*PI/ETA0)*(W*W/(PI*h*Leff)))));
+  // Bandwidth estimate
+  const BW = (er+1)/(er*Math.sqrt(er)) * (h/W) * (C0/fr)*100/PI;
+  const BW_pct = Math.min(20, Math.max(1, BW));
+  // Radiation resistance
+  const Rr = ETA0/(8*(W*W*fr*fr/(C0*C0)));
+  // Input impedance (edge fed)
+  const Zin_edge = ETA0*Leff*Leff/(4*W*h);
+
+  renderResults('patch',[
+    {label:'Patch Width W',   val:fmt(W*1e3,2),  unit:'mm',   cls:'highlight'},
+    {label:'Patch Length L',  val:fmt(L*1e3,2),  unit:'mm',   cls:'highlight'},
+    {label:'Effective εᵣ',    val:fmt(ereff,3),  unit:''},
+    {label:'Length Extension ΔL', val:fmt(dL*1e3,4),unit:'mm'},
+    {label:'W/H Ratio',       val:fmt(W/h,2),    unit:''},
+    {label:'Bandwidth',       val:fmt(BW_pct,1), unit:'%'},
+    {label:'Peak Gain',       val:fmt(gain,1),   unit:'dBi',  cls:'gain-item'},
+    {label:'Edge Impedance',  val:fmt(Math.min(300,ETA0*Leff/(4*W)),0),unit:'Ω'},
+  ]);
+
+  renderInfoRow('patch',[
+    {val:fmt(W*1e3,1)+' mm',  lbl:'Width W'},
+    {val:fmt(L*1e3,1)+' mm',  lbl:'Length L'},
+    {val:fmt(gain,1)+' dBi',  lbl:'Peak Gain'},
+  ]);
+
+  // Pattern functions
+  function fn2d(theta, phi) {
+    // Patch far-field pattern (simplified cavity model)
+    const k0W = PI*W*Math.sin(theta)*Math.cos(phi)/C0*fr*2;
+    const sinX = Math.abs(k0W)<1e-6 ? 1 : Math.sin(k0W)/k0W;
+    const cosT = Math.cos(theta);
+    return sinX * cosT;
+  }
+  function fn3d(theta, phi) {
+    const k0W = PI*W*Math.sin(theta)*Math.cos(phi)/C0*fr*2;
+    const sinX = Math.abs(k0W)<1e-6 ? 1 : Math.sin(k0W)/k0W;
+    return Math.max(0, sinX * Math.cos(theta));
+  }
+
+  plotAntenna('patch', fn2d, fn3d,
+    'Patch Radiation Pattern (normalised)',
+    '3D Radiation Pattern — Patch Antenna');
+  document.getElementById('patch-plot2d').style.display='block';
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  2. DIPOLE CALCULATOR
+// ══════════════════════════════════════════════════════════════════════════════
+function calcDipole() {
+  const fr_MHz = parseFloat(document.getElementById('d_fr').value);
+  const fr = fr_MHz*1e6;
+  const diam = parseFloat(document.getElementById('d_diam').value)*1e-3;
+  const type = document.getElementById('d_type').value;
+  const med  = parseFloat(document.getElementById('d_medium').value)||1;
+
+  const lam = C0/(fr*Math.sqrt(med));
+  let L, Rr, G_dBi, Xa;
+
+  if(type==='half')  { L=0.95*lam/2; Rr=73.1; G_dBi=2.15; Xa=42.5*(1-0.95); }
+  else if(type==='short') { L=0.1*lam; Rr=197*Math.pow(2*PI*L/lam,4)*20; G_dBi=1.76; Xa=0; }
+  else if(type==='full')  { L=0.95*lam;   Rr=199; G_dBi=3.8;  Xa=0; }
+  else { L=parseFloat(document.getElementById('d_len').value)*1e-3||lam/2;
+         const kl=PI*L/lam;
+         Rr=73.1*(L/(lam/2))*(L/(lam/2)); G_dBi=2.15; Xa=0; }
+
+  const VSWR_50 = (Rr>50) ? Rr/50 : 50/Rr;
+  const BW_MHz  = fr_MHz/50; // rough Q estimate
+
+  renderResults('dipole',[
+    {label:'Total Length L',  val:fmt(L*1e3,1),   unit:'mm',  cls:'highlight'},
+    {label:'Arm Length L/2',  val:fmt(L*1e2/2,2), unit:'cm',  cls:'highlight'},
+    {label:'Wavelength λ',    val:fmt(lam*1e3,1), unit:'mm'},
+    {label:'L/λ Ratio',       val:fmt(L/lam,3),   unit:''},
+    {label:'Rrad',            val:fmt(Rr,1),      unit:'Ω'},
+    {label:'Reactance Xa',    val:fmt(Xa,1),      unit:'Ω'},
+    {label:'Peak Gain',       val:fmt(G_dBi,2),   unit:'dBi', cls:'gain-item'},
+    {label:'VSWR (50Ω)',      val:fmt(VSWR_50,2),  unit:''},
+  ]);
+
+  renderInfoRow('dipole',[
+    {val:fmt(L*1e3,1)+' mm', lbl:'Length'},
+    {val:fmt(G_dBi,2)+' dBi',lbl:'Gain'},
+    {val:fmt(Rr,1)+' Ω',     lbl:'Rrad'},
+  ]);
+
+  const kl = PI*(L/lam);
+  function fn2d(theta, phi) {
+    const st = Math.sin(theta)||1e-9;
+    const val = (Math.cos(kl*Math.cos(theta))-Math.cos(kl))/st;
+    return Math.abs(val);
+  }
+  function fn3d(theta, phi) {
+    const st = Math.sin(theta)||1e-9;
+    const val = (Math.cos(kl*Math.cos(theta))-Math.cos(kl))/st;
+    return Math.max(0, Math.abs(val));
+  }
+
+  plotAntenna('dipole', fn2d, fn3d,
+    'Dipole Radiation Pattern (normalised)',
+    '3D Radiation Pattern — Dipole Antenna');
+  document.getElementById('dipole-plot2d').style.display='block';
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  3. MONOPOLE CALCULATOR
+// ══════════════════════════════════════════════════════════════════════════════
+function calcMonopole() {
+  const fr_MHz = parseFloat(document.getElementById('m_fr').value);
+  const fr = fr_MHz*1e6;
+  const type = document.getElementById('m_type').value;
+  const gp_mm = parseFloat(document.getElementById('m_gp').value)||0;
+
+  const lam = C0/fr;
+  let L, G_dBi, Rr, Xa;
+
+  if(type==='quarter')      { L=0.95*lam/4; G_dBi=5.15; Rr=36.5; Xa=21.25; }
+  else if(type==='three-eighth') { L=3*lam/8;  G_dBi=5.8;  Rr=150;  Xa=-200; }
+  else                       { L=5*lam/8;  G_dBi=5.8;  Rr=65;   Xa=0;    }
+
+  const gp_min = lam/4*1e3;
+  const gp_ok  = gp_mm>=gp_min;
+
+  renderResults('monopole',[
+    {label:'Element Length L',val:fmt(L*1e3,1),   unit:'mm',  cls:'highlight'},
+    {label:'Wavelength λ',    val:fmt(lam*1e3,1), unit:'mm'},
+    {label:'L/λ Ratio',       val:fmt(L/lam,3),   unit:''},
+    {label:'Rrad (ref gnd)',   val:fmt(Rr,1),      unit:'Ω'},
+    {label:'Reactance Xa',    val:fmt(Xa,1),      unit:'Ω'},
+    {label:'Peak Gain',       val:fmt(G_dBi,2),   unit:'dBi', cls:'gain-item'},
+    {label:'Min GP Diameter', val:fmt(gp_min,1),  unit:'mm'},
+    {label:'GP Status',       val:gp_mm>0?(gp_ok?'OK':'Too small!'):'-', unit:''},
+  ]);
+
+  renderInfoRow('monopole',[
+    {val:fmt(L*1e3,1)+' mm', lbl:'Length'},
+    {val:fmt(G_dBi,2)+' dBi',lbl:'Gain'},
+    {val:fmt(Rr,1)+' Ω',     lbl:'Impedance'},
+  ]);
+
+  const kl = PI*(L/(lam/2));
+  function fn2d(theta, phi) {
+    if(theta > PI/2) return 0; // above ground only
+    const st = Math.sin(theta)||1e-9;
+    const val = (Math.cos(kl*Math.cos(theta))-Math.cos(kl))/st;
+    return Math.abs(val);
+  }
+  function fn3d(theta, phi) {
+    if(theta > PI/2) return 0;
+    const st = Math.sin(theta)||1e-9;
+    const val = (Math.cos(kl*Math.cos(theta))-Math.cos(kl))/st;
+    return Math.max(0, Math.abs(val));
+  }
+
+  plotAntenna('monopole', fn2d, fn3d,
+    'Monopole Pattern — upper hemisphere',
+    '3D Radiation Pattern — Monopole Antenna');
+  document.getElementById('monopole-plot2d').style.display='block';
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  4. YAGI-UDA CALCULATOR
+// ══════════════════════════════════════════════════════════════════════════════
+function calcYagi() {
+  const fr_MHz = parseFloat(document.getElementById('y_fr').value);
+  const fr = fr_MHz*1e6;
+  const nd = parseInt(document.getElementById('y_nd').value)||0;
+  const ds = parseFloat(document.getElementById('y_ds').value); // in lambda
+  const rs = parseFloat(document.getElementById('y_rs').value);
+
+  const lam = C0/fr;
+  const N_total = nd+2; // reflector + driven + directors
+
+  // Element lengths
+  const L_ref  = 0.500*lam;
+  const L_drv  = 0.470*lam;
+  const L_dir1 = 0.440*lam;
+  const L_dirN = 0.400*lam;
+
+  // Total boom length
+  const boom = rs*lam + nd*ds*lam;
+
+  // Gain (empirical Yagi gain formula)
+  const G_lin = 10*Math.log10(Math.max(1, 0.8*(nd+1)*ds));
+  const G_dBi = 2.15 + G_lin + 0.5*(nd>0?1:0);
+
+  // Front-to-back ratio
+  const FBR = 10 + 3*nd;
+
+  // Input impedance at driven element
+  const Zin = nd>0 ? (20 + 5*nd) : 73; // approximation
+
+  // HPBW approximate
+  const HPBW = Math.max(15, 102/Math.sqrt(Math.pow(10,G_dBi/10)));
+
+  renderResults('yagi',[
+    {label:'Reflector Length', val:fmt(L_ref*1e3,1), unit:'mm'},
+    {label:'Driven (Dipole)',  val:fmt(L_drv*1e3,1), unit:'mm', cls:'highlight'},
+    {label:'Director 1 Length',val:fmt(L_dir1*1e3,1),unit:'mm'},
+    {label:'Director N Length',val:fmt(L_dirN*1e3,1),unit:'mm'},
+    {label:'Boom Length',      val:fmt(boom*1e3,0),  unit:'mm'},
+    {label:'Peak Gain',        val:fmt(G_dBi,1),     unit:'dBi', cls:'gain-item'},
+    {label:'HPBW',             val:fmt(HPBW,0),      unit:'°'},
+    {label:'F/B Ratio',        val:fmt(FBR,0),       unit:'dB'},
+  ]);
+
+  renderInfoRow('yagi',[
+    {val:fmt(G_dBi,1)+' dBi', lbl:'Peak Gain'},
+    {val:fmt(HPBW,0)+'°',     lbl:'HPBW'},
+    {val:fmt(boom*1e2,1)+' cm',lbl:'Boom Length'},
+  ]);
+
+  // Yagi pattern: cardioid-like in forward direction
+  function fn2d(theta, phi) {
+    // Simplified pattern model for Yagi in elevation
+    const cT = Math.cos(theta);
+    const elem = (nd+1);
+    // Array factor approximation
+    const AF = Math.pow(Math.max(0,(1+cT)/2), 0.5+nd*0.3);
+    const dipole = Math.abs(Math.cos(PI/2*Math.cos(theta))/(Math.sin(theta)+1e-9));
+    return AF * dipole;
+  }
+  function fn3d(theta, phi) {
+    const cT = Math.cos(theta);
+    const AF = Math.pow(Math.max(0,(1+cT)/2), 0.5+nd*0.3);
+    const dipole = Math.abs(Math.cos(PI/2*Math.cos(theta))/(Math.sin(theta)+1e-9));
+    const hplane = Math.cos(phi)>-0.3 ? 1 : 0.15;
+    return Math.max(0, AF * dipole);
+  }
+
+  plotAntenna('yagi', fn2d, fn3d,
+    'Yagi-Uda Radiation Pattern (normalised)',
+    '3D Radiation Pattern — Yagi-Uda Antenna');
+  document.getElementById('yagi-plot2d').style.display='block';
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  5. HORN CALCULATOR
+// ══════════════════════════════════════════════════════════════════════════════
+function calcHorn() {
+  const fr  = parseFloat(document.getElementById('h_fr').value)*1e9;
+  const a   = parseFloat(document.getElementById('h_a').value)*1e-3;
+  const b   = parseFloat(document.getElementById('h_b').value)*1e-3;
+  const a1  = parseFloat(document.getElementById('h_a1').value)*1e-3; // E-plane aperture
+  const b1  = parseFloat(document.getElementById('h_b1').value)*1e-3; // H-plane aperture
+  const eta = parseFloat(document.getElementById('h_eta').value);
+
+  const lam = C0/fr;
+  const k0  = 2*PI/lam;
+
+  // Gain
+  const G_lin = eta*(4*PI*a1*b1/(lam*lam));
+  const G_dBi = 10*Math.log10(G_lin);
+
+  // HPBW
+  const HPBW_E = 56*lam/b1*(180/PI);
+  const HPBW_H = 67*lam/a1*(180/PI);
+
+  // Slant lengths
+  const rhoE = b1*b1/(8*lam);
+  const rhoH = a1*a1/(3*lam);
+
+  // Cutoff frequency of WG
+  const fc = C0/(2*a);
+
+  renderResults('horn',[
+    {label:'Peak Gain',    val:fmt(G_dBi,1),     unit:'dBi', cls:'gain-item'},
+    {label:'Aperture A₁×B₁',val:fmt(a1*1e3,1)+'×'+fmt(b1*1e3,1),unit:'mm'},
+    {label:'HPBW (E-plane)',val:fmt(HPBW_E,1),   unit:'°'},
+    {label:'HPBW (H-plane)',val:fmt(HPBW_H,1),   unit:'°'},
+    {label:'Slant ρ_E',   val:fmt(rhoE*1e3,1),  unit:'mm'},
+    {label:'Slant ρ_H',   val:fmt(rhoH*1e3,1),  unit:'mm'},
+    {label:'WG Cutoff fc', val:fmt(fc*1e-9,3),   unit:'GHz'},
+    {label:'Efficiency η', val:fmt(eta*100,0),    unit:'%'},
+  ]);
+
+  renderInfoRow('horn',[
+    {val:fmt(G_dBi,1)+' dBi',  lbl:'Peak Gain'},
+    {val:fmt(HPBW_E,1)+'°',    lbl:'HPBW E-plane'},
+    {val:fmt(HPBW_H,1)+'°',    lbl:'HPBW H-plane'},
+  ]);
+
+  const ke = PI*b1/lam; // E-plane parameter
+  const kh = PI*a1/lam; // H-plane parameter
+
+  function fn2d(theta, phi) {
+    const st = Math.sin(theta)+1e-9;
+    const ct = Math.cos(theta);
+    // E-plane (phi=0): sinc in E
+    if(Math.abs(phi)<0.1||Math.abs(phi-PI)<0.1) {
+      const uE = ke*st;
+      const fE = Math.abs(uE)<0.01 ? 1 : Math.sin(uE)/uE;
+      return Math.abs(fE*ct);
+    }
+    // H-plane (phi=pi/2): sinc in H
+    const uH = kh*st;
+    const fH = Math.abs(uH)<0.01 ? 1 : Math.sin(uH)/uH;
+    return Math.abs(fH*ct);
+  }
+  function fn3d(theta, phi) {
+    const st = Math.sin(theta)+1e-9;
+    const ct = Math.max(0,Math.cos(theta));
+    const uE = ke*st*Math.sin(phi);
+    const uH = kh*st*Math.cos(phi);
+    const fE = Math.abs(uE)<0.01 ? 1 : Math.sin(uE)/uE;
+    const fH = Math.abs(uH)<0.01 ? 1 : Math.sin(uH)/uH;
+    return Math.max(0, Math.abs(fE*fH*ct));
+  }
+
+  plotAntenna('horn', fn2d, fn3d,
+    'Horn Radiation Pattern (E & H planes)',
+    '3D Radiation Pattern — Pyramidal Horn');
+  document.getElementById('horn-plot2d').style.display='block';
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  6. SLOT CALCULATOR
+// ══════════════════════════════════════════════════════════════════════════════
+function calcSlot() {
+  const fr  = parseFloat(document.getElementById('s_fr').value)*1e9;
+  const sw  = parseFloat(document.getElementById('s_w').value)*1e-3;
+  const gp  = document.getElementById('s_gp').value;
+  const er  = parseFloat(document.getElementById('s_er').value)||1;
+
+  const lam = C0/(fr*Math.sqrt(er));
+  const L   = lam/2; // resonant length
+
+  // Babinet's principle
+  const Zdipole = 73.1;
+  const Zslot   = (ETA0/2)*(ETA0/2)/Zdipole;
+  const Zin     = gp==='backed' ? Zslot/2 : Zslot;
+  const G_dBi   = gp==='backed' ? 5.15 : 2.15;
+
+  const VSWR_50 = Zin>50 ? Zin/50 : 50/Zin;
+
+  renderResults('slot',[
+    {label:'Slot Length L', val:fmt(L*1e3,2),    unit:'mm', cls:'highlight'},
+    {label:'Slot Width W',  val:fmt(sw*1e3,2),   unit:'mm'},
+    {label:'λ (medium)',    val:fmt(lam*1e3,1),  unit:'mm'},
+    {label:'Slot Impedance',val:fmt(Zin,0),      unit:'Ω'},
+    {label:'Zdipole (ref)', val:fmt(Zdipole,1),  unit:'Ω'},
+    {label:'Peak Gain',     val:fmt(G_dBi,2),    unit:'dBi', cls:'gain-item'},
+    {label:'VSWR (50Ω)',    val:fmt(VSWR_50,1),  unit:''},
+    {label:'Polarization',  val:'Horizontal',    unit:''},
+  ]);
+
+  renderInfoRow('slot',[
+    {val:fmt(L*1e3,1)+' mm', lbl:'Slot Length'},
+    {val:fmt(G_dBi,2)+' dBi',lbl:'Gain'},
+    {val:fmt(Zin,0)+' Ω',   lbl:'Impedance'},
+  ]);
+
+  // Slot pattern = dipole pattern (orthogonal polarization)
+  function fn2d(theta, phi) {
+    const st = Math.sin(theta)||1e-9;
+    const val = Math.cos(PI/2*Math.cos(theta))/st;
+    return Math.abs(val) * (gp==='backed' ? Math.max(0,Math.cos(theta)) : 1);
+  }
+  function fn3d(theta, phi) {
+    const st = Math.sin(theta)||1e-9;
+    const val = Math.cos(PI/2*Math.cos(phi))/st;
+    return Math.max(0, Math.abs(val));
+  }
+
+  plotAntenna('slot', fn2d, fn3d,
+    'Slot Radiation Pattern (normalised)',
+    '3D Radiation Pattern — Slot Antenna');
+  document.getElementById('slot-plot2d').style.display='block';
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  7. LOOP CALCULATOR
+// ══════════════════════════════════════════════════════════════════════════════
+function calcLoop() {
+  const fr_MHz = parseFloat(document.getElementById('l_fr').value);
+  const fr     = fr_MHz*1e6;
+  const a_mm   = parseFloat(document.getElementById('l_r').value);
+  const a      = a_mm*1e-3;
+  const N      = parseInt(document.getElementById('l_n').value)||1;
+  const d_mm   = parseFloat(document.getElementById('l_diam').value);
+  const b      = d_mm*1e-3/2; // wire radius
+
+  const lam  = C0/fr;
+  const k0   = 2*PI/lam;
+  const C    = 2*PI*a; // circumference
+  const A    = PI*a*a; // area
+
+  // Classification
+  const isSmall = C/lam < 0.5;
+  const G_dBi = isSmall ? 1.76 : 3.4;
+
+  // Radiation resistance
+  const Rr = 197*Math.pow(C/lam,4)*N*N;
+
+  // Self-inductance (Neumann formula approx)
+  const L_ind = MU0*N*N*a*(Math.log(8*a/b)-2)*1e9; // nH
+
+  // Loss resistance (skin effect)
+  const sigma_cu = 5.8e7;
+  const Rs = Math.sqrt(PI*fr*MU0/sigma_cu);
+  const Rloss = N*(2*PI*a)*Rs/(PI*b*b*PI*1e-3); // rough
+
+  // Q factor
+  const Q = Math.sqrt(MU0/EPS0)*k0*a/(Rr+1);
+
+  renderResults('loop',[
+    {label:'Circumference C', val:fmt(C*1e3,1),   unit:'mm'},
+    {label:'C/λ ratio',       val:fmt(C/lam,4),   unit:''},
+    {label:'Loop Area A',     val:fmt(A*1e6,2),    unit:'cm²'},
+    {label:'Rrad',            val:fmt(Rr,4),       unit:'Ω'},
+    {label:'Inductance L',    val:fmt(L_ind,2),    unit:'nH'},
+    {label:'Q factor (est.)', val:fmt(Math.min(999,Q),0), unit:''},
+    {label:'Peak Gain',       val:fmt(G_dBi,2),    unit:'dBi', cls:'gain-item'},
+    {label:'Type',            val:isSmall?'Small loop':'Large loop', unit:''},
+  ]);
+
+  renderInfoRow('loop',[
+    {val:fmt(G_dBi,2)+' dBi', lbl:'Gain'},
+    {val:fmt(Rr,4)+' Ω',      lbl:'Rrad'},
+    {val:fmt(L_ind,2)+' nH',  lbl:'Inductance'},
+  ]);
+
+  // Small loop = magnetic dipole pattern (sin θ in azimuth plane)
+  function fn2d(theta, phi) {
+    return Math.abs(Math.sin(theta));
+  }
+  function fn3d(theta, phi) {
+    return Math.max(0, Math.abs(Math.sin(theta)));
+  }
+
+  plotAntenna('loop', fn2d, fn3d,
+    'Loop Radiation Pattern (normalised)',
+    '3D Radiation Pattern — Loop Antenna');
+  document.getElementById('loop-plot2d').style.display='block';
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  8. PARABOLIC REFLECTOR CALCULATOR
+// ══════════════════════════════════════════════════════════════════════════════
+function calcParabolic() {
+  const fr  = parseFloat(document.getElementById('par_fr').value)*1e9;
+  const D   = parseFloat(document.getElementById('par_d').value)*1e-3;
+  const fd  = parseFloat(document.getElementById('par_fd').value);
+  const eta = parseFloat(document.getElementById('par_eta').value);
+
+  const lam = C0/fr;
+  const f   = fd*D; // focal length
+
+  // Gain
+  const G_lin = eta*Math.pow(PI*D/lam,2);
+  const G_dBi = 10*Math.log10(G_lin);
+
+  // Beamwidths
+  const HPBW = 70*lam/D;
+  const FNBW = 140*lam/D; // approx
+
+  // Aperture area & effective area
+  const Aphys = PI*D*D/4;
+  const Aeff  = eta*Aphys;
+
+  // Side-lobe level
+  const SLL = -17.6; // uniform aperture
+
+  // Dish depth
+  const depth = D*D/(16*f);
+
+  renderResults('parabolic',[
+    {label:'Peak Gain',    val:fmt(G_dBi,1),    unit:'dBi', cls:'gain-item'},
+    {label:'Focal Length f',val:fmt(f*1e3,0),   unit:'mm'},
+    {label:'f/D Ratio',    val:fmt(fd,2),       unit:''},
+    {label:'HPBW',         val:fmt(HPBW,2),     unit:'°'},
+    {label:'FNBW',         val:fmt(FNBW,2),     unit:'°'},
+    {label:'Eff. Area Aeff',val:fmt(Aeff*1e4,2),unit:'cm²'},
+    {label:'Dish Depth',   val:fmt(depth*1e3,1),unit:'mm'},
+    {label:'SLL (approx)', val:fmt(SLL,0),      unit:'dB'},
+  ]);
+
+  renderInfoRow('parabolic',[
+    {val:fmt(G_dBi,1)+' dBi', lbl:'Peak Gain'},
+    {val:fmt(HPBW,2)+'°',     lbl:'HPBW'},
+    {val:fmt(f*100,1)+' cm',  lbl:'Focal Length'},
+  ]);
+
+  const k0 = 2*PI/lam;
+  const u_scale = k0*D/2;
+
+  function fn2d(theta, phi) {
+    const u = u_scale*Math.sin(theta)+1e-9;
+    // Airy pattern (uniformly illuminated aperture)
+    const J1u = besselJ1(u)/u;
+    return Math.max(0, 2*J1u);
+  }
+  function fn3d(theta, phi) {
+    const u = u_scale*Math.sin(theta)+1e-9;
+    const J1u = besselJ1(u)/u;
+    return Math.max(0, 2*Math.abs(J1u));
+  }
+
+  plotAntenna('parabolic', fn2d, fn3d,
+    'Parabolic Reflector Pattern (Airy)',
+    '3D Radiation Pattern — Parabolic Reflector');
+  document.getElementById('parabolic-plot2d').style.display='block';
+}
+
+// Bessel J1 approximation
+function besselJ1(x) {
+  if(Math.abs(x)<1e-6) return 0.5;
+  const ax=Math.abs(x);
+  if(ax<3.75){
+    const y=(x/3.75)*(x/3.75);
+    return x*(0.5+y*(-0.56249985+y*(0.21093573+y*(-0.03954289+y*(0.00443319+y*(-0.00031761+y*0.00001109))))));
+  }
+  const y=3.75/ax;
+  const ans=(1/Math.sqrt(ax))*(0.79788456+y*(-0.00000077+y*(-0.00552740+y*(-0.00009512+y*(0.00137237+y*(-0.00072805+y*0.00014476))))));
+  return ans*Math.cos(ax-2.356194490);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  UTILITY
+// ══════════════════════════════════════════════════════════════════════════════
+function fmt(v, dp) {
+  if(!isFinite(v)||isNaN(v)) return '—';
+  return parseFloat(v.toFixed(dp)).toLocaleString('en-US',{maximumFractionDigits:dp});
+}
+
+// Show/hide custom dipole length
+document.getElementById('d_type').addEventListener('change',function(){
+  document.getElementById('d_custom_group').style.display=this.value==='custom'?'block':'none';
+});
+</script>
+</body>
+</html>

@@ -231,6 +231,22 @@ export type Resource = Placeholder & {
   updated?: string;
 };
 
+/* ------------------------------------------------------------------ tools - */
+
+/**
+ * A browser calculator. Each one is a self-contained HTML file served from
+ * /public/tools/<slug>/index.html — not a Next route — so it is linked with a
+ * plain anchor and runs entirely in the visitor's browser.
+ */
+export type Tool = {
+  slug: string;
+  title: string;
+  summary: string;
+  domains: Domain[];
+  /** What it actually computes, as short chips. */
+  features: string[];
+};
+
 /* --------------------------------------------------------------- services - */
 
 export type Service = Placeholder & {

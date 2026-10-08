@@ -4,6 +4,7 @@ import { allSeries } from "@/content/series";
 import { courses } from "@/content/courses";
 import { workshops } from "@/content/workshops";
 import { blogPosts } from "@/content/misc";
+import { tools } from "@/content/tools";
 
 /** Static export has no server, so this is generated once at build time. */
 export const dynamic = "force-static";
@@ -21,6 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/workshops",
     "/series",
     "/study-material",
+    "/tools",
     "/services",
     "/mentorship",
     "/projects",
@@ -44,6 +46,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...courses.map((c) => `/courses/${c.slug}`),
     ...workshops.map((w) => `/workshops/${w.slug}`),
     ...blogPosts.map((p) => `/blog/${p.slug}`),
+    ...tools.map((t) => `/tools/${t.slug}/`),
   ].map((path) => ({
     url: `${site.url}${path}`,
     lastModified: now,
