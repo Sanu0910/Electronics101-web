@@ -60,18 +60,39 @@ export const salarySource = {
 };
 
 /**
- * The top of the market, kept separate from the bands above because it comes
- * from a different source with different methodology. Reported, not verified
- * by us — which is exactly how the page presents it.
+ * The top of the market, kept apart from the bands above because it comes from
+ * different sources with different methodology.
+ *
+ * The US figure leads because it is the strongest evidence available: a posted
+ * base range, for this exact job title, rather than an aggregate across every
+ * engineer at a company. The India figures are role-adjacent, not antenna-
+ * specific, and the page says so.
  */
 export const topOfMarket = {
-  companyLabel: "Honeywell",
-  perMonthInr: 300000,
-  perYearLpa: 36,
-  sourceLabel: "6figr",
-  sourceHref: "https://6figr.com",
-  /** Stated inline so the conversion dates itself instead of rotting quietly. */
-  usdRate: 95,
+  headline: {
+    role: "Principal Antenna / RF Engineer",
+    employer: "Honeywell Aerospace",
+    region: "United States",
+    rangeUsd: "$166,000 – $207,000",
+    note: "Posted base range, excluding bonus and stock.",
+    sourceLabel: "LinkedIn job listing",
+    sourceHref:
+      "https://www.linkedin.com/jobs/view/principal-antenna-rf-engineer-at-honeywell-aerospace-4441622897",
+  },
+  /** Reported India bands at the same employer. Not antenna-specific. */
+  india: [
+    { label: "Engineer — highest reported", lpa: "₹69.1L", source: "6figr" },
+    { label: "Advanced Engineer — highest reported", lpa: "₹42.3L", source: "6figr" },
+    { label: "Advanced Engineer — top 10%", lpa: "₹33.1L+", source: "6figr" },
+    { label: "Senior / specialised bands", lpa: "₹30.7–39.4L", source: "AmbitionBox" },
+  ],
+  indiaSources: [
+    { label: "6figr — Honeywell", href: "https://6figr.com/in/salary/honeywell--engineer" },
+    {
+      label: "AmbitionBox — Honeywell Aerospace, Bengaluru",
+      href: "https://www.ambitionbox.com/salaries/honeywell-aerospace-salaries/bengaluru-location",
+    },
+  ],
 };
 
 /* --------------------------------------------------------------- skills - */

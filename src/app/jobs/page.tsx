@@ -16,7 +16,7 @@ import {
   skillGroups,
   topOfMarket,
 } from "@/content/jobs";
-import { formatDate, formatInr } from "@/lib/utils";
+import { formatDate } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "RF & Antenna Jobs",
@@ -29,11 +29,6 @@ export const metadata: Metadata = {
 const lpa = (n: number) => `₹${n}L`;
 
 export default function JobsPage() {
-  const usdPerMonth = Math.round(topOfMarket.perMonthInr / topOfMarket.usdRate);
-  const usdPerYear = Math.round(
-    (topOfMarket.perYearLpa * 100000) / topOfMarket.usdRate / 1000,
-  );
-
   return (
     <>
       {/* ----------------------------------------------------------- hero */}
@@ -141,40 +136,63 @@ export default function JobsPage() {
             <Reveal delay={80}>
               <Card className="flex h-full flex-col border-accent/40 p-6 accent-glow">
                 <Badge tone="accent">Top of market</Badge>
-                <p className="mt-4 text-4xl font-bold tabular">
-                  {formatInr(topOfMarket.perMonthInr)}
-                  <span className="text-lg font-semibold text-muted"> / month</span>
-                </p>
-                <p className="mt-1 text-sm text-muted tabular">
-                  ≈ {lpa(topOfMarket.perYearLpa)} per annum
-                </p>
 
-                <p className="mt-5 text-sm text-muted">
-                  Reported for senior RF and antenna roles at{" "}
-                  <span className="font-semibold text-fg">
-                    {topOfMarket.companyLabel}
-                  </span>{" "}
-                  by{" "}
+                <p className="mt-4 text-sm text-muted">
+                  {topOfMarket.headline.role} · {topOfMarket.headline.region}
+                </p>
+                <p className="mt-2 text-3xl font-bold tabular">
+                  {topOfMarket.headline.rangeUsd}
+                </p>
+                <p className="mt-2 text-sm text-muted">
+                  {topOfMarket.headline.note} {topOfMarket.headline.employer}, via{" "}
                   <a
-                    href={topOfMarket.sourceHref}
+                    href={topOfMarket.headline.sourceHref}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="underline transition-colors hover:text-accent"
                   >
-                    {topOfMarket.sourceLabel}
+                    {topOfMarket.headline.sourceLabel}
                   </a>
-                  . Well above the bands on the left, so treat it as the ceiling
-                  a specialist can reach rather than a number to expect.
+                  .
                 </p>
+
+                <div className="mt-6 border-t border-line pt-5">
+                  <p className="text-xs uppercase tracking-wider text-faint">
+                    Reported at the same employer in India
+                  </p>
+                  <ul className="mt-3 space-y-2">
+                    {topOfMarket.india.map((r) => (
+                      <li
+                        key={r.label}
+                        className="flex items-baseline justify-between gap-4 text-sm"
+                      >
+                        <span className="min-w-0 text-muted">{r.label}</span>
+                        <span className="shrink-0 font-semibold tabular">{r.lpa}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
                 <div className="mt-auto pt-6">
                   <p className="rounded-xl border border-line bg-subtle p-4 text-xs text-faint">
-                    <span className="font-semibold text-muted">In dollars:</span>{" "}
-                    ≈ ${usdPerMonth.toLocaleString("en-IN")} a month, or about $
-                    {usdPerYear}K a year, at ≈₹{topOfMarket.usdRate} to the
-                    dollar. Worth knowing that a figure which is excellent in
-                    India converts to a modest one abroad — cost of living is
-                    doing most of the work.
+                    These India figures cover engineering roles at the company
+                    broadly, not antenna work specifically, and are self-reported —
+                    so read them as the ceiling a specialist can reach rather than a
+                    number to expect. Sources:{" "}
+                    {topOfMarket.indiaSources.map((src, i) => (
+                      <span key={src.href}>
+                        {i > 0 ? ", " : ""}
+                        <a
+                          href={src.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline transition-colors hover:text-accent"
+                        >
+                          {src.label}
+                        </a>
+                      </span>
+                    ))}
+                    .
                   </p>
                 </div>
               </Card>
