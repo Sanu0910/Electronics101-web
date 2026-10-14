@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { site, socials } from "@/config/site";
+import { jsonLdScript } from "@/lib/utils";
 
 /**
  * Sora for headings and UI — geometric and technical, and it sets numerals
@@ -108,6 +109,32 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        {/*
+          GitHub Pages cannot set response headers, so the policy goes in a
+          meta tag. That covers everything except frame-ancestors, which is
+          header-only and is therefore NOT enforced here — clickjacking
+          protection needs a proxy (Cloudflare) in front of Pages.
+
+          'unsafe-inline' is required for scripts: Next's hydration bootstrap
+          and the pre-paint theme script are both inline. The policy still
+          earns its place by pinning script-src to 'self', so an injected
+          <script src="https://evil..."> is refused outright.
+        */}
+        <meta
+          httpEquiv="Content-Security-Policy"
+          content={[
+            "default-src 'self'",
+            "base-uri 'self'",
+            "object-src 'none'",
+            "img-src 'self' data:",
+            "font-src 'self' data:",
+            "style-src 'self' 'unsafe-inline'",
+            "script-src 'self' 'unsafe-inline'",
+            "connect-src 'self'",
+            "form-action 'self'",
+            "upgrade-insecure-requests",
+          ].join("; ")}
+        />
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         {/* Scroll reveals start hidden and are shown by JS. With scripting
             off nothing would ever show them, so force them visible. */}
@@ -116,7 +143,7 @@ export default function RootLayout({
         </noscript>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: jsonLdScript(orgJsonLd) }}
         />
       </head>
       <body className="flex min-h-full flex-col font-sans">

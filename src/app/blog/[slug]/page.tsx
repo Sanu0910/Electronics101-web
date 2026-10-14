@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/primitives";
 import { BlogCard } from "@/components/cards";
 import { CopyLink } from "@/components/ui/CopyLink";
-import { formatDate, readingTime } from "@/lib/utils";
+import { formatDate, readingTime, jsonLdScript } from "@/lib/utils";
 import { site } from "@/config/site";
 
 type Params = { params: Promise<{ slug: string }> };
@@ -102,7 +102,7 @@ export default async function BlogPostPage({ params }: Params) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
 
       <Section>

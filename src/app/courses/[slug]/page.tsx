@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/primitives";
 import { Accordion } from "@/components/ui/Accordion";
 import { SafeImage } from "@/components/ui/SafeImage";
-import { priceLabel } from "@/lib/utils";
+import { priceLabel, jsonLdScript } from "@/lib/utils";
 import { site } from "@/config/site";
 
 type Params = { params: Promise<{ slug: string }> };
@@ -66,7 +66,7 @@ export default async function CourseDetailPage({ params }: Params) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
 
       <Section className="pb-0">

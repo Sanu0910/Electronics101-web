@@ -16,7 +16,7 @@ import {
 import { Countdown } from "@/components/home/Countdown";
 import { Reveal } from "@/components/ui/Reveal";
 import { DayTimeline } from "@/components/workshops/DayTimeline";
-import { cn, formatDate, formatDateTime, formatInr, priceLabel } from "@/lib/utils";
+import { cn, formatDate, formatDateTime, formatInr, priceLabel, jsonLdScript } from "@/lib/utils";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { site } from "@/config/site";
 
@@ -117,7 +117,7 @@ export default async function WorkshopDetailPage({ params }: Params) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
 
       {/* ----------------------------------------------------------- hero */}

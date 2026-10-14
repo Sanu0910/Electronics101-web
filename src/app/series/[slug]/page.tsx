@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { jsonLdScript } from "@/lib/utils";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { allSeries, getSeries } from "@/content/series";
@@ -71,7 +72,7 @@ export default async function SeriesDetailPage({ params }: Params) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }}
       />
 
       <Section className="pb-0">

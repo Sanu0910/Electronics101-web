@@ -59,3 +59,18 @@ export const matchesQuery = (haystack: string, needle: string) => {
   const h = normalise(haystack);
   return q.split(" ").every((word) => h.includes(word));
 };
+
+/**
+ * Serialise data for embedding inside a <script> tag.
+ *
+ * JSON.stringify alone is not enough: a "</script>" sequence anywhere in the
+ * data ends the tag early, and everything after it is parsed as HTML. Escaping
+ * "<" removes that possibility, and the escape is still valid JSON, so anything
+ * reading the block parses it unchanged.
+ *
+ * Nothing on this site takes user input today, so this is defence in depth —
+ * it means a future CMS or form-fed field cannot turn a content string into
+ * markup.
+ */
+export const jsonLdScript = (data: unknown) =>
+  JSON.stringify(data).replace(/</g, "\\u003c");
