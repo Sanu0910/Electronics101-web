@@ -173,7 +173,12 @@ export function ResourceCard({ item }: { item: Resource }) {
       <p className="mt-2 line-clamp-3 flex-1 text-sm text-muted">{item.description}</p>
 
       <div className="mt-4 flex items-center justify-between gap-3 border-t border-line pt-4">
-        <span className="text-xs text-faint">{item.level}</span>
+        {/* the size is worth knowing before a download starts, so it is
+            shown when a real file is behind the button */}
+        <span className="text-xs text-faint">
+          {item.level}
+          {available && item.fileSizeLabel ? ` · PDF, ${item.fileSizeLabel}` : ""}
+        </span>
         {available ? (
           <a href={asset(item.file)!} className={buttonClass("secondary", "sm")} download>
             Download

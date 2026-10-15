@@ -348,3 +348,94 @@ export type Instructor = Placeholder & {
   credentials?: string[];
   image?: string;
 };
+
+/* -------------------------------------------------------- curated library - */
+
+/**
+ * The curated RF & microwave library — the catalogue formerly kept as a
+ * standalone static page (Sanu0910/rf_microwave_resources).
+ *
+ * ALMOST NONE OF THIS IS OURS, so `source` is not decoration: every entry
+ * names who published it, and `href` points at that publisher rather than at
+ * a copy hosted here. A vendor application note or a magazine article moved
+ * onto this domain is both a licensing problem and a staleness problem — the
+ * publisher's copy gets corrections, ours would not.
+ *
+ * Material written for Electronics 101 goes in `resources.ts` with a real
+ * `file`, where it can be downloaded. Those two rules are the whole policy.
+ */
+export type LibraryFormat =
+  | "Website"
+  | "Video"
+  | "Playlist"
+  | "Channel"
+  | "Application Note"
+  | "Article"
+  | "Course";
+
+export type LibraryItem = {
+  title: string;
+  href: string;
+  blurb: string;
+  format: LibraryFormat;
+  /** Who published it. Shown on the card, because attribution is the point. */
+  source: string;
+  domains?: Domain[];
+};
+
+export type LibrarySection = {
+  /** Anchor id, used by the jump bar and by deep links into the page. */
+  id: string;
+  title: string;
+  description: string;
+  items: LibraryItem[];
+};
+
+/** A textbook worth owning. Cited, never hosted — see the note above. */
+export type BookRecommendation = {
+  title: string;
+  authors: string;
+  edition?: string;
+  why: string;
+  domains: Domain[];
+  /**
+   * The publisher's or author's page for the book. Null where there is no
+   * stable one to link, which renders as plain text rather than as a guess —
+   * the same rule the social links in `config/site.ts` follow.
+   */
+  href: string | null;
+};
+
+/**
+ * One step of an external, self-paced course path.
+ *
+ * `provider` is named on the section rather than on each step because a path
+ * is only worth following when it is all one provider's ladder.
+ */
+export type LearningPathStep = {
+  title: string;
+  href: string;
+  blurb: string;
+};
+
+export type LearningPath = {
+  id: string;
+  title: string;
+  description: string;
+  provider: string;
+  /** Terms, sign-up or cost caveats. Said once, at the top of the list. */
+  note?: string;
+  steps: LearningPathStep[];
+};
+
+/**
+ * A third-party open-source tool. Distinct from `Tool`, which is a calculator
+ * this site serves itself from /public — these are other people's software,
+ * linked out and grouped by what they solve.
+ */
+export type OpenSourceTool = {
+  name: string;
+  href: string;
+  blurb: string;
+  category: "EM solver" | "Circuit & RF" | "Numerical computing" | "PCB & layout";
+};

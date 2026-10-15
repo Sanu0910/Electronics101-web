@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { resources } from "@/content/resources";
 import { Container, Section, SectionHead } from "@/components/ui/primitives";
 import { ResourceCard } from "@/components/cards";
@@ -42,6 +43,20 @@ export default function StudyMaterialPage() {
           title="Reference you will still use after the course ends"
           lead="Formula sheets, notes and design guides, searchable and filterable. Free resources need no account; members-only ones come with a programme."
         />
+
+        {/*
+          This page is what Electronics 101 wrote. The curated library is
+          other people's work, linked at the source — keeping the two apart
+          is what lets everything here be downloadable.
+        */}
+        <p className="mt-6 max-w-2xl text-muted">
+          Looking for textbooks, lecture series or vendor application notes?
+          Those are curated in the{" "}
+          <Link href="/resources" className="font-semibold text-accent hover:underline">
+            RF resource library
+          </Link>
+          , linked to whoever published them.
+        </p>
 
         <div className="mt-12">
           <Filterable

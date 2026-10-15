@@ -21,16 +21,19 @@ design, PCB and EMI/EMC, semiconductor technology and simulation.
 | **Courses** | `/courses` | Structured, tool-based programmes with full curricula |
 | **Workshops** | `/workshops` | Live, hands-on sessions with paid registration |
 | **Series** | `/series` | Eleven free learning tracks, episode by episode |
-| **Study Material** | `/study-material` | Notes, formula sheets, guides and code |
+| **Study Material** | `/study-material` | Notes, formula sheets, guides and code — written here, downloadable |
+| **RF Resource Library** | `/resources` | Curated reading, textbooks, a MATLAB path and open-source solvers — other people's work, linked at the source |
+| **Tools** | `/tools` | Free browser calculators: filters, antennas, microstrip, Smith chart |
 | **Services** | `/services` | Design, simulation and training offered to clients |
 | **Mentorship** | `/mentorship` | One-to-one, project, research and industry-skill plans |
 | **Projects** | `/projects` | Worked engineering projects with problem, approach and results |
+| **Jobs** | `/jobs` | RF pay bands, the skills employers ask for, and open roles |
 | **Blog** | `/blog` | Technical articles |
 | **About / Contact / Feedback / Links** | `/about`, `/contact`, `/feedback`, `/links` | The platform, its forms and a curated resource hub |
 | **Legal** | `/legal/{terms,privacy,refunds}` | Policy pages |
 
-**What is real today:** two workshops and the external tool/learning links
-under **Useful Links**.
+**What is real today:** two workshops, the free browser tools, the curated
+**RF Resource Library**, and the external links under **Useful Links**.
 
 - **RF & Microwave Antenna Design** (5–6 Dec 2026) — eight-module outline, seat
   tiers and live Razorpay payment links.
@@ -85,6 +88,20 @@ To add a course, append to `src/content/courses.ts`. It appears on the courses
 page, in the filters, in the sitemap and at its own detail route automatically.
 The same pattern holds for workshops, series, services, mentorship plans,
 projects, study material and blog posts.
+
+### Curated links, not copied files
+
+`src/content/resources.ts` is what Electronics 101 wrote: those entries carry a
+real `file` and are served from `/public/study-material`. `src/content/rf-resources.ts`
+is everybody else's work — textbooks, vendor application notes, lecture series —
+and every entry carries a `source` and an `href` to the publisher's own copy.
+
+Nothing from the second list is hosted here. That is not caution for its own
+sake: redistributing a textbook scan or a vendor note is an infringement
+whatever the intent, and the publisher's copy is also the one that gets
+corrections. If you have written permission for a specific file, move it into
+`resources.ts` with the permission recorded in the commit message — not into
+the curated list.
 
 ### Placeholder content is labelled, never disguised
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { linkGroups } from "@/content/misc";
 import { Card, Container, Section, SectionHead } from "@/components/ui/primitives";
 
@@ -19,6 +20,21 @@ export default function LinksPage() {
             title="Where to go next"
             lead="Tools, references and communities worth your time. Everything here opens in a new tab."
           />
+
+          {/*
+            These are the general engineering links. RF-specific curation —
+            reading order, textbooks, lecture series, the MATLAB path — has a
+            page of its own, and splitting them keeps both lists short enough
+            to actually read.
+          */}
+          <p className="mt-6 max-w-2xl text-muted">
+            For RF and microwave specifically, the{" "}
+            <Link href="/resources" className="font-semibold text-accent hover:underline">
+              RF resource library
+            </Link>{" "}
+            goes further: where to start, the textbooks worth owning, and the
+            open-source solvers that cost nothing to run.
+          </p>
         </Container>
       </Section>
 

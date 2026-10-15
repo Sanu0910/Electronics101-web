@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { tools } from "@/content/tools";
 import {
   Badge,
+  ButtonLink,
   Card,
   Container,
   Section,
@@ -89,6 +90,28 @@ export default function ToolsPage() {
             learning and for first-cut sizing — verify a design in a full-wave
             or circuit simulator before it goes to fabrication.
           </p>
+
+          {/*
+            And when that verification step arrives, the simulator does not
+            have to be a licensed one. The open-source list is curated in the
+            resource library rather than duplicated here, so there is one
+            place to keep it current.
+          */}
+          <Card className="mt-10 p-7">
+            <h2 className="text-xl font-bold">
+              Need a full-wave solver, not a calculator?
+            </h2>
+            <p className="mt-2 max-w-2xl text-muted">
+              OpenEMS, MEEP, Elmer, scikit-rf, Octave and KiCad will all run on
+              your own machine for nothing. The resource library lists them by
+              what they solve, alongside the reading to go with them.
+            </p>
+            <div className="mt-5">
+              <ButtonLink href="/resources#open-source" variant="secondary">
+                Open-source RF &amp; EM tools
+              </ButtonLink>
+            </div>
+          </Card>
         </Container>
       </Section>
     </>

@@ -8,6 +8,23 @@ import type { Resource } from "./types";
  * 404s costs more trust than a missing one.
  */
 export const resources: Resource[] = [
+  /*
+   * The first real one. Written for Electronics 101, which is why it is
+   * hosted here at all — the curated library at /resources links to other
+   * people's work on their own sites rather than copying it onto this domain.
+   */
+  {
+    slug: "rf-filters-design-methods",
+    title: "RF Filters — A Comprehensive Overview by Design Method",
+    description:
+      "Butterworth, Chebyshev, elliptic and Bessel responses compared on the trade-offs that actually decide a choice: selectivity, passband ripple, roll-off rate and phase linearity.",
+    kind: "Design Guide",
+    domains: ["RF"],
+    level: "Intermediate",
+    access: "Free",
+    file: "/study-material/rf-filters-design-methods.pdf",
+    fileSizeLabel: "86 KB",
+  },
   {
     placeholder: true,
     slug: "rf-formula-sheet",
