@@ -283,7 +283,7 @@ export default function JobsPage() {
                   <p className="mt-1 font-semibold text-accent">{job.company}</p>
 
                   <ul className="mt-5 flex-1 space-y-2">
-                    {job.asks.map((a) => (
+                    {(job.asks ?? []).map((a) => (
                       <li key={a} className="flex gap-3 text-sm text-muted">
                         <span
                           aria-hidden="true"

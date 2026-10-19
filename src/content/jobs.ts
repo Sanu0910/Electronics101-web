@@ -34,8 +34,12 @@ export type JobOpening = {
   company: string;
   location: string;
   href: string;
-  /** What the posting actually asks for, in its own terms. */
-  asks: string[];
+  /**
+   * What the posting actually asks for, in its own terms. Omitted when the
+   * posting could not be read — a card with no bullets is honest, inventing
+   * plausible-sounding requirements is not.
+   */
+  asks?: string[];
   /** ISO date this was added here. Rendered, so staleness is visible. */
   listedOn: string;
 };
@@ -223,5 +227,15 @@ export const openings: JobOpening[] = [
       "X, Ku or Ka band — radar or defence background, not telecom-only",
     ],
     listedOn: "2026-10-08",
+  },
+  {
+    /* Title and employer are both in the posting's own URL path, which its
+       applicant system generates from the role. The page itself could not be
+       opened from here, so no requirements are claimed. */
+    title: "Field Applications Engineer — RF Specialist",
+    company: "Arrow Electronics",
+    location: "United States",
+    href: "https://careers.arrow.com/us/en/job/R239817/Field-Applications-Engineer--RF-specialist",
+    listedOn: "2026-10-19",
   },
 ];
