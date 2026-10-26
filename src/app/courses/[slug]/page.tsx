@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/primitives";
 import { Accordion } from "@/components/ui/Accordion";
 import { SafeImage } from "@/components/ui/SafeImage";
-import { priceLabel, jsonLdScript } from "@/lib/utils";
+import { priceLabel, usdApproxLabel, jsonLdScript } from "@/lib/utils";
 import { site } from "@/config/site";
 
 type Params = { params: Promise<{ slug: string }> };
@@ -98,6 +98,11 @@ export default async function CourseDetailPage({ params }: Params) {
 
             <Card className="h-fit p-6">
               <p className="text-3xl font-bold tabular">{priceLabel(item.priceInr)}</p>
+              {usdApproxLabel(item.priceInr) ? (
+                <p className="mt-1 text-sm text-muted tabular">
+                  {usdApproxLabel(item.priceInr)} · charged in rupees
+                </p>
+              ) : null}
               <dl className="mt-6 space-y-3 text-sm">
                 {[
                   ["Duration", item.duration],

@@ -10,7 +10,7 @@ import {
   Section,
   SectionHead,
 } from "@/components/ui/primitives";
-import { priceLabel } from "@/lib/utils";
+import { priceLabel, usdApproxLabel } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Mentorship",
@@ -81,6 +81,11 @@ export default function MentorshipPage() {
                 <p className="mt-6 text-2xl font-bold tabular">
                   {priceLabel(plan.priceInr)}
                 </p>
+                {usdApproxLabel(plan.priceInr) ? (
+                  <p className="mt-1 text-sm text-muted tabular">
+                    {usdApproxLabel(plan.priceInr)} · charged in rupees
+                  </p>
+                ) : null}
                 <ButtonLink
                   href={`/contact?topic=${encodeURIComponent(`Mentorship — ${plan.title}`)}`}
                   className="mt-4"

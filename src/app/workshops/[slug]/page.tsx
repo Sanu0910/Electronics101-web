@@ -16,7 +16,17 @@ import {
 import { Countdown } from "@/components/home/Countdown";
 import { Reveal } from "@/components/ui/Reveal";
 import { DayTimeline } from "@/components/workshops/DayTimeline";
-import { cn, formatDate, formatDateTime, formatInr, priceLabel, jsonLdScript } from "@/lib/utils";
+import {
+  cn,
+  formatDate,
+  formatDateTime,
+  formatInr,
+  formatUsdApprox,
+  priceLabel,
+  usdApproxLabel,
+  jsonLdScript,
+  USD_INR_RATE,
+} from "@/lib/utils";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { site } from "@/config/site";
 
@@ -220,7 +230,7 @@ export default async function WorkshopDetailPage({ params }: Params) {
               >
                 <ButtonLink href="#register" size="lg">
                   {item.priceInr !== null
-                    ? `Reserve a seat — from ${formatInr(item.priceInr)}`
+                    ? `Reserve a seat — from ${formatInr(item.priceInr)} · ${formatUsdApprox(item.priceInr)}`
                     : "Reserve a seat"}
                 </ButtonLink>
                 <ButtonLink href="#curriculum" variant="secondary" size="lg">
@@ -553,6 +563,14 @@ export default async function WorkshopDetailPage({ params }: Params) {
                           </Badge>
                         ) : null}
                       </div>
+                      {/* INR is what Razorpay charges; the dollar figure is a
+                          sighting shot for overseas readers, so it stays
+                          secondary and says so. */}
+                      {usdApproxLabel(tier.priceInr) ? (
+                        <p className="mt-1 text-sm text-muted tabular">
+                          {usdApproxLabel(tier.priceInr)}
+                        </p>
+                      ) : null}
                       {tier.standardPriceInr && deadline ? (
                         <p className="mt-1 text-xs text-faint">
                           Early-bird price until{" "}
@@ -610,18 +628,36 @@ export default async function WorkshopDetailPage({ params }: Params) {
                           </div>
                           <p className="mt-1 text-sm text-muted">{tier.forWho}</p>
                         </div>
-                        <p className="text-2xl font-bold tabular">
-                          {tier.priceInr === null
-                            ? priceLabel(null)
-                            : `+ ${formatInr(tier.priceInr)}`}
-                        </p>
+                        <div className="text-right">
+                          <p className="text-2xl font-bold tabular">
+                            {tier.priceInr === null
+                              ? priceLabel(null)
+                              : `+ ${formatInr(tier.priceInr)}`}
+                          </p>
+                          {tier.priceInr === null ? null : (
+                            <p className="mt-0.5 text-sm text-muted tabular">
+                              {formatUsdApprox(tier.priceInr)}
+                            </p>
+                          )}
+                        </div>
                       </Card>
                     </Reveal>
                   ))}
                 </div>
               ) : null}
 
-              <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-faint">
+              {/* Stated once for the whole section rather than repeated under
+                  every tier: the dollar figures are converted, not quoted. */}
+              {seatTiers.some((t) => t.priceInr !== null) ? (
+                <p className="mt-8 text-xs text-faint">
+                  Dollar amounts are approximate, converted at about{" "}
+                  {formatInr(USD_INR_RATE)} to $1. Every seat is charged in
+                  rupees, and your bank or card issuer sets the rate you
+                  actually pay.
+                </p>
+              ) : null}
+
+              <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-faint">
                 <span>Secure payment by Razorpay</span>
                 <span aria-hidden="true">·</span>
                 <span>Opens in a new tab</span>

@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Vendored agent skills. Not our source: they ship third-party minified
+    // bundles that otherwise bury real findings under hundreds of warnings.
+    ".agents/**",
+    ".claude/**",
   ]),
 ]);
 
