@@ -6,6 +6,13 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Prices are shown with an approximate figure in the visitor's currency,
+  # converted at rates baked in at build time (there is no server to ask at
+  # request time). Rebuilding weekly refreshes those rates without anyone
+  # editing the repository. Monday 04:41 UTC — off the hour, where scheduled
+  # runs queue behind everyone else's.
+  schedule:
+    - cron: "41 4 * * 1"
 
 # GITHUB_TOKEN needs these to publish a Pages artifact. No other secret is
 # used, and none is needed: payments are Razorpay hosted links, so there are

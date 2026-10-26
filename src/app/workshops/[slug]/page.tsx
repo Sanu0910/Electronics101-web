@@ -16,17 +16,9 @@ import {
 import { Countdown } from "@/components/home/Countdown";
 import { Reveal } from "@/components/ui/Reveal";
 import { DayTimeline } from "@/components/workshops/DayTimeline";
-import {
-  cn,
-  formatDate,
-  formatDateTime,
-  formatInr,
-  formatUsdApprox,
-  priceLabel,
-  usdApproxLabel,
-  jsonLdScript,
-  USD_INR_RATE,
-} from "@/lib/utils";
+import { cn, formatDate, formatDateTime, formatInr, priceLabel, jsonLdScript } from "@/lib/utils";
+import { CurrencyPicker } from "@/components/ui/CurrencyPicker";
+import { PriceApprox } from "@/components/ui/PriceApprox";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { site } from "@/config/site";
 
@@ -229,9 +221,17 @@ export default async function WorkshopDetailPage({ params }: Params) {
                 style={{ animationDelay: "380ms" }}
               >
                 <ButtonLink href="#register" size="lg">
-                  {item.priceInr !== null
-                    ? `Reserve a seat — from ${formatInr(item.priceInr)} · ${formatUsdApprox(item.priceInr)}`
-                    : "Reserve a seat"}
+                  {item.priceInr !== null ? (
+                    <>
+                      Reserve a seat — from {formatInr(item.priceInr)}
+                      <PriceApprox
+                        amountInr={item.priceInr}
+                        className="ml-2 font-normal text-current/70"
+                      />
+                    </>
+                  ) : (
+                    "Reserve a seat"
+                  )}
                 </ButtonLink>
                 <ButtonLink href="#curriculum" variant="secondary" size="lg">
                   See curriculum
@@ -563,14 +563,11 @@ export default async function WorkshopDetailPage({ params }: Params) {
                           </Badge>
                         ) : null}
                       </div>
-                      {/* INR is what Razorpay charges; the dollar figure is a
-                          sighting shot for overseas readers, so it stays
-                          secondary and says so. */}
-                      {usdApproxLabel(tier.priceInr) ? (
-                        <p className="mt-1 text-sm text-muted tabular">
-                          {usdApproxLabel(tier.priceInr)}
-                        </p>
-                      ) : null}
+                      {/* INR is what Razorpay charges; the converted figure is
+                          a sighting shot for overseas readers, so it stays
+                          secondary and the picker below says where it came
+                          from. */}
+                      <PriceApprox amountInr={tier.priceInr} className="mt-1 block text-sm" />
                       {tier.standardPriceInr && deadline ? (
                         <p className="mt-1 text-xs text-faint">
                           Early-bird price until{" "}
@@ -634,11 +631,10 @@ export default async function WorkshopDetailPage({ params }: Params) {
                               ? priceLabel(null)
                               : `+ ${formatInr(tier.priceInr)}`}
                           </p>
-                          {tier.priceInr === null ? null : (
-                            <p className="mt-0.5 text-sm text-muted tabular">
-                              {formatUsdApprox(tier.priceInr)}
-                            </p>
-                          )}
+                          <PriceApprox
+                            amountInr={tier.priceInr}
+                            className="mt-0.5 block text-sm"
+                          />
                         </div>
                       </Card>
                     </Reveal>
@@ -646,16 +642,10 @@ export default async function WorkshopDetailPage({ params }: Params) {
                 </div>
               ) : null}
 
-              {/* Stated once for the whole section rather than repeated under
-                  every tier: the dollar figures are converted, not quoted. */}
-              {seatTiers.some((t) => t.priceInr !== null) ? (
-                <p className="mt-8 text-xs text-faint">
-                  Dollar amounts are approximate, converted at about{" "}
-                  {formatInr(USD_INR_RATE)} to $1. Every seat is charged in
-                  rupees, and your bank or card issuer sets the rate you
-                  actually pay.
-                </p>
-              ) : null}
+              {/* One picker for the whole section rather than a note under
+                  every tier: the converted figures are a guide, not a quote,
+                  and the visitor can correct the guess here. */}
+              {seatTiers.some((t) => t.priceInr !== null) ? <CurrencyPicker /> : null}
 
               <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-faint">
                 <span>Secure payment by Razorpay</span>

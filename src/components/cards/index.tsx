@@ -1,14 +1,8 @@
 import Link from "next/link";
 import type { Course, Resource, Series, Service, Workshop, BlogPost, Testimonial } from "@/content/types";
 import { Badge, Card, PlaceholderTag, buttonClass } from "@/components/ui/primitives";
-import {
-  cn,
-  formatDate,
-  formatDateTime,
-  priceLabel,
-  readingTime,
-  usdApproxLabel,
-} from "@/lib/utils";
+import { cn, formatDate, formatDateTime, priceLabel, readingTime } from "@/lib/utils";
+import { PriceApprox } from "@/components/ui/PriceApprox";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { asset } from "@/lib/paths";
 
@@ -104,11 +98,10 @@ export function CourseCard({ item }: { item: Course }) {
             <dt className="text-xs text-faint">Price</dt>
             <dd className="font-medium">
               {priceLabel(item.priceInr)}
-              {usdApproxLabel(item.priceInr) ? (
-                <span className="block text-xs font-normal text-faint">
-                  {usdApproxLabel(item.priceInr)}
-                </span>
-              ) : null}
+              <PriceApprox
+                amountInr={item.priceInr}
+                className="block text-xs font-normal text-faint"
+              />
             </dd>
           </div>
         </dl>
