@@ -27,7 +27,7 @@ export const site = {
   url: "https://electronics101.online",
   locale: "en_IN",
   /** Published on the contact page beside the form, for people who prefer email. */
-  email: "rf101.sanu@gmail.com",
+  email: "contact@electronics101.online",
 } as const;
 
 export type NavItem = {
