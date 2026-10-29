@@ -150,31 +150,39 @@ export const channelSeries: Series[] = [
         "done": true
       },
       {
-        "title": "Zero resistance. Half the energy still vanishes."
+        "title": "Zero resistance. Half the energy still vanishes.",
+        "done": true
       },
       {
-        "title": "This amplifier wants ZERO input resistance. Why?"
+        "title": "This amplifier wants ZERO input resistance. Why?",
+        "done": true
       },
       {
-        "title": "How do you cancel an error nobody measured?"
+        "title": "How do you cancel an error nobody measured?",
+        "done": true
       },
       {
-        "title": "This resistor is making noise. Nothing is connected."
+        "title": "This resistor is making noise. Nothing is connected.",
+        "done": true
       },
       {
-        "title": "The noise on a capacitor ignores the resistor. Why?"
+        "title": "The noise on a capacitor ignores the resistor. Why?",
+        "done": true
       },
       {
-        "title": "Copy your amplifier once. Distortion drops from 13% to 5%. Why?"
+        "title": "Copy your amplifier once. Distortion drops from 13% to 5%. Why?",
+        "done": true
       },
       {
-        "title": "One resistor took distortion from 5% to 0.2%. What did it cost?"
+        "title": "One resistor took distortion from 5% to 0.2%. What did it cost?",
+        "done": true
       },
       {
-        "title": "Every time your laptop reads its memory, it destroys it"
+        "title": "Every time your laptop reads its memory, it destroys it",
+        "done": true
       }
     ],
-    "episodeCount": 32
+    "episodeCount": 40
   },
   {
     "slug": "pcb-myths",
@@ -246,16 +254,34 @@ export const channelSeries: Series[] = [
         "done": true
       },
       {
-        "title": "Your 4-layer board doesn't need a power plane"
+        "title": "Your 4-layer board doesn't need a power plane",
+        "done": true
       },
       {
-        "title": "Never share a ground via"
+        "title": "Never share a ground via",
+        "done": true
       },
       {
-        "title": "A ferrite bead on every power pin? It can cost you half a volt"
+        "title": "A ferrite bead on every power pin? It can cost you half a volt",
+        "done": true
+      },
+      {
+        "title": "That ringing isn't on your board. It's your probe.",
+        "done": true
+      },
+      {
+        "title": "Your 10 MΩ probe is 170 Ω at 100 MHz",
+        "done": true
+      },
+      {
+        "title": "The 1× switch on your probe cuts it to 10 MHz",
+        "done": true
+      },
+      {
+        "title": "Your scope shows 10 mV of noise. Short the probe. Still 10."
       }
     ],
-    "episodeCount": 14
+    "episodeCount": 20
   },
   {
     "slug": "interview-solved",
@@ -308,10 +334,11 @@ export const channelSeries: Series[] = [
         "done": true
       },
       {
-        "title": "One expression, five inputs. How many transistors in static CMOS?"
+        "title": "One expression, five inputs. How many transistors in static CMOS?",
+        "done": true
       }
     ],
-    "episodeCount": 9
+    "episodeCount": 10
   },
   {
     "slug": "signals-101",
@@ -331,22 +358,27 @@ export const channelSeries: Series[] = [
         "done": true
       },
       {
-        "title": "Your computer thinks 11 Hz is 1 Hz"
+        "title": "Your computer thinks 11 Hz is 1 Hz",
+        "done": true
       },
       {
-        "title": "Sample at exactly Nyquist and this sine wave vanishes. Why?"
+        "title": "Sample at exactly Nyquist and this sine wave vanishes. Why?",
+        "done": true
       },
       {
-        "title": "One sine wave carries 81% of a square wave. Guess before you watch."
+        "title": "One sine wave carries 81% of a square wave. Guess before you watch.",
+        "done": true
       },
       {
-        "title": "A square wave has no 2nd harmonic. It's not because it's odd."
+        "title": "A square wave has no 2nd harmonic. It's not because it's odd.",
+        "done": true
       },
       {
-        "title": "This signal has no 4th harmonic. Guess why before you watch."
+        "title": "This signal has no 4th harmonic. Guess why before you watch.",
+        "done": true
       }
     ],
-    "episodeCount": 1
+    "episodeCount": 6
   },
   {
     "slug": "rf-101-shorts",
@@ -366,25 +398,31 @@ export const channelSeries: Series[] = [
         "done": true
       },
       {
-        "title": "10 GHz gets less than 1 micron into copper. Guess how deep?"
+        "title": "10 GHz gets less than 1 micron into copper. Guess how deep?",
+        "done": true
       },
       {
-        "title": "Short one end of a cable. The other end looks open?"
+        "title": "Short one end of a cable. The other end looks open?",
+        "done": true
       },
       {
-        "title": "Hang 200 Ω on a cable. The other end reads 12.5 Ω?"
+        "title": "Hang 200 Ω on a cable. The other end reads 12.5 Ω?",
+        "done": true
       },
       {
-        "title": "One strip of copper turns 100 Ω into 50 Ω. 75 Ω or 70.7 Ω?"
+        "title": "One strip of copper turns 100 Ω into 50 Ω. 75 Ω or 70.7 Ω?",
+        "done": true
       },
       {
-        "title": "20 dB of return loss = 1 % of your power back. 10 dB or 20 dB?"
+        "title": "20 dB of return loss = 1 % of your power back. 10 dB or 20 dB?",
+        "done": true
       },
       {
-        "title": "Mismatch a line and the wave stops travelling. That's VSWR"
+        "title": "Mismatch a line and the wave stops travelling. That's VSWR",
+        "done": true
       }
     ],
-    "episodeCount": 1
+    "episodeCount": 7
   },
   {
     "slug": "art-of-electronics",
@@ -404,13 +442,14 @@ export const channelSeries: Series[] = [
         "done": true
       },
       {
-        "title": "Both filters say 1 MHz. One barely filters. 20 dB or 140 dB?"
+        "title": "Both filters say 1 MHz. One barely filters. 20 dB or 140 dB?",
+        "done": true
       },
       {
         "title": "β says 940 mA. The lamp says 100. Who wins? (GATE trap)"
       }
     ],
-    "episodeCount": 1
+    "episodeCount": 2
   },
   {
     "slug": "carrier-wave",
@@ -427,33 +466,42 @@ export const channelSeries: Series[] = [
     "image": "/images/series/carrier-wave.jpg",
     "topics": [
       {
-        "title": "Your voice would need a 3 km antenna. Why doesn't it?"
+        "title": "Your voice would need a 3 km antenna. Why doesn't it?",
+        "done": true
       },
       {
-        "title": "AM wastes 2/3 of its power. Why is it still on air?"
+        "title": "AM wastes 2/3 of its power. Why is it still on air?",
+        "done": true
       },
       {
-        "title": "Past 100% AM, your voice plays upside down."
+        "title": "Past 100% AM, your voice plays upside down.",
+        "done": true
       },
       {
-        "title": "The capacitor in every AM radio has two jobs that fight."
+        "title": "The capacitor in every AM radio has two jobs that fight.",
+        "done": true
       },
       {
-        "title": "A perfect radio goes silent. The only fault is 90°."
+        "title": "A perfect radio goes silent. The only fault is 90°.",
+        "done": true
       },
       {
-        "title": "100 Hz off and everyone sounds like a duck. Why?"
+        "title": "100 Hz off and everyone sounds like a duck. Why?",
+        "done": true
       },
       {
-        "title": "This radio filter can't be built. So they built two."
+        "title": "This radio filter can't be built. So they built two.",
+        "done": true
       },
       {
-        "title": "Your radio can hear a station you never tuned."
+        "title": "Your radio can hear a station you never tuned.",
+        "done": true
       },
       {
         "title": "One choice in every radio avoids a 181:1 capacitor."
       }
-    ]
+    ],
+    "episodeCount": 8
   },
   {
     "slug": "antenna-fundamentals",
@@ -470,12 +518,14 @@ export const channelSeries: Series[] = [
     "image": "/images/series/antenna-fundamentals.jpg",
     "topics": [
       {
-        "title": "A steady current radiates nothing. So what makes a radio wave?"
+        "title": "A steady current radiates nothing. So what makes a radio wave?",
+        "done": true
       },
       {
         "title": "Every antenna gain is measured against an antenna that can't exist"
       }
-    ]
+    ],
+    "episodeCount": 1
   },
   {
     "slug": "antennas-in-the-wild",
@@ -491,12 +541,14 @@ export const channelSeries: Series[] = [
     "image": "/images/series/antennas-in-the-wild.jpg",
     "topics": [
       {
-        "title": "How you hold your phone can cut its signal by 84%"
+        "title": "How you hold your phone can cut its signal by 84%",
+        "done": true
       },
       {
         "title": "Print a phone antenna on a circuit board and it shrinks by half"
       }
-    ]
+    ],
+    "episodeCount": 1
   },
   {
     "slug": "gate-solved",
@@ -515,12 +567,15 @@ export const channelSeries: Series[] = [
         "title": "GATE 2026 EC Q.65: two diodes, and the answer is not six"
       },
       {
-        "title": "The cell is upside down — GATE 2025 EC Q.61"
+        "title": "The cell is upside down — GATE 2025 EC Q.61",
+        "done": true
       },
       {
-        "title": "GATE 2026 — one switch closes. What happens to the output?"
+        "title": "GATE 2026 — one switch closes. What happens to the output?",
+        "done": true
       }
-    ]
+    ],
+    "episodeCount": 2
   },
   {
     "slug": "radar-101",
@@ -540,13 +595,14 @@ export const channelSeries: Series[] = [
         "done": true
       },
       {
-        "title": "One radar pulse gives the exact angle. How?"
+        "title": "One radar pulse gives the exact angle. How?",
+        "done": true
       },
       {
         "title": "The echo is back in 1 microsecond. How far is the target?"
       }
     ],
-    "episodeCount": 1
+    "episodeCount": 2
   },
   {
     "slug": "sipi-101",
@@ -563,12 +619,14 @@ export const channelSeries: Series[] = [
     "image": "/images/series/sipi-101.jpg",
     "topics": [
       {
-        "title": "Same 10 MHz clock. Why does the new chip ring?"
+        "title": "Same 10 MHz clock. Why does the new chip ring?",
+        "done": true
       },
       {
         "title": "A 1 ns edge on a 3-inch trace. How much of it fits?"
       }
-    ]
+    ],
+    "episodeCount": 1
   },
   {
     "slug": "interview-round",
