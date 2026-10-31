@@ -37,7 +37,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/legal/privacy",
     "/legal/refunds",
   ].map((path) => ({
-    url: `${site.url}${path}`,
+    // trailingSlash: true serves every page at `/path/`; a slash-less URL is a 301.
+    url: `${site.url}${path}/`,
     lastModified: now,
     changeFrequency: "weekly" as const,
     priority: path === "" ? 1 : 0.7,
@@ -48,9 +49,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...courses.map((c) => `/courses/${c.slug}`),
     ...workshops.map((w) => `/workshops/${w.slug}`),
     ...blogPosts.map((p) => `/blog/${p.slug}`),
-    ...tools.map((t) => `/tools/${t.slug}/`),
+    ...tools.map((t) => `/tools/${t.slug}`),
   ].map((path) => ({
-    url: `${site.url}${path}`,
+    url: `${site.url}${path}/`,
     lastModified: now,
     changeFrequency: "monthly" as const,
     priority: 0.6,

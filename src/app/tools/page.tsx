@@ -22,7 +22,7 @@ export default function ToolsPage() {
     <>
       <Section className="pb-0">
         <Container wide>
-          <SectionHead
+          <SectionHead as="h1"
             eyebrow="Tools"
             title="Design tools that run in your browser"
             lead="Free, no account and nothing to install. The numbers are computed on your own device, and each tool opens in a new tab."

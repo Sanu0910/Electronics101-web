@@ -64,11 +64,14 @@ export function SectionHead({
   title,
   lead,
   align = "left",
+  as: Heading = "h2",
 }: {
   eyebrow?: string;
   title: string;
   lead?: string;
   align?: "left" | "center";
+  /** `h1` for the heading that titles the page; every page needs exactly one. */
+  as?: "h1" | "h2";
 }) {
   return (
     <div className={cn("max-w-2xl", align === "center" && "mx-auto text-center")}>
@@ -77,7 +80,7 @@ export function SectionHead({
           {eyebrow}
         </p>
       ) : null}
-      <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{title}</h2>
+      <Heading className="text-3xl font-bold tracking-tight sm:text-4xl">{title}</Heading>
       {lead ? <p className="mt-4 text-lg text-muted">{lead}</p> : null}
     </div>
   );

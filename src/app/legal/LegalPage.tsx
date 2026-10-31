@@ -24,7 +24,7 @@ export function LegalPage({
   return (
     <Section>
       <Container>
-        <SectionHead eyebrow="Legal" title={title} lead={intro} />
+        <SectionHead as="h1" eyebrow="Legal" title={title} lead={intro} />
 
         <Card className="mt-8 border-warn-400/40 bg-warn-400/5 p-5">
           <p className="text-sm font-semibold text-warn-400">

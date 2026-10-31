@@ -24,7 +24,7 @@ export default function MentorshipPage() {
     <>
       <Section className="pb-0">
         <Container wide>
-          <SectionHead
+          <SectionHead as="h1"
             eyebrow="Mentorship"
             title="Sustained guidance on your own work"
             lead="Not a one-off consultation. A mentor who reads what you have actually done, tells you where it is wrong, and stays with it until it works."

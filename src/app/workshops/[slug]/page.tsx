@@ -38,6 +38,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       title: `${item.title} · ${site.name}`,
       description: item.summary,
       url: `/workshops/${item.slug}`,
+      // A child openGraph replaces the layout's, so the image has to be restated here.
+      // Portrait posters crop badly in 1.91:1 link previews, so only a landscape one is used.
+      images: [
+        item.image && item.imageOrientation === "landscape" ? item.image : "/images/og-default.jpg",
+      ],
     },
   };
 }

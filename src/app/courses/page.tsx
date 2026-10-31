@@ -28,7 +28,7 @@ export default function CoursesPage() {
   return (
     <Section>
       <Container wide>
-        <SectionHead
+        <SectionHead as="h1"
           eyebrow="Courses"
           title="Structured programmes with something to show at the end"
           lead="Longer than a workshop and deeper than a series: curriculum, projects, review and a certificate."

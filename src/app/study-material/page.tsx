@@ -38,7 +38,7 @@ export default function StudyMaterialPage() {
   return (
     <Section>
       <Container wide>
-        <SectionHead
+        <SectionHead as="h1"
           eyebrow="Study Material"
           title="Reference you will still use after the course ends"
           lead="Formula sheets, notes and design guides, searchable and filterable. Free resources need no account; members-only ones come with a programme."

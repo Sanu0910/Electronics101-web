@@ -15,7 +15,7 @@ export default function ContactPage() {
   return (
     <Section>
       <Container>
-        <SectionHead
+        <SectionHead as="h1"
           eyebrow="Contact"
           title="Tell us what you are trying to do"
           lead="Describe the problem rather than the service. If something is not worth taking on, you will be told that."

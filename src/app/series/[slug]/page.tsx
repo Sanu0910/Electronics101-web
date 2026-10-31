@@ -37,6 +37,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       title: `${item.title} · ${site.name}`,
       description: item.description,
       url: `/series/${item.slug}`,
+      // A child openGraph replaces the layout's, so the image has to be restated here.
+      images: [item.image ?? "/images/og-default.jpg"],
     },
   };
 }

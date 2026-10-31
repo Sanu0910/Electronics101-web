@@ -24,7 +24,7 @@ export default function WorkshopsPage() {
     <>
       <Section className="pb-0">
         <Container wide>
-          <SectionHead
+          <SectionHead as="h1"
             eyebrow="Live Workshops"
             title="Small cohorts, real tools, work you keep"
             lead="Every workshop is live rather than recorded, so you can ask the question that is actually blocking you. Material and model files are yours afterwards."

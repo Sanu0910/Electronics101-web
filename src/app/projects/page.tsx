@@ -22,7 +22,7 @@ export default function ProjectsPage() {
     <>
       <Section className="pb-0">
         <Container wide>
-          <SectionHead
+          <SectionHead as="h1"
             eyebrow="Projects"
             title="Work, with the reasoning attached"
             lead="Each entry states the problem, what was actually done, and what the result was — including where it fell short."

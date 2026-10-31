@@ -22,7 +22,7 @@ export default function ServicesPage() {
     <>
       <Section className="pb-0">
         <Container wide>
-          <SectionHead
+          <SectionHead as="h1"
             eyebrow="Engineering Services"
             title="Design, simulation and training"
             lead="Work delivered with the reasoning attached — what was assumed, what was verified, and what the result does not cover."

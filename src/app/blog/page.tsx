@@ -31,7 +31,7 @@ export default function BlogIndexPage() {
   return (
     <Section>
       <Container wide>
-        <SectionHead
+        <SectionHead as="h1"
           eyebrow="Blog"
           title="Technical articles"
           lead="Short pieces on the things that are usually explained wrong."

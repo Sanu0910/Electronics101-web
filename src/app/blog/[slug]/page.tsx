@@ -34,6 +34,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
       description: post.excerpt,
       url: `/blog/${post.slug}`,
       publishedTime: post.publishedAt,
+      // A child openGraph replaces the layout's, so the image has to be restated here.
+      images: [post.image ?? "/images/og-default.jpg"],
     },
   };
 }

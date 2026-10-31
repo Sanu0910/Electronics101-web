@@ -29,7 +29,7 @@ export default function AboutPage() {
     <>
       <Section className="pb-0">
         <Container>
-          <SectionHead
+          <SectionHead as="h1"
             eyebrow="About"
             title="An independent platform for practical engineering"
             lead={`${site.name} exists to make engineering education practical, accessible and industry-oriented — for people who will have to make something work, not just pass an exam about it.`}

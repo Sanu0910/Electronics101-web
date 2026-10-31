@@ -15,7 +15,7 @@ export default function LinksPage() {
     <>
       <Section className="pb-0">
         <Container wide>
-          <SectionHead
+          <SectionHead as="h1"
             eyebrow="Useful Links"
             title="Where to go next"
             lead="Tools, references and communities worth your time. Everything here opens in a new tab."

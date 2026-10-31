@@ -22,7 +22,7 @@ export default function FeedbackPage() {
     <>
       <Section className="pb-0">
         <Container wide>
-          <SectionHead
+          <SectionHead as="h1"
             eyebrow="Feedback"
             title="What participants say"
             lead="Every review here was submitted through the form below and approved before publication. Nothing is written on anyone's behalf."

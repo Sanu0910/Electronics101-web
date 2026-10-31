@@ -16,7 +16,7 @@ export default function SeriesIndexPage() {
   return (
     <Section>
       <Container wide>
-        <SectionHead
+        <SectionHead as="h1"
           eyebrow="Programmes"
           title="Eleven series, one method"
           lead="Each series is a track you can follow end to end. They are designed to be taken in any order, but the numbering is the order in which the ideas compound."
