@@ -24,7 +24,7 @@ const antenna101: Workshop = {
   startsAt: "2026-11-21T19:00:00+05:30",
   endsAt: "2026-11-25T21:00:00+05:30",
   /* Seats keep selling after this — only the price changes. */
-  earlyBirdUntil: "2026-10-20T23:59:00+05:30",
+  earlyBirdUntil: "2026-11-20T23:59:00+05:30",
   durationLabel: "5 sessions × 2 hrs · 7–9 pm IST",
   mode: "Live Online",
   level: "Advanced",
@@ -221,7 +221,7 @@ const antenna101Slot2: Workshop = {
   /* Five 2-hour evening sessions on consecutive days, 7–9 pm IST. */
   startsAt: "2026-12-24T19:00:00+05:30",
   endsAt: "2026-12-28T21:00:00+05:30",
-  earlyBirdUntil: "2026-11-30T23:59:00+05:30",
+  earlyBirdUntil: "2026-12-23T23:59:00+05:30",
 };
 
 export const workshops: Workshop[] = [
@@ -239,7 +239,7 @@ export const workshops: Workshop[] = [
     /* Two evening sessions, 7–9 pm IST on consecutive days. */
     startsAt: "2026-12-05T19:00:00+05:30",
     endsAt: "2026-12-06T21:00:00+05:30",
-    applyBy: "2026-10-15T23:59:00+05:30",
+    applyBy: "2026-12-04T23:59:00+05:30",
     durationLabel: "2 days · 7–9 pm IST each evening",
     liveOnly: true,
     mode: "Live Online",
