@@ -325,13 +325,17 @@ const airfDec: Workshop = {
       standardPriceInr: 3999,
       priceUsd: 39,
       standardPriceUsd: 49,
-      href: null,
+      /* Razorpay page for the 12–13 Dec batch (user, 2026-11-23). */
+      href: "https://rzp.io/rzp/kkBadvV",
       note: "Early bird",
     },
   ],
   /** The headline figure on cards is the lowest seat price. */
   priceInr: 1499,
   status: "Open",
+  /* 20 seats in all (user, 2026-11-23). Lower seatsLeft by hand as seats sell. */
+  seats: 20,
+  seatsLeft: 20,
   instructorId: "lead",
   /* The PR10 poster from shorts/out/PR10-AiRf.jpg. */
   image: "/images/workshop-ai-rf.webp",
@@ -357,6 +361,9 @@ const airfJan: Workshop = {
   /* The December payment links must not carry over: no January links yet. */
   tiers: airfDec.tiers?.map((t) => ({ ...t, href: null })),
   status: "Registration Soon",
+  /* The December seat count is not the January one. */
+  seats: undefined,
+  seatsLeft: undefined,
   /* Frame 0 of the PR12 January poster. */
   image: "/images/workshop-ai-rf-january.webp",
 };
