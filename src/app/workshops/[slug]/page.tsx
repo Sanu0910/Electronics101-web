@@ -543,8 +543,20 @@ export default async function WorkshopDetailPage({ params }: Params) {
                         {tier.note ? <Badge tone="accent">{tier.note}</Badge> : null}
                       </div>
 
-                      <div className="mt-6 flex flex-wrap items-baseline gap-3">
-                        <p className="text-3xl font-bold tabular">
+                      {/* US$ big, ₹ medium for tiers that carry a dollar price (user, 2026-11-22) */}
+                      {tier.priceUsd ? (
+                        <div className="mt-6 flex flex-wrap items-baseline gap-3">
+                          <p className="text-3xl font-bold tabular">US${tier.priceUsd}</p>
+                          {tier.standardPriceUsd ? (
+                            <p className="text-lg text-faint line-through tabular">US${tier.standardPriceUsd}</p>
+                          ) : null}
+                          {tier.standardPriceUsd ? (
+                            <Badge tone="ok">Save US${tier.standardPriceUsd - tier.priceUsd}</Badge>
+                          ) : null}
+                        </div>
+                      ) : null}
+                      <div className={cn("flex flex-wrap items-baseline gap-3", tier.priceUsd ? "mt-2" : "mt-6")}>
+                        <p className={cn("font-bold tabular", tier.priceUsd ? "text-xl" : "text-3xl")}>
                           {priceLabel(tier.priceInr)}
                         </p>
                         {/* the old price is struck through, so the saving is
@@ -554,7 +566,7 @@ export default async function WorkshopDetailPage({ params }: Params) {
                             {priceLabel(tier.standardPriceInr)}
                           </p>
                         ) : null}
-                        {tier.standardPriceInr && tier.priceInr ? (
+                        {tier.standardPriceInr && tier.priceInr && !tier.priceUsd ? (
                           <Badge tone="ok">
                             Save {priceLabel(tier.standardPriceInr - tier.priceInr)}
                           </Badge>
@@ -577,12 +589,6 @@ export default async function WorkshopDetailPage({ params }: Params) {
                           Confirm the amount on the Razorpay page before paying.
                         </p>
                       )}
-                      {tier.priceUsd ? (
-                        <p className="mt-1 text-sm font-medium text-muted tabular">
-                          International: US${tier.priceUsd}
-                          {tier.standardPriceUsd ? ` early bird · US$${tier.standardPriceUsd} after` : ""}
-                        </p>
-                      ) : null}
 
                       <div className="mt-auto pt-6">
                         {tier.href ? (
