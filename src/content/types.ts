@@ -157,6 +157,11 @@ export type Workshop = Placeholder & {
   tiers?: RegistrationTier[];
   /** ISO 8601 with offset. Rendered through Intl, never hardcoded. */
   startsAt: string;
+  /**
+   * The day is fixed but the hour is not. `startsAt` then carries the date
+   * only in spirit: the site shows "time TBA" and no countdown.
+   */
+  timeTba?: boolean;
   endsAt?: string;
   /** Registration closes at this instant — no seat is sold after it. */
   applyBy?: string;
@@ -200,7 +205,7 @@ export type Workshop = Placeholder & {
   seats?: number;
   seatsLeft?: number;
   priceInr: number | null;
-  status: "Open" | "Filling Fast" | "Waitlist" | "Closed";
+  status: "Open" | "Registration Soon" | "Filling Fast" | "Waitlist" | "Closed";
   image?: string;
   instructorId?: string;
 };

@@ -149,7 +149,9 @@ export default function HomePage() {
                     <Badge tone="ok">{featuredWorkshop.status}</Badge>
                     <h3 className="mt-3 text-2xl font-bold">{featuredWorkshop.title}</h3>
                     <p className="mt-2 text-sm text-muted">{featuredWorkshop.summary}</p>
-                    <Countdown iso={featuredWorkshop.startsAt} className="mt-5" />
+                    {featuredWorkshop.timeTba ? null : (
+                      <Countdown iso={featuredWorkshop.startsAt} className="mt-5" />
+                    )}
                     <div className="mt-6 flex flex-wrap gap-3">
                       <ButtonLink href={`/workshops/${featuredWorkshop.slug}`}>
                         View Details

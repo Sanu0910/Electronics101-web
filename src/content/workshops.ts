@@ -302,6 +302,111 @@ export const workshops: Workshop[] = [
     instructorId: "lead",
     image: "/images/workshop-rf-antenna.jpg",
   },
+  /*
+   * Announced before registration opens (user, 2026-11-22). The tiers have no
+   * payment links yet, so the page offers an enquiry instead of Register.
+   * Timings are not fixed: `timeTba` keeps the site from showing an hour.
+   * HFSS is an instructor demo; the hands-on parts use free tools.
+   */
+  {
+    slug: "ai-powered-rf-microwave-engineering",
+    title: "AI-Powered RF & Microwave Engineering",
+    subtitle: "Antenna design, EM simulation and automation",
+    summary:
+      "Two days, live and online: HFSS with PyAEDT scripting, openEMS, scikit-rf, Qucs-S and KiCad, with AI used to write and debug the engineering scripts.",
+    description:
+      "A two-day masterclass on the modern RF workflow. You design a 2.4 GHz patch antenna, watch it built and swept in Ansys HFSS and driven from Python through PyAEDT, then simulate it yourself in openEMS. Day two moves to circuits and boards: S-parameters and Smith charts, matching networks and a filter in Qucs-S and ngspice, network analysis in scikit-rf, and an RF board in KiCad with a 50 Ω line and an SMA launch. Throughout, AI assistants are used the way an engineer would use them: to draft scripts, check calculations and find bugs, with every result checked against the physics.",
+    startsAt: "2026-12-12T10:00:00+05:30",
+    timeTba: true,
+    endsAt: "2026-12-13T17:00:00+05:30",
+    earlyBirdUntil: "2026-12-05T23:59:00+05:30",
+    durationLabel: "2 days · timings to be announced",
+    mode: "Live Online",
+    level: "Advanced",
+    domains: ["RF", "Antenna", "Simulation", "PCB", "AI"],
+    days: [
+      {
+        day: 1,
+        title: "Antennas, HFSS automation and open-source EM",
+        points: [
+          "Antenna fundamentals and design calculations",
+          "AI-assisted antenna design and optimisation",
+          "2.4 GHz microstrip patch: model, setup, S11 and pattern",
+          "HFSS driven from Python with PyAEDT: parametric sweeps (instructor demo)",
+          "openEMS FDTD: geometry, mesh, boundaries and results (hands-on)",
+        ],
+      },
+      {
+        day: 2,
+        title: "RF circuits, PCB and automation",
+        points: [
+          "S-parameters and Smith charts",
+          "Impedance matching and an RF filter in Qucs-S and ngspice",
+          "Network analysis with scikit-rf",
+          "RF schematic and PCB in KiCad: 50 Ω lines and SMA launches",
+          "Python analysis scripts, written and debugged with AI help",
+        ],
+      },
+    ],
+    topics: [
+      "Ansys HFSS",
+      "PyAEDT",
+      "openEMS",
+      "scikit-rf",
+      "Qucs-S",
+      "ngspice",
+      "KiCad",
+      "Python",
+      "AI-assisted scripting",
+    ],
+    projectFlow: [
+      "2.4 GHz patch antenna",
+      "HFSS + PyAEDT automation",
+      "Filter and matching network",
+      "RF PCB and transmission line",
+    ],
+    includes: [
+      "Two days of live sessions with Q&A",
+      "Digital certificate of participation",
+      "Project files, Python scripts and simulation examples",
+      "A prompt library for engineering scripts",
+      "Reference notes",
+    ],
+    audience: [
+      "B.Tech / M.Tech students",
+      "PhD scholars and researchers",
+      "Antenna and RF engineers",
+      "Microwave and electronics engineers",
+      "PCB design engineers",
+      "Faculty members",
+    ],
+    tiers: [
+      {
+        id: "student",
+        label: "Student / Researcher",
+        forWho: "Students, PhD scholars and researchers.",
+        priceInr: 1499,
+        standardPriceInr: 1999,
+        href: null,
+        note: "Early bird",
+      },
+      {
+        id: "professional",
+        label: "Working Professional",
+        forWho: "Working engineers, faculty and company-sponsored participants.",
+        priceInr: 2999,
+        standardPriceInr: 3999,
+        href: null,
+        note: "Early bird",
+      },
+    ],
+    /** The headline figure on cards is the lowest seat price. */
+    priceInr: 1499,
+    status: "Registration Soon",
+    instructorId: "lead",
+    disclaimer:
+      "Ansys and HFSS are trademarks of ANSYS, Inc. HFSS is shown by the instructor; participants need no Ansys licence for the hands-on parts. Electronics 101 is an independent educational initiative.",
+  },
 ];
 
 export const getWorkshop = (slug: string) => workshops.find((w) => w.slug === slug);

@@ -16,7 +16,7 @@ import {
 import { Countdown } from "@/components/home/Countdown";
 import { Reveal } from "@/components/ui/Reveal";
 import { DayTimeline } from "@/components/workshops/DayTimeline";
-import { cn, formatDate, formatDateTime, formatInr, priceLabel, jsonLdScript } from "@/lib/utils";
+import { cn, formatDate, formatStart, formatInr, priceLabel, jsonLdScript } from "@/lib/utils";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { site } from "@/config/site";
 
@@ -111,7 +111,9 @@ export default async function WorkshopDetailPage({ params }: Params) {
               availability:
                 item.status === "Closed"
                   ? "https://schema.org/SoldOut"
-                  : "https://schema.org/InStock",
+                  : item.status === "Registration Soon"
+                    ? "https://schema.org/PreOrder"
+                    : "https://schema.org/InStock",
               url: t.href ?? `${site.url}/workshops/${item.slug}/`,
             })),
         }
@@ -201,7 +203,7 @@ export default async function WorkshopDetailPage({ params }: Params) {
                 <div className="rounded-xl border border-line p-4 transition-colors duration-200 hover:border-accent/40">
                   <dt className="text-xs uppercase tracking-wider text-faint">Starts</dt>
                   <dd className="mt-1 font-semibold tabular">
-                    <time dateTime={item.startsAt}>{formatDateTime(item.startsAt)}</time>
+                    <time dateTime={item.startsAt}>{formatStart(item)}</time>
                   </dd>
                 </div>
                 <div className="rounded-xl border border-line p-4 transition-colors duration-200 hover:border-accent/40">
@@ -669,12 +671,12 @@ export default async function WorkshopDetailPage({ params }: Params) {
           <Reveal>
             <Card className="flex flex-wrap items-center justify-between gap-6 p-8">
               <div>
-                <h2 className="text-2xl font-bold">Starts in</h2>
+                <h2 className="text-2xl font-bold">{item.timeTba ? "Starts on" : "Starts in"}</h2>
                 <p className="mt-1 text-sm text-muted">
-                  <time dateTime={item.startsAt}>{formatDateTime(item.startsAt)}</time>
+                  <time dateTime={item.startsAt}>{formatStart(item)}</time>
                 </p>
               </div>
-              <Countdown iso={item.startsAt} />
+              {item.timeTba ? null : <Countdown iso={item.startsAt} />}
             </Card>
           </Reveal>
 

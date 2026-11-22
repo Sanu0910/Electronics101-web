@@ -29,6 +29,12 @@ export const formatDateTime = (iso: string) =>
     timeZoneName: "short",
   }).format(new Date(iso));
 
+/** A workshop's start, without inventing a time when none is fixed yet. */
+export const formatStart = (w: { startsAt: string; timeTba?: boolean }) =>
+  w.timeTba
+    ? `${formatDate(w.startsAt, { weekday: "short", year: undefined })} · time TBA`
+    : formatDateTime(w.startsAt);
+
 export const formatInr = (amount: number) =>
   new Intl.NumberFormat(DATE_LOCALE, {
     style: "currency",

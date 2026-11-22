@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Course, Resource, Series, Service, Workshop, BlogPost, Testimonial } from "@/content/types";
 import { Badge, Card, PlaceholderTag, buttonClass } from "@/components/ui/primitives";
-import { cn, formatDate, formatDateTime, priceLabel, readingTime } from "@/lib/utils";
+import { cn, formatDate, formatStart, priceLabel, readingTime } from "@/lib/utils";
 import { SafeImage } from "@/components/ui/SafeImage";
 import { asset } from "@/lib/paths";
 
@@ -144,7 +144,7 @@ export function WorkshopCard({ item }: { item: Workshop }) {
           <div className="flex justify-between gap-4">
             <dt className="text-faint">Starts</dt>
             <dd className="text-right font-medium tabular">
-              <time dateTime={item.startsAt}>{formatDateTime(item.startsAt)}</time>
+              <time dateTime={item.startsAt}>{formatStart(item)}</time>
             </dd>
           </div>
           <div className="flex justify-between gap-4">
