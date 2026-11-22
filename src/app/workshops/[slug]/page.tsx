@@ -577,6 +577,12 @@ export default async function WorkshopDetailPage({ params }: Params) {
                           Confirm the amount on the Razorpay page before paying.
                         </p>
                       )}
+                      {tier.priceUsd ? (
+                        <p className="mt-1 text-sm font-medium text-muted tabular">
+                          International: US${tier.priceUsd}
+                          {tier.standardPriceUsd ? ` early bird · US$${tier.standardPriceUsd} after` : ""}
+                        </p>
+                      ) : null}
 
                       <div className="mt-auto pt-6">
                         {tier.href ? (

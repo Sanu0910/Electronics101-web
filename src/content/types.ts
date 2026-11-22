@@ -114,6 +114,9 @@ export type RegistrationTier = {
   priceInr: number | null;
   /** What this seat costs once the early-bird deadline passes. */
   standardPriceInr?: number | null;
+  /** The same seat for international participants, in US dollars. Shown beside the ₹ price. */
+  priceUsd?: number;
+  standardPriceUsd?: number;
   /**
    * The Razorpay hosted payment link. Null or absent while the link has not
    * been created yet: the card then offers an enquiry route instead of an

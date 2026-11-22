@@ -136,17 +136,18 @@ export const publishedTestimonials = testimonials.filter((t) => t.published);
 export const instructors: Instructor[] = [
   {
     id: "lead",
-    name: "S. Roy",
-    title: "RF & Microwave Engineer",
-    bio: "A master's degree in RF and microwave engineering, and three years split between industry design work and teaching it. The courses and workshops here are built around the same simulation and verification workflow used on real design jobs — which is why they spend as much time on checking a result as on producing one.",
+    /* No name and no photo (user, 2026-11-22): presented by credentials only. */
+    title: "RF & Microwave Engineer · Research Associate, IISc",
+    bio: "A master's degree in RF and microwave engineering and more than four years working in the field, now as a research associate at the Indian Institute of Science (IISc). Gives lectures on Ansys SIwave and speaks at technical conferences, and shares RF and microwave explainers with 2,000+ followers on Instagram. The courses and workshops here are built around the same simulation and verification workflow used on real design work, which is why they spend as much time checking a result as producing one.",
     credentials: [
       "M.Tech — RF & Microwave Engineering",
-      "3+ years industry design & simulation",
-      "3+ years teaching",
+      "Research Associate, IISc",
+      "Lectures on Ansys SIwave · conference talks",
+      "4+ years in RF & microwave",
+      "2,000+ followers on Instagram",
       "100+ participants trained",
     ],
-    expertise: ["RF & Microwave", "Antenna Design", "HFSS", "ADS", "PCB"],
-    image: "/images/instructor-s-roy.jpg",
+    expertise: ["RF & Microwave", "Antenna Design", "HFSS", "SIwave", "ADS", "PCB"],
   },
 ];
 
