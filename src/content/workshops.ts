@@ -404,6 +404,9 @@ export const workshops: Workshop[] = [
     priceInr: 1499,
     status: "Registration Soon",
     instructorId: "lead",
+    /* The PR10 poster from shorts/out/PR10-AiRf.jpg. */
+    image: "/images/workshop-ai-rf.webp",
+    imageOrientation: "portrait",
     disclaimer:
       "Ansys and HFSS are trademarks of ANSYS, Inc. HFSS is shown by the instructor; participants need no Ansys licence for the hands-on parts. Electronics 101 is an independent educational initiative.",
   },
