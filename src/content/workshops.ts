@@ -224,8 +224,9 @@ const antenna101Slot2: Workshop = {
   earlyBirdUntil: "2026-12-23T23:59:00+05:30",
 };
 
+/* Slot 1 (21–25 Nov 2026) is no longer listed (user, 2026-11-22). Its object
+ * stays above because Slot 2 is built from it. */
 export const workshops: Workshop[] = [
-  antenna101,
   antenna101Slot2,
   {
     slug: "rf-microwave-antenna-design",
