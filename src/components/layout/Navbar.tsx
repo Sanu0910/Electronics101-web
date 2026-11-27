@@ -75,10 +75,10 @@ export function Navbar() {
         </Link>
 
         {/* desktop */}
-        {/* 12 items, plus logo, toggle and CTA, need ~1450px. Below that the
+        {/* 13 items, plus logo, toggle and CTA, need ~1530px. Below that the
             menu button carries the same links with their blurbs, which reads
             better than a wrapped row. */}
-        <ul className="ml-auto hidden items-center gap-0.5 min-[1450px]:flex">
+        <ul className="ml-auto hidden items-center gap-0.5 min-[1530px]:flex">
           {mainNav.map((item) => (
             <li key={item.href}>
               <Link
@@ -97,7 +97,7 @@ export function Navbar() {
           ))}
         </ul>
 
-        <div className="ml-auto flex items-center gap-2 min-[1450px]:ml-0">
+        <div className="ml-auto flex items-center gap-2 min-[1530px]:ml-0">
           <ThemeToggle />
           <Link
             href="/contact"
@@ -122,7 +122,7 @@ export function Navbar() {
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             aria-controls="mobile-menu"
-            className="grid size-10 place-items-center rounded-full border border-line text-muted transition-colors duration-200 hover:border-accent hover:text-accent min-[1450px]:hidden"
+            className="grid size-10 place-items-center rounded-full border border-line text-muted transition-colors duration-200 hover:border-accent hover:text-accent min-[1530px]:hidden"
           >
             <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
               {open ? (
@@ -139,7 +139,7 @@ export function Navbar() {
       <div
         id="mobile-menu"
         hidden={!open}
-        className="border-t border-line bg-bg min-[1450px]:hidden"
+        className="border-t border-line bg-bg min-[1530px]:hidden"
         style={{ overscrollBehavior: "contain" }}
       >
         <ul className="max-h-[calc(100dvh-4rem)] overflow-y-auto px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">

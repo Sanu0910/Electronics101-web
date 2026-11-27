@@ -3,6 +3,7 @@ import { Sora, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { BookBanner } from "@/components/layout/BookBanner";
 import { site, socials } from "@/config/site";
 import { jsonLdScript } from "@/lib/utils";
 
@@ -147,6 +148,7 @@ export default function RootLayout({
         />
       </head>
       <body className="flex min-h-full flex-col font-sans">
+        <BookBanner />
         <Navbar />
         <main id="main" className="flex-1">
           {children}

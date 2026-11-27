@@ -20,6 +20,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "/courses",
     "/workshops",
+    "/book",
     "/series",
     "/study-material",
     "/resources",

@@ -40,6 +40,7 @@ export type NavItem = {
 export const mainNav: NavItem[] = [
   { label: "Courses", href: "/courses", blurb: "Structured, tool-based programmes" },
   { label: "Workshops", href: "/workshops", blurb: "Live, hands-on sessions" },
+  { label: "Book", href: "/book", blurb: "Signals & Systems for GATE · pre-order ₹249" },
   { label: "Series", href: "/series", blurb: "Free learning tracks, episode by episode" },
   { label: "Study Material", href: "/study-material", blurb: "Notes, formula sheets, guides" },
   { label: "Resources", href: "/resources", blurb: "Curated RF reading, courses and free solvers" },
@@ -58,6 +59,7 @@ export const footerNav: { title: string; items: NavItem[] }[] = [
     items: [
       { label: "Courses", href: "/courses" },
       { label: "Workshops", href: "/workshops" },
+      { label: "Signals & Systems book", href: "/book" },
       { label: "Series", href: "/series" },
       { label: "Study Material", href: "/study-material" },
       { label: "RF Resource Library", href: "/resources" },
